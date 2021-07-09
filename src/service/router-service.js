@@ -8,6 +8,7 @@ const COURSE = 'course';
 const PROFILE = 'profile';
 const FAQ = 'faq';
 const FEEDBACK = 'feedback';
+const TESTING = 'testing';
 
 const SEPARATOR = '/';
 
@@ -70,6 +71,10 @@ export default class RouterService {
 
     getCourseLink = (id) => {
         return SEPARATOR + COURSE + SEPARATOR + id;
+    };
+
+    getTestingLink = () => {
+        return SEPARATOR + TESTING + SEPARATOR + ':id';
     };
 }
 

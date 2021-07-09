@@ -2,7 +2,7 @@ import {config} from "./app-config";
 
 export default {
     getApiBasePath() {
-        return 'https://learnsql.ru'
+        return 'http://62.109.28.95:8001'
         return `${config.apiSchema}://${config.apiHost}${config.apiPort ? ":" + config.apiPort : ""}`;
     },
 };

@@ -1,5 +1,6 @@
 export default (theme) => ({
     tabMenu: {
+        display: 'flex',
         borderBottom: '1px solid #f4f4f4'
     },
     courseTabContent: {
@@ -25,5 +26,23 @@ export default (theme) => ({
     },
     tabSelected: {
         color: theme.palette.secondary.main,
-    }
+    },
+    modal: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modalPaper: {
+        padding: 40,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        '& > span': {
+            marginTop: 10,
+            color: 'grey'
+        },
+        '& button': {
+            margin: 30
+        }
+    },
 });

@@ -14,6 +14,7 @@ import UserService from './service/user-service';
 import ResetPasswordConfirm from "./containers/ResetPassword/ResetPasswordConfirm/ResetPasswordConfirm";
 import FAQ from "./containers/FAQ";
 import Feedback from "./containers/Feedback";
+import Testing from "./containers/Testing/Testing";
 
 const routerService = RouterService.factory();
 const userService = UserService.factory();
@@ -51,6 +52,9 @@ export default () => (
                 </PrivateRoute>
                 <PrivateRoute path={routerService.getCourseRoute()}>
                     <Course />
+                </PrivateRoute>
+                <PrivateRoute path={routerService.getTestingLink()}>
+                    <Testing />
                 </PrivateRoute>
                 <PrivateRoute path={routerService.getHomeRoute()}>
                     <Home />
