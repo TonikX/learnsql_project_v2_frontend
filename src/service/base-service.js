@@ -67,14 +67,10 @@ export default class BaseService {
         _axios.defaults.xsrfCookieName = "csrftoken";
 
         const isAuth = userService.isAuth();
-        console.log('userService.getToken()', userService.getToken())
-        console.log('isAuth', isAuth)
+
         if (_axios !== null && isAuth) {
             _axios.defaults.headers.common['Authorization'] = `Bearer ${userService.getToken()}`;
-
         }
-        /* Полина, я пытался, код ниже */
-        _axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
         return _axios;
     }
 }
