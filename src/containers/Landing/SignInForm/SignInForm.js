@@ -20,7 +20,6 @@ export default () => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
-  const location = useLocation()
 
   const handleLogin = useCallback(async () => {
     try {
@@ -47,11 +46,6 @@ export default () => {
 
     setEmail('')
   }, [email])
-
-  const handleGoogleSignIn = async () => {
-    const { data } = await axios.get('http://localhost:8001/social-auth/o/google-oauth2/?redirect_uri=http://localhost:3001/googleoauth2')
-    window.location.replace(data.authorization_url)
-  }
 
   return (
     <div className={classes.form}>
@@ -122,7 +116,9 @@ export default () => {
           {/*  Войти с помощью гугл*/}
           {/*</Button>*/}
 
-          <div onClick={handleGoogleSignIn}> GOODLE </div>
+            <a href="https://accounts.google.com/o/oauth2/auth?client_id=436575162733-dh4ru27585ft6salfbm9fiul63gccj5n.apps.googleusercontent.com&redirect_uri=http://localhost:3001/googleoauth2&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+openid+openid+email+profile">
+              GOOgLE
+            </a>
         </>
       }
     </div>

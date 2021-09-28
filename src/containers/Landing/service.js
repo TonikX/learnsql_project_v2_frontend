@@ -23,13 +23,15 @@ class AuthService extends BaseService{
         return this.post('/auth/users/reset_password/', formData);
     }
 
-    getTokens(code, state){
+    getTokens(token){
         const formData = new FormData();
+        formData.append('token', token);
+        formData.append('grant_type', 'convert_token');
+        formData.append('client_id', 'dtpxHJdnOZL7n0JpZJuTPfVkXUDmpXZYClYOAAOi');
+        formData.append('client_secret', '8s4qWqQVWtm9fzBt6Z6ZihiC0aQPgbljyYZ0vQqQc7y3M4DLKKLQrwnoyOR1pTqMMAF1B3AKxHyL8lZS6He07zL9xTZVGw8jWox594Ujg58ehXJtjlWYusuxlaorLXWk');
+        formData.append('backend', 'google-oauth2');
 
-        formData.append('code', code);
-        formData.append('state', state);
-        
-        return this.post(`social-auth/o/google-oauth2/?state=${state}&code=${code}`)
+        return this.post(`social_auth_v2/convert-token`, formData)
     }
 }
 
