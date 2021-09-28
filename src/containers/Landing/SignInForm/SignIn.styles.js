@@ -41,4 +41,12 @@ export const useStyles = makeStyles((theme) => createStyles({
       color: theme.palette.primary.dark,
     }
   },
+  googleButton: {
+    marginTop: '20px',
+    color: 'rgb(215 73 55)',
+    fontSize: '14px',
+    '&:hover': {
+      background: 'rgb(215 73 55) !important',
+    }
+  },
 }))

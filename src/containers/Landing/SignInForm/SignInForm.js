@@ -1,7 +1,6 @@
 import React, {useCallback, useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {useHistory, useLocation} from 'react-router'
-import axios from 'axios'
+import {useHistory} from 'react-router'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import Button from '../../../components/Button'
@@ -46,6 +45,11 @@ export default () => {
 
     setEmail('')
   }, [email])
+
+  const handleLoginGoogle = () => {
+    // eslint-disable-next-line no-restricted-globals
+    location.href = `https://accounts.google.com/o/oauth2/auth?client_id=436575162733-dh4ru27585ft6salfbm9fiul63gccj5n.apps.googleusercontent.com&redirect_uri=${location.href}googleoauth2&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+openid+openid+email+profile`
+  }
 
   return (
     <div className={classes.form}>
@@ -106,19 +110,14 @@ export default () => {
           >
             Войти
           </Button>
-          {/*<Button*/}
-          {/*  type='outlined'*/}
-          {/*  color='primary'*/}
-          {/*  className={classes.button}*/}
-          {/*  disabled={login.length === 0 || password.length === 0}*/}
-          {/*  onClick={handleLogin}*/}
-          {/*>*/}
-          {/*  Войти с помощью гугл*/}
-          {/*</Button>*/}
-
-            <a href="https://accounts.google.com/o/oauth2/auth?client_id=436575162733-dh4ru27585ft6salfbm9fiul63gccj5n.apps.googleusercontent.com&redirect_uri=http://localhost:3001/googleoauth2&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+openid+openid+email+profile">
-              GOOgLE
-            </a>
+          <Button
+            type='outlined'
+            color='primary'
+            onClick={handleLoginGoogle}
+            className={classes.googleButton}
+          >
+            Войти через аккаунт GOOGLE
+          </Button>
         </>
       }
     </div>
