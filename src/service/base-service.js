@@ -7,9 +7,9 @@ import UserService from "./user-service";
 const userService = UserService.factory();
 
 export default class BaseService {
-    get(url, config) {
+    get(url, config, axiosConfig) {
         return new Promise((successFn, errorFn) => {
-            this.getAxios().get(url, config).then(successFn).catch(errorFn);
+            this.getAxios(axiosConfig).get(url, config).then(successFn).catch(errorFn);
         });
     }
 
@@ -43,13 +43,13 @@ export default class BaseService {
         const _axios = axiosLib.create({
             baseURL: AppConfig.getApiBasePath(),
         });
-
+        console.log('AppConfig.getApiBasePath()', AppConfig.getApiBasePath())
         _axios.interceptors.response.use(this.interceptSuccessResponse, this.interceptFailResponse);
 
         return _axios;
     };
 
-    getAxios(config = {singleton: true}) {
+    getAxios(config = {singleton: true, removeHeader: false}) {
         let _axios;
 
         if (config.singleton === true || config.singleton === undefined) {
@@ -68,7 +68,7 @@ export default class BaseService {
 
         const isAuth = userService.isAuth();
 
-        if (_axios !== null && isAuth) {
+        if (_axios !== null && isAuth && !config.removeHeader) {
             _axios.defaults.headers.common['Authorization'] = `Bearer ${userService.getToken()}`;
         }
         return _axios;
