@@ -93,6 +93,7 @@ export const useStyles = makeStyles((theme) => createStyles({
       textDecoration: 'none',
       color: theme.palette.primary.main,
       fontSize: '20px',
+      cursor: 'pointer',
     }
   },
   questions: {

@@ -43,7 +43,7 @@ export default class BaseService {
         const _axios = axiosLib.create({
             baseURL: AppConfig.getApiBasePath(),
         });
-        console.log('AppConfig.getApiBasePath()', AppConfig.getApiBasePath())
+
         _axios.interceptors.response.use(this.interceptSuccessResponse, this.interceptFailResponse);
 
         return _axios;

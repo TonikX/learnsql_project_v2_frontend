@@ -47,6 +47,10 @@ export const useStyles = makeStyles((theme) => createStyles({
     fontSize: '14px',
     '&:hover': {
       background: 'rgb(215 73 55) !important',
+    },
+    '& span': {
+      position: 'relative',
+      top: '2px',
     }
   },
 }))
