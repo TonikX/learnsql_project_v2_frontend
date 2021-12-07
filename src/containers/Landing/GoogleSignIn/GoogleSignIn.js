@@ -18,7 +18,8 @@ export default () => {
   useEffect(async () => {
     const search = location.search
     const query = parseQuery(search)
-    
+    console.log('search', search)
+    console.log('query', query)
     try {
       const data = await service.getTokens(query.code, query.state)
       debugger
