@@ -66,6 +66,7 @@ const refreshToken = createLogic({
                 const refresh_token = res?.data?.refresh_token
                 userService.setToken(token)
                 userService.setRefreshToken(refresh_token)
+                dispatch(actions.setAuthTrue());
             })
             .catch((errors) => {
                 dispatch(actions.fetchingFailed(errors));

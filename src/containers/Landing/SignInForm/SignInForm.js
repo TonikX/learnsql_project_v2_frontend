@@ -47,7 +47,6 @@ export default () => {
   }, [email])
 
   const handleLoginGoogle = () => {
-    debugger
     // eslint-disable-next-line no-restricted-globals
     location.href = `https://accounts.google.com/o/oauth2/auth?client_id=436575162733-dh4ru27585ft6salfbm9fiul63gccj5n.apps.googleusercontent.com&redirect_uri=${location?.href}googleoauth2&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+openid+openid+email+profile`
   }
