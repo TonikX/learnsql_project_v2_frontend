@@ -33,7 +33,6 @@ class Layout extends React.Component {
 
     if (isAuth) {
       this.props.actions.refreshToken(userService.getRefreshToken());
-      this.props.actions.setAuthTrue();
     }
   }
 
@@ -45,12 +44,6 @@ class Layout extends React.Component {
       || this.props.auth !== nextProps.auth
       || this.state.openMenu !== nextState.openMenu
       ;
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.auth && !prevProps.auth && this.props.myCourses.length === 0) {
-      this.props.actions.getMyCourses();
-    }
   }
 
   handleOpenMenu = () => {

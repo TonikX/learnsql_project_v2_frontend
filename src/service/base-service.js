@@ -50,18 +50,18 @@ export default class BaseService {
     };
 
     getAxios(config = {singleton: true, removeHeader: false}) {
-        let _axios;
+        let _axios = this.createInstance();
 
-        if (config.singleton === true || config.singleton === undefined) {
-            if (BaseService.axios == null) {
-                _axios = this.createInstance();
-                BaseService.axios = _axios;
-            } else {
-                _axios = BaseService.axios;
-            }
-        } else {
-            _axios = this.createInstance();
-        }
+        // if (config.singleton === true || config.singleton === undefined) {
+        //     if (BaseService.axios == null) {
+        //         _axios = this.createInstance();
+        //         BaseService.axios = _axios;
+        //     } else {
+        //         _axios = BaseService.axios;
+        //     }
+        // } else {
+        //     _axios = this.createInstance();
+        // }
 
         _axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
         _axios.defaults.xsrfCookieName = "csrftoken";
@@ -71,6 +71,7 @@ export default class BaseService {
         if (_axios !== null && isAuth && !config.removeHeader) {
             _axios.defaults.headers.common['Authorization'] = `Bearer ${userService.getToken()}`;
         }
+
         return _axios;
     }
 }
