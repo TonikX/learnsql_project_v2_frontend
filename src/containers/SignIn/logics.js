@@ -27,8 +27,10 @@ const signIn = createLogic({
         service.signIn(password, username)
             .then((res) => {
                 const token = get(res, 'data.access_token', null);
+                const refresh_token = res?.data?.refresh_token
 
                 userService.setToken(token);
+                userService.setRefreshToken(refresh_token)
 
                 dispatch(actions.fetchingSuccess(['Вы успешно авторизировались!']));
                 dispatch(actions.setAuthTrue());

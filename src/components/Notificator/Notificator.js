@@ -14,6 +14,7 @@ class Notificator extends React.Component{
         if (!shallowEqual(this.props.errors, prevProps.errors)){
             // eslint-disable-next-line
             this.props.errors.map(error => {
+                if (error === 'invalid_grant') return
                 this.props.enqueueSnackbar(error, {
                     variant: 'error',
                     autoHideDuration: 3000,
