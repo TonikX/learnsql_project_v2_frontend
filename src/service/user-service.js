@@ -34,6 +34,7 @@ export default class UserService {
 
     logout() {
         localStorage.removeItem(STORAGE_ITEM);
+        localStorage.removeItem(STORAGE_ITEM_REFRESH_TOKEN);
     }
 
     isAuth() {

@@ -24,7 +24,9 @@ export default () => {
     try {
       const res = await service.signIn(password, login)
       const token = res?.data?.access_token
+      const refresh_token = res?.data?.refresh_token
       userService.setToken(token)
+      userService.setRefreshToken(refresh_token)
       dispatch(actions.setAuthTrue())
       history.push(appRouter.getAllCoursesRoute())
     } catch (e) {
