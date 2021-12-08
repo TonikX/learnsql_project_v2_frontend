@@ -28,7 +28,8 @@ const signIn = createLogic({
             .then((res) => {
                 const token = get(res, 'data.access_token', null);
                 const refresh_token = res?.data?.refresh_token
-        console.log('refresh_token', refresh_token, res)
+                console.log('пытаюсь')
+                console.log('refresh_token__', refresh_token, res)
                 userService.setToken(token);
                 userService.setRefreshToken(refresh_token)
 
