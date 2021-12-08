@@ -5,7 +5,9 @@ import * as Enum from './enum';
 export const GENERAL_PATH = 'main';
 
 export const initialState = {
-    [Enum.FETCHING]: {},
+    [Enum.FETCHING]: {
+        [Enum.REFRESH_TOKEN]: true,
+    },
     [Enum.ERRORS]: [],
     [Enum.SUCCESS_MESSAGES]: [],
     [Enum.GROUP_OPTIONS]: [],

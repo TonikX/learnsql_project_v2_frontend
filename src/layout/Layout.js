@@ -20,6 +20,7 @@ import theme from './themeMaterialUi';
 import connect from './Layout.connect';
 import styles from './Layout.styles';
 import shallowEqual from "recompose/shallowEqual";
+import * as Enum from "./enum";
 
 const userService = UserService.factory();
 
@@ -33,6 +34,8 @@ class Layout extends React.Component {
 
     if (isAuth) {
       this.props.actions.refreshToken(userService.getRefreshToken());
+    } else {
+      this.props.actions.fetchingFalse({destination: Enum.REFRESH_TOKEN});
     }
   }
 
@@ -61,7 +64,7 @@ class Layout extends React.Component {
 
   render() {
     const {openMenu} = this.state;
-    const {classes, fetching, errors, successMessages, auth, myCourses} = this.props;
+    const {classes, fetching, errors, successMessages, auth, myCourses, isRefreshFetching} = this.props;
     const isAuth = userService.isAuth() && auth;
     const isLanding = this.props.location.pathname === '/'
 
@@ -80,9 +83,9 @@ class Layout extends React.Component {
             />
             <div className={classes.root}>
               {isAuth && <Menu isOpen={openMenu} myCourses={myCourses}/>}
-              <div className={className(classes.content, {[classes.contentShift]: openMenu})}>
+              {!isRefreshFetching && <div className={className(classes.content, {[classes.contentShift]: openMenu})}>
                 {this.props.children}
-              </div>
+              </div>}
             </div>
           </>
           }

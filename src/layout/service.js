@@ -16,7 +16,7 @@ class MainService extends BaseService{
         formData.append('client_secret', AppConfig.getClientSecret());
         formData.append('backend', 'google-oauth2');
 
-        return this.post(`social_auth_v2/token`, formData)
+        return this.post(`social_auth_v2/token`, formData, { removeHeader: true })
     }
 }
 
