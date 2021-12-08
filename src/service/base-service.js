@@ -7,9 +7,9 @@ import UserService from "./user-service";
 const userService = UserService.factory();
 
 export default class BaseService {
-    get(url, config) {
+    get(url, config, axiosConfig) {
         return new Promise((successFn, errorFn) => {
-            this.getAxios().get(url, config).then(successFn).catch(errorFn);
+            this.getAxios(axiosConfig).get(url, config).then(successFn).catch(errorFn);
         });
     }
 
@@ -49,7 +49,7 @@ export default class BaseService {
         return _axios;
     };
 
-    getAxios(config = {singleton: true}) {
+    getAxios(config = {singleton: true, removeHeader: false}) {
         let _axios;
 
         if (config.singleton === true || config.singleton === undefined) {
@@ -67,14 +67,10 @@ export default class BaseService {
         _axios.defaults.xsrfCookieName = "csrftoken";
 
         const isAuth = userService.isAuth();
-        console.log('userService.getToken()', userService.getToken())
-        console.log('isAuth', isAuth)
-        if (_axios !== null && isAuth) {
-            _axios.defaults.headers.common['Authorization'] = `Bearer ${userService.getToken()}`;
 
+        if (_axios !== null && isAuth && !config.removeHeader) {
+            _axios.defaults.headers.common['Authorization'] = `Bearer ${userService.getToken()}`;
         }
-        /* Полина, я пытался, код ниже */
-        _axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
         return _axios;
     }
 }

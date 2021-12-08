@@ -3,6 +3,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import styles from './FAQ.module.css';
 import Typography from "@material-ui/core/Typography";
+import question from './question.svg';
 
 export default () => {
     return (
@@ -10,22 +11,31 @@ export default () => {
             <Card className={styles.card}>
                 <CardContent>
                     <Typography classes={styles.title}>
-                        В чем предназначение ресурса?
+                            <div className={styles.questionHead}>
+                                <img src={question} alt={"question"}/>  В чем предназначение ресурса?
+                            </div>
                     </Typography>
-                    <hr/>
+                    <div className={styles.questionHr}>
+                    </div>
                     <Typography className={styles.description}
                                 color="textSecondary"
                     >
-                        Данный ресурс предназначен для получения базовых и углубленных навыков работы с языком SQL.
+                             Данный ресурс предназначен для получения базовых и углубленных навыков работы с языком SQL.
+                            
                     </Typography>
                 </CardContent>
             </Card>
+
+
             <Card className={styles.card}>
                 <CardContent>
                     <Typography classes={styles.title}>
-                        Для кого подойдут эти курсы?
+                    <div className={styles.questionHead}>
+                                    <img src={question} alt={"question"}/> Для кого подойдут эти курсы?
+                            </div>
                     </Typography>
-                    <hr/>
+                    <div className={styles.questionHr}>
+                    </div>
                     <Typography className={styles.description}
                                 color="textSecondary"
                     >
@@ -36,9 +46,12 @@ export default () => {
             <Card className={styles.card}>
                 <CardContent>
                     <Typography classes={styles.title}>
-                        Зачем разработчику изучать базы данных?
+                            <div className={styles.questionHead}>
+                                    <img src={question} alt={"question"}/> Зачем разработчику изучать базы данных?
+                            </div>
                     </Typography>
-                    <hr/>
+                    <div className={styles.questionHr}>
+                    </div>
                     <Typography className={styles.description}
                                 color="textSecondary"
                     >
@@ -50,9 +63,12 @@ export default () => {
             <Card className={styles.card}>
                 <CardContent>
                     <Typography classes={styles.title}>
-                        Почему именно SQL?
+                        <div className={styles.questionHead}>
+                            <img src={question} alt={"question"}/> Почему именно SQL?
+                        </div>
                     </Typography>
-                    <hr/>
+                    <div className={styles.questionHr}>
+                    </div>
                     <Typography className={styles.description}
                                 color="textSecondary"
                     >

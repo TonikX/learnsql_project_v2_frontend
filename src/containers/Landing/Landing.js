@@ -59,9 +59,9 @@ export default () => {
           <div className={classes.header}>
             <img src={logo} />
             <Typography>
-              <Link onClick={() => handleOpenSignInForm(true)}>
+              <a onClick={() => handleOpenSignInForm(true)}>
                 Вход
-              </Link>
+              </a>
             </Typography>
           </div>
           <div className={classes.mainScreen}>

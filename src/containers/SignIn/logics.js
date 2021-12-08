@@ -26,7 +26,7 @@ const signIn = createLogic({
 
         service.signIn(password, username)
             .then((res) => {
-                const token = get(res, 'data.auth_token', null);
+                const token = get(res, 'data.access_token', null);
 
                 userService.setToken(token);
 

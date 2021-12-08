@@ -1,7 +1,6 @@
 import React, {useCallback, useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {useHistory, useLocation} from 'react-router'
-import axios from 'axios'
+import {useHistory} from 'react-router'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import Button from '../../../components/Button'
@@ -20,12 +19,11 @@ export default () => {
   const classes = useStyles()
   const dispatch = useDispatch()
   const history = useHistory()
-  const location = useLocation()
 
   const handleLogin = useCallback(async () => {
     try {
       const res = await service.signIn(password, login)
-      const token = res?.data?.auth_token
+      const token = res?.data?.access_token
       userService.setToken(token)
       dispatch(actions.setAuthTrue())
       history.push(appRouter.getAllCoursesRoute())
@@ -48,9 +46,10 @@ export default () => {
     setEmail('')
   }, [email])
 
-  const handleGoogleSignIn = async () => {
-    const { data } = await axios.get('http://localhost:8001/social-auth/o/google-oauth2/?redirect_uri=http://localhost:3001/googleoauth2')
-    window.location.replace(data.authorization_url)
+  const handleLoginGoogle = () => {
+    debugger
+    // eslint-disable-next-line no-restricted-globals
+    location.href = `https://accounts.google.com/o/oauth2/auth?client_id=436575162733-dh4ru27585ft6salfbm9fiul63gccj5n.apps.googleusercontent.com&redirect_uri=${location?.href}googleoauth2&response_type=token&scope=https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+openid+openid+email+profile`
   }
 
   return (
@@ -112,17 +111,14 @@ export default () => {
           >
             Войти
           </Button>
-          {/*<Button*/}
-          {/*  type='outlined'*/}
-          {/*  color='primary'*/}
-          {/*  className={classes.button}*/}
-          {/*  disabled={login.length === 0 || password.length === 0}*/}
-          {/*  onClick={handleLogin}*/}
-          {/*>*/}
-          {/*  Войти с помощью гугл*/}
-          {/*</Button>*/}
-
-          <div onClick={handleGoogleSignIn}> GOODLE </div>
+          <Button
+            type='outlined'
+            color='primary'
+            onClick={handleLoginGoogle}
+            className={classes.googleButton}
+          >
+            Войти через аккаунт GOOGLE
+          </Button>
         </>
       }
     </div>

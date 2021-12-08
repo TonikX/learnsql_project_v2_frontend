@@ -13,6 +13,7 @@ import styles from './Feedback.styles'
 
 
 class Feedback extends React.PureComponent {
+
     changeSubject = (e) => {
         this.props.actions.feedbackChangeField({destination: Enum.SUBJECT, value: get(e, 'target.value', '')})
     };
@@ -32,6 +33,11 @@ class Feedback extends React.PureComponent {
                 <Card className={classes.card}>
                     <CardContent>
                         <Typography className={classes.title}>Форма обратной связи</Typography>
+
+                        <Typography className={classes.descriptionFeedback}>
+                            Для улучшения качества сервиса, вы можете отправить нам пожелания, рекомендации, которые мы обязательно рассмотрим. Спасибо!
+                        </Typography>
+                            
                         <div>
                             <div align={'center'}>
                                 <TextField label="Тема"

@@ -1,5 +1,6 @@
 import BaseService from "../../service/base-service";
 import * as Enum from "../ResetPassword/enum";
+import AppConfig from "../../config/app-config-service";
 
 class AuthService extends BaseService{
     signIn(password, username){
@@ -7,8 +8,11 @@ class AuthService extends BaseService{
 
         formData.append('password', password);
         formData.append('username', username);
+        formData.append('grant_type', 'password');
+        formData.append('client_id',  AppConfig.getClientId());
+        formData.append('client_secret', AppConfig.getClientSecret());
 
-        return this.post('/auth/token/login/', formData);
+        return this.post('/social_auth_v2/token', formData);
     }
 
     signUp(formData) {
@@ -23,13 +27,15 @@ class AuthService extends BaseService{
         return this.post('/auth/users/reset_password/', formData);
     }
 
-    getTokens(code, state){
+    getTokens(token){
         const formData = new FormData();
+        formData.append('token', token);
+        formData.append('grant_type', 'convert_token');
+        formData.append('client_id',  AppConfig.getClientId());
+        formData.append('client_secret', AppConfig.getClientSecret());
+        formData.append('backend', 'google-oauth2');
 
-        formData.append('code', code);
-        formData.append('state', state);
-        
-        return this.post(`social-auth/o/google-oauth2/?state=${state}&code=${code}`)
+        return this.post(`social_auth_v2/convert-token`, formData)
     }
 }
 

@@ -32,6 +32,7 @@ class Layout extends React.Component {
     const isAuth = userService.isAuth();
 
     if (isAuth) {
+      this.props.actions.refreshToken(userService.getRefreshToken());
       this.props.actions.setAuthTrue();
     }
   }

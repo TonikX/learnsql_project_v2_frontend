@@ -1,6 +1,10 @@
 import React, { useEffect } from 'react'
-import { useLocation } from 'react-router'
+import {useHistory, useLocation} from 'react-router'
 import { service } from '../service'
+import {service as userService} from "../../../service/user-service";
+import actions from "../../../layout/actions";
+import {appRouter} from "../../../service/router-service";
+import {useDispatch} from "react-redux";
 
 function parseQuery(queryString) {
   let query = {}
@@ -14,23 +18,27 @@ function parseQuery(queryString) {
 
 export default () => {
   const location = useLocation()
-  
-  useEffect(async () => {
-    const search = location.search
-    const query = parseQuery(search)
-    console.log('search', search)
-    console.log('query', query)
+  const dispatch = useDispatch()
+  const history = useHistory()
+
+  const getToken = async () => {
+    const query = parseQuery(location.hash)
     try {
-      const data = await service.getTokens(query.code, query.state)
-      debugger
+      const res = await service.getTokens(query['#access_token'])
+      const token = res?.data?.access_token
+      const refresh_token = res?.data?.refresh_token
+      userService.setToken(token)
+      userService.setRefreshToken(refresh_token)
+      dispatch(actions.setAuthTrue())
+      history.push(appRouter.getAllCoursesRoute())
     } catch (e) {
-      
+      dispatch(actions.fetchingFailed(e));
     }
+  }
+
+  useEffect(() => {
+    getToken()
   }, [])
-  
-  return (
-    <div>
-      
-    </div>
-  )
+
+  return <></>
 }
