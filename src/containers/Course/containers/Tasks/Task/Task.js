@@ -88,11 +88,11 @@ class Task extends React.PureComponent{
                            onChange={this.answerChangeHandler}
                            onKeyPress={this.answerChangeHandler}
                            value={answer}
-                           className={classes.textField}
+                           // className={classes.textField}
                 />
-                <Highlight language="sql" className={classes.hightlight}>
-                    {answer}
-                </Highlight>
+                {/*<Highlight language="sql" className={classes.hightlight}>*/}
+                {/*    {answer}*/}
+                {/*</Highlight>*/}
                 <Box display={'flex'}
                      justifyContent={'flex-end'}
                      className={classes.buttonsContainer}
