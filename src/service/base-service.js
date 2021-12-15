@@ -25,6 +25,12 @@ export default class BaseService {
         });
     }
 
+    patch(url, patchData) {
+        return new Promise((successFn, errorFn) => {
+            this.getAxios().patch(url, patchData).then(successFn).catch(errorFn);
+        });
+    }
+
     interceptSuccessResponse = (response) => {
         return {
             ...response,
