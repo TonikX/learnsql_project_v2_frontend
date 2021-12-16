@@ -69,10 +69,10 @@ const refreshToken = createLogic({
                 dispatch(actions.setAuthTrue());
             })
             .catch((errors) => {
+                userService.logout()
                 dispatch(actions.fetchingFailed(errors));
             })
             .then(() => {
-                userService.logout()
                 dispatch(actions.fetchingFalse({destination: Enum.REFRESH_TOKEN}));
                 return done();
             });
