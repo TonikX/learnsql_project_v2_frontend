@@ -78,14 +78,14 @@ class Course extends React.PureComponent{
                       onChange={this.changeTabHandler}
                       className={classes.tabs}
                 >
-                    <Tab label={'Статистика'}
-                         className={classes.tab}
-                         icon={<StatisticsIcon />}
-                         classes={{
-                             wrapper: classes.tabRoot,
-                             selected: classes.tabSelected,
-                         }}
-                    />
+                    {/*<Tab label={'Статистика'}*/}
+                    {/*     className={classes.tab}*/}
+                    {/*     icon={<StatisticsIcon />}*/}
+                    {/*     classes={{*/}
+                    {/*         wrapper: classes.tabRoot,*/}
+                    {/*         selected: classes.tabSelected,*/}
+                    {/*     }}*/}
+                    {/*/>*/}
                     <Tab label={'Методические материалы'}
                          className={classes.tab}
                          icon={<MethodicalIcon />}
@@ -111,11 +111,11 @@ class Course extends React.PureComponent{
         const {currentCourseTab} = this.props;
 
         switch (currentCourseTab) {
+            // case 0:
+            //     return <StatisticsTab />;
             case 0:
-                return <StatisticsTab />;
-            case 1:
                 return <MethodicalMaterialsTab />;
-            case 2:
+            case 1:
                 return <TasksTab />;
             default:
                 return <></>;
