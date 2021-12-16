@@ -86,17 +86,17 @@ class Course extends React.PureComponent{
                     {/*         selected: classes.tabSelected,*/}
                     {/*     }}*/}
                     {/*/>*/}
-                    <Tab label={'Методические материалы'}
+                    <Tab label={'Задания'}
                          className={classes.tab}
-                         icon={<MethodicalIcon />}
+                         icon={<TasksIcon />}
                          classes={{
                              wrapper: classes.tabRoot,
                              selected: classes.tabSelected,
                          }}
                     />
-                    <Tab label={'Задания'}
+                    <Tab label={'Методические материалы'}
                          className={classes.tab}
-                         icon={<TasksIcon />}
+                         icon={<MethodicalIcon />}
                          classes={{
                              wrapper: classes.tabRoot,
                              selected: classes.tabSelected,
@@ -114,9 +114,9 @@ class Course extends React.PureComponent{
             // case 0:
             //     return <StatisticsTab />;
             case 0:
-                return <MethodicalMaterialsTab />;
-            case 1:
                 return <TasksTab />;
+            case 1:
+                return <MethodicalMaterialsTab />;
             default:
                 return <></>;
         }
