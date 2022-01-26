@@ -5,7 +5,8 @@ import HomeLogic from '../containers/Courses/logics';
 import CourseLogic from '../containers/Course/logics';
 import ResetPasswordLogic from '../containers/ResetPassword/logics';
 import MainLogic from '../layout/logics';
-import FeedbackLogic from '../containers/Feedback/logics'
+import FeedbackLogic from '../containers/Feedback/logics';
+import StatisticLogic from "../containers/Statistic/logics";
 
 export default [
     ...SignInLogic,
@@ -15,5 +16,6 @@ export default [
     ...HomeLogic,
     ...CourseLogic,
     ...ResetPasswordLogic,
-    ...FeedbackLogic
+    ...FeedbackLogic,
+   ...StatisticLogic
 ];
