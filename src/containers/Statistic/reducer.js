@@ -1,40 +1,48 @@
 import createReducer from "../../store/createReducer";
 import actions from "./actions";
+
 export const GENERAL_PATH = 'statistic';
 
 export const initialState = {
-statisticList: [],
+    statisticList: [],
     allCount: 0,
     currentPage: 1,
     courseId: 5,
+    courseStatistic: {},
+
 
 }
 
-const setStatisticList  = (state, {payload}) => ({
-  ...state,
-  statisticList: payload
+const setStatisticList = (state, {payload}) => ({
+    ...state,
+    statisticList: payload
 });
 
-const changeAllCount  = (state, {payload}) => ({
+const changeAllCount = (state, {payload}) => ({
     ...state,
     allCount: payload
 });
 
-const changeCurrentPage  = (state, {payload}) => ({
+const changeCurrentPage = (state, {payload}) => ({
     ...state,
     currentPage: payload
 });
 
-const changeCourseId  = (state, {payload}) => ({
+const changeCourseId = (state, {payload}) => ({
     ...state,
     courseId: payload
 });
 
+const setCourseStatistic = (state, {payload}) => ({
+    ...state,
+    courseStatistic: payload
+});
 
 
 export const reducer = createReducer(initialState, {
-    [actions.setStatistic.type]:  setStatisticList,
-    [actions.changeAllCount.type]:  changeAllCount,
-    [actions.changeCurrentPage.type]:  changeCurrentPage,
-    [actions.changeCourseId.type]:  changeCourseId,
+    [actions.setStatistic.type]: setStatisticList,
+    [actions.changeAllCount.type]: changeAllCount,
+    [actions.changeCurrentPage.type]: changeCurrentPage,
+    [actions.changeCourseId.type]: changeCourseId,
+    [actions.setCourseStatistic.type]: setCourseStatistic,
 });
