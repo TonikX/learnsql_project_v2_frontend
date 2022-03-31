@@ -45,11 +45,7 @@ class Task extends React.PureComponent{
     }
 
     answerChangeHandler = (event) => {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-        } else {
-            this.setState({answer: get(event, 'target.value')});
-        }
+        this.setState({answer: get(event, 'target.value')});
     };
 
     clearAnswerField = () => {
