@@ -9,6 +9,8 @@ import Course from './containers/Course';
 import Profile from './containers/Profile';
 import Courses from './containers/Courses';
 import GoogleSignIn from './containers/Landing/GoogleSignIn';
+import Admin from './containers/Admin/Admin'
+import Themes from './containers/Themes/Themes'
 
 import RouterService from './service/router-service';
 import UserService from './service/user-service';
@@ -24,15 +26,15 @@ export default () => (
   <Router>
     <Layout>
       <Switch>
-        {/*<Route path={routerService.getSignInRoute()}>*/}
-        {/*  <SignIn/>*/}
-        {/*</Route>*/}
-        {/*<Route path={routerService.getSignUpRoute()}>*/}
-        {/*  <SignUp/>*/}
-        {/*</Route>*/}
-        {/*<Route path={routerService.getResetPasswordRoute()}>*/}
-        {/*  <ResetPassword/>*/}
-        {/*</Route>*/}
+        <Route path={routerService.getSignInRoute()}>
+          <SignIn/>
+        </Route>
+        <Route path={routerService.getSignUpRoute()}>
+          <SignUp/>
+        </Route>
+        <Route path={routerService.getResetPasswordRoute()}>
+          <ResetPassword/>
+        </Route>
         <Route path="/googleoauth2">
           <GoogleSignIn />
         </Route>
@@ -51,9 +53,15 @@ export default () => (
                  />
                )}
         />
-        <PrivateRoute path={routerService.getProfileRoute()}>
-          <Profile/>
+        <PrivateRoute path={routerService.getAdminRoute()}>
+          <Admin/>
         </PrivateRoute>
+          <PrivateRoute path={routerService.getThemesLink()}>
+              <Themes/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getProfileRoute()}>
+              <Profile/>
+          </PrivateRoute>
         <PrivateRoute path={routerService.getCourseRoute()}>
           <Course/>
         </PrivateRoute>

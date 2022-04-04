@@ -95,6 +95,11 @@ class Header extends React.PureComponent {
                       Профиль
                     </Link>
                   </MenuItem>
+                  <MenuItem>
+                    <Link to={appRouter.getAdminRoute()} className={classNames(classes.menuLink, classes.help)}>
+                      Админка
+                    </Link>
+                  </MenuItem>
                   <MenuItem onClick={this.handleLogout}>
                     <Link to={appRouter.getLandingPath()}
                           className={classes.menuLink}
@@ -102,6 +107,7 @@ class Header extends React.PureComponent {
                       Выйти
                     </Link>
                   </MenuItem>
+
                 </Menu>
               </div>
             </>

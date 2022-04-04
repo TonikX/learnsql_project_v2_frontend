@@ -10,6 +10,13 @@ const FAQ = 'faq';
 const FEEDBACK = 'feedback';
 const ALL_COURSES = 'all-courses';
 const MY_COURSES = 'my-courses';
+const ADMIN = 'admin';
+const DATABASES = 'databases';
+const THEMES = 'themes';
+const SETS = 'sets';
+const COURSELIST = 'courses';
+const TASKS = 'tasks'
+const MATERIALS = 'materials';
 
 const SEPARATOR = '/';
 
@@ -28,6 +35,10 @@ export default class RouterService {
 
     getSignUpRoute = () => {
         return SEPARATOR + SIGN_UP;
+    };
+
+    getAdminRoute = () => {
+        return SEPARATOR + ADMIN;
     };
 
     getResetPasswordRoute = () => {
@@ -80,6 +91,30 @@ export default class RouterService {
 
     getCourseLink = (id) => {
         return SEPARATOR + COURSE + SEPARATOR + id;
+    };
+
+    getDatabasesLink = () => {
+        return SEPARATOR + DATABASES
+    };
+
+    getTasksLink = () => {
+        return SEPARATOR + TASKS
+    };
+
+    getThemesLink = () => {
+        return SEPARATOR + THEMES
+    };
+
+    getSetsLink = () => {
+        return SEPARATOR + SETS
+    };
+
+    getCourseListLink = () => {
+        return SEPARATOR + COURSELIST
+    };
+
+    getMaterialsLink = () => {
+        return SEPARATOR + MATERIALS
     };
 }
 
