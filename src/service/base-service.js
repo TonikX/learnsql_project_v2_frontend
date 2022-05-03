@@ -7,27 +7,32 @@ import UserService from "./user-service";
 const userService = UserService.factory();
 
 export default class BaseService {
+    // baseUrl = "http://127.0.0.1:8001";
+    baseUrl = "";
+
     get(url, config, axiosConfig) {
+
+
         return new Promise((successFn, errorFn) => {
-            this.getAxios(axiosConfig).get(url, config).then(successFn).catch(errorFn);
+            this.getAxios(axiosConfig).get(this.baseUrl + url, config).then(successFn).catch(errorFn);
         });
     }
 
     post(url, postData) {
         return new Promise((successFn, errorFn) => {
-            this.getAxios().post(url, postData).then(successFn).catch(errorFn);
+            this.getAxios().post(this.baseUrl + url, postData).then(successFn).catch(errorFn);
         });
     }
 
     put(url, putData) {
         return new Promise((successFn, errorFn) => {
-            this.getAxios().put(url, putData).then(successFn).catch(errorFn);
+            this.getAxios().put(this.baseUrl + url, putData).then(successFn).catch(errorFn);
         });
     }
 
     patch(url, patchData) {
         return new Promise((successFn, errorFn) => {
-            this.getAxios().patch(url, patchData).then(successFn).catch(errorFn);
+            this.getAxios().patch(this.baseUrl + url, patchData).then(successFn).catch(errorFn);
         });
     }
 
