@@ -24,6 +24,7 @@ import {getTaskId} from "../../../getters";
 import connect from './Task.connect';
 import styles from './Task.styles';
 import BigImageModal from "../../BigImageModal";
+import {Link} from "react-router-dom";
 
 
 class Task extends React.PureComponent{
@@ -84,7 +85,7 @@ class Task extends React.PureComponent{
                            onChange={this.answerChangeHandler}
                            onKeyPress={this.answerChangeHandler}
                            value={answer}
-                           // className={classes.textField}
+                    // className={classes.textField}
                 />
                 {/*<Highlight language="sql" className={classes.hightlight}>*/}
                 {/*    {answer}*/}
@@ -265,9 +266,9 @@ class Task extends React.PureComponent{
 
                             <div className={classes.taskAnswerInfoBlock}>
                                 {error &&
-                                <Paper className={classes.simpleErrorBlock}>
-                                    <Typography className={classes.simpleErrorText}> {error} </Typography>
-                                </Paper>
+                                    <Paper className={classes.simpleErrorBlock}>
+                                        <Typography className={classes.simpleErrorText}> {error} </Typography>
+                                    </Paper>
                                 }
 
                                 {refResult.length > 0 && studentResult.length > 0 && this.renderErrorTables()}
@@ -278,13 +279,13 @@ class Task extends React.PureComponent{
                             <div className={classes.errorsList}>
                                 <Typography className={classes.historyTitle}><b>История выполнения</b></Typography>
                                 {errors.map((item, index) =>
-                                  <div className={classes.errorBlock}>
-                                      <Typography className={classes.errorTitle}>
-                                          Ошибка
-                                      </Typography>
-                                      <Typography> {item.message} </Typography>
-                                      {index !== 0 ? <Typography> {item.answer} </Typography> : <></>}
-                                  </div>
+                                    <div className={classes.errorBlock}>
+                                        <Typography className={classes.errorTitle}>
+                                            Ошибка
+                                        </Typography>
+                                        <Typography> {item.message} </Typography>
+                                        {index !== 0 ? <Typography> {item.answer} </Typography> : <></>}
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -292,6 +293,14 @@ class Task extends React.PureComponent{
                 </div>
 
                 <div className={classes.taskInfo}>
+                    <Link
+                        className={classes.nextTaskButton}
+                        to={{
+                            pathname: `/chat/`,
+                        }}
+                    >
+                        Помощь по заданию
+                    </Link>
                     {nextRoute.id &&
                         <Button color={'primary'}
                                 className={classes.nextTaskButton}

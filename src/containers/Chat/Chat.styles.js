@@ -9,7 +9,6 @@ export default (theme) => ({
         display: "none",
         alignItems: "center",
         justifyContent: "center",
-
     },
     "modal_show": {
         display: "flex"
@@ -52,8 +51,8 @@ export default (theme) => ({
         border: "2px solid #E5E5E5",
         borderRadius: "8px",
         display: "grid",
-        "gridGap": "20px",
-        "grid-template-rows": "50px 50px 1fr",
+        gridGap: "20px",
+        gridTemplateRows: "50px 50px 1fr",
         // "boxShadow": "0 4px 64px rgb(0 0 0 / 10%)",
     },
     list: {
@@ -62,15 +61,25 @@ export default (theme) => ({
             width: 0
         },
         display: "grid",
-        "gridGap": "20px",
-        "gridAutoRows": "max-content",
+        gridGap: "20px",
+        gridAutoRows: "max-content",
     },
     elOfList: {
         padding: "2px",
         color: "black",
         textDecoration: "none"
     },
-    input: {}
+    input: {},
+    userList: {
+        maxHeight: "100px",
+        overflowY: "scroll",
+        "&::-webkit-scrollbar": {
+            width: 0
+        },
+        display: "grid",
+        gridGap: "20px",
+        gridAutoRows: "max-content",
+    }
     // tabSelected: {
     //     color: theme.palette.secondary.main,
     // }

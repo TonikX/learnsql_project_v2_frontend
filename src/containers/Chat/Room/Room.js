@@ -135,11 +135,11 @@ function Room(state) {
             {
                 room.name
             }
-        <br/>
+            <br/>
             {
                 room.subscribers.map((subscriber, i) => (
-            <span key={i}>{subscriber.username},{" "}</span>
-        ))
+                    <span key={i}>{subscriber.username},{" "}</span>
+                ))
             }
         </>
     }
@@ -167,7 +167,7 @@ function Room(state) {
         }}>
             <div style={{height: `10%`, display: "flex"}}>
                 <div>
-                {getSubscribersOfRoom()}
+                    {getSubscribersOfRoom()}
                 </div>
                 <div>
                     {isAdmin()}
