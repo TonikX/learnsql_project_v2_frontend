@@ -114,9 +114,9 @@ class Course extends React.PureComponent{
         switch (currentCourseTab) {
             case 0:
                 return <Statistic />;
-            case 0:
-                return <TasksTab />;
             case 1:
+                return <TasksTab />;
+            case 2:
                 return <MethodicalMaterialsTab />;
             default:
                 return <></>;

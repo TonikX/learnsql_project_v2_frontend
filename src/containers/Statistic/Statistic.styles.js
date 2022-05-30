@@ -2,10 +2,8 @@ import {createStyles, makeStyles} from "@material-ui/core";
 
 export const useStyles = makeStyles( (theme) => createStyles ({
     root: {
-        display: 'flex',
-        flexDirection: 'column',
-        height: '120%',
-        padding: 10
+        padding: 10,
+        minHeight: '100%',
     },
     graph: {
         width: '50vw'
