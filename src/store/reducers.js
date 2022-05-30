@@ -7,6 +7,7 @@ import {GENERAL_PATH as homePath, reducer as homeReducer} from "../containers/Co
 import {GENERAL_PATH as resetPasswordPath, reducer as resetPasswordReducer} from "../containers/ResetPassword/reducer";
 import {GENERAL_PATH as mainPath, reducer as mainReducer} from "../layout/reducer";
 import {GENERAL_PATH as feedbackPath, reducer as feedbackReducer} from "../containers/Feedback/reducer";
+import {GENERAL_PATH as statisticPath, reducer as statisticReducer} from "../containers/Statistic/reducer";
 
 export default combineReducers({
     [mainPath]: mainReducer,
@@ -17,4 +18,6 @@ export default combineReducers({
     [homePath]: homeReducer,
     [resetPasswordPath]: resetPasswordReducer,
     [feedbackPath] : feedbackReducer,
+    [statisticPath] : statisticReducer,
+
 });
