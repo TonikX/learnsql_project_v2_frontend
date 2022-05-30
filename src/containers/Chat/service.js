@@ -10,11 +10,11 @@ class ChatService extends BaseService {
     }
 
     createRooms(formData) {
-        return this.post('/chat/api/room/create/', formData);
+        return this.post('/chat/api/rooms/', formData);
     }
 
     addUserOnRoom(formData, id) {
-        return this.put(`/chat/api/room/create/${id}/`, formData);
+        return this.put(`/chat/api/rooms/${id}/`, formData);
     }
 }
 

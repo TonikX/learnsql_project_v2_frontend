@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Redirect, Route, Switch, Link, withRouter} from "react-router-dom";
-import {useLocation} from "react-router";
-import {WebSocketService} from "./websocket";
+
 import connect from './Chat.connect';
 import styles from "./Chat.styles";
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -20,10 +19,6 @@ const contentOnLeftPanel = {
     "boxShadow": "0 4px 64px rgb(0 0 0 / 10%)",
 }
 
-
-
-
-//extends React.PureComponent
 function ChatRoom(state) {
     const [searchUsers, setSearchUsers] = useState(``);
     const [searchRooms, setSearchRooms] = useState(``);
@@ -72,7 +67,6 @@ function ChatRoom(state) {
                                 ))
                             }
                         </div>
-
                 </div>
 
                 <div className={classes.roomList}>
@@ -103,14 +97,10 @@ function ChatRoom(state) {
                         }
                     </div>
                 </div>
-
             </div>
-
-
             <Switch>
                 <Route path="/chat/:id" component={() => <Room/>}/>
             </Switch>
-
         </div>
     )
     // }

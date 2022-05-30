@@ -34,24 +34,24 @@ function AddUserModal(state){
             <button onClick={()=>setIsOpen(true)}>
                 Создать комнату
             </button>
-            <div
-                onClick={(e)=> e.target === e.currentTarget && setIsOpen(false)}
-                className={ `${classes.modal} ${isOpen ? classes.modal_show : ``}`}>
-                <div className={classes.modalContent}>
-                    <TextField
-                        label={"Название комнаты"}
-                        value={roomName}
-                        onChange={e => setRoomName(e.target.value)}
-                        type="text"
-                    />
-                    <div style={{maxHeight: "200px", display: "grid", "grid-gap": "29px"}}>
-                        <TextField
+        <div
+            onClick={(e)=> e.target === e.currentTarget && setIsOpen(false)}
+            className={ `${classes.modal} ${isOpen ? classes.modal_show : ``}`}>
+            <div className={classes.modalContent}>
+                <TextField
+                    label={"Название комнаты"}
+                    value={roomName}
+                    onChange={e => setRoomName(e.target.value)}
+                    type="text"
+                />
+                <div style={{maxHeight: "200px", display: "grid", "grid-gap": "29px"}}>
+                     <TextField
                             label="Пользователи"
                             value={searchUsers}
                             onChange={e => setSearchUsers(e.target.value)}
                             type="text"
                         />
-                        <div className={classes.list}>
+                    <div className={classes.list}>
                             {
                                 users && users.filter(user => user.username.indexOf(searchUsers) > -1).map((user, i) => (
                                     <div
@@ -63,10 +63,10 @@ function AddUserModal(state){
                                     </div>
                                 ))
                             }
-                        </div>
                     </div>
-                    <div style={{maxHeight: "200px", display: "grid", "grid-gap": "29px"}}>
-                        <div className={classes.list}>
+                </div>
+                <div style={{maxHeight: "200px", display: "grid", "grid-gap": "29px"}}>
+                                       <div className={classes.list}>
                             {
                                 userForAdd && userForAdd.filter(user => user.username.indexOf(searchUsers) > -1).map((user, i) => (
                                     <div
@@ -78,11 +78,11 @@ function AddUserModal(state){
                                     </div>
                                 ))
                             }
-                        </div>
                     </div>
-                    <button onClick={(e) => update(e)} >Изменить</button>
                 </div>
+                <button onClick={(e) => update(e)} >Изменить</button>
             </div>
+        </div>
         </>
     )
 }
