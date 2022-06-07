@@ -24,6 +24,7 @@ import UserService from "../../service/user-service";
 
 import connect from './Course.connect';
 import styles from './Course.styles';
+import Statistic from "../Statistic";
 
 const userService = UserService.factory();
 
@@ -78,14 +79,14 @@ class Course extends React.PureComponent{
                       onChange={this.changeTabHandler}
                       className={classes.tabs}
                 >
-                    {/*<Tab label={'Статистика'}*/}
-                    {/*     className={classes.tab}*/}
-                    {/*     icon={<StatisticsIcon />}*/}
-                    {/*     classes={{*/}
-                    {/*         wrapper: classes.tabRoot,*/}
-                    {/*         selected: classes.tabSelected,*/}
-                    {/*     }}*/}
-                    {/*/>*/}
+                    <Tab label={'Статистика'}
+                         className={classes.tab}
+                         icon={<StatisticsIcon />}
+                         classes={{
+                             wrapper: classes.tabRoot,
+                             selected: classes.tabSelected,
+                         }}
+                    />
                     <Tab label={'Задания'}
                          className={classes.tab}
                          icon={<TasksIcon />}
@@ -111,11 +112,11 @@ class Course extends React.PureComponent{
         const {currentCourseTab} = this.props;
 
         switch (currentCourseTab) {
-            // case 0:
-            //     return <StatisticsTab />;
             case 0:
-                return <TasksTab />;
+                return <Statistic />;
             case 1:
+                return <TasksTab />;
+            case 2:
                 return <MethodicalMaterialsTab />;
             default:
                 return <></>;

@@ -118,7 +118,7 @@ class ProfileInfoContainer extends React.PureComponent{
                     >
                         {groupOptions.map(group =>
                             <MenuItem value={group.id} key={`group-${group.id}`}>
-                                {group.title}
+                                {group.title} {group.period}
                             </MenuItem>
                         )}
                     </Select>
