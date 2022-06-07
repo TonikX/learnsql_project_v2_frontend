@@ -16,6 +16,17 @@ import ResetPasswordConfirm from "./containers/ResetPassword/ResetPasswordConfir
 import FAQ from "./containers/FAQ";
 import Feedback from "./containers/Feedback";
 import Landing from './containers/Landing'
+import Databases from "./containers/Databases/Databases";
+import Themes from "./containers/Themes";
+import Database from "./containers/Database/Database";
+import CreateDatabase from "./containers/CreateDatabase";
+import CoursesList from "./containers/CoursesList";
+import CreateCourse from "./containers/CreateCourse";
+import Tasks from "./containers/Tasks";
+import CreateTask from "./containers/CreateTask";
+import CreateTopic from "./containers/CreateTopic";
+import Topics from "./containers/Topics";
+import Sections from "./containers/Sections";
 
 const routerService = RouterService.factory();
 const userService = UserService.factory();
@@ -54,7 +65,40 @@ export default () => (
         <PrivateRoute path={routerService.getProfileRoute()}>
           <Profile/>
         </PrivateRoute>
-        <PrivateRoute path={routerService.getCourseRoute()}>
+          <PrivateRoute path={routerService.getDatabasesRoute()}>
+              <Databases/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getDatabaseRoute(':id')}>
+              <Database />
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getCreateDatabaseRoute()}>
+              <CreateDatabase/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getTopicsRoute()}>
+              <Topics/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getCreateTopicRoute()}>
+              <CreateTopic/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getThemesRoute()}>
+              <Themes/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getCoursesRoute()}>
+              <CoursesList/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getCreateCourseRoute()}>
+              <CreateCourse/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getTasksRoute()}>
+              <Tasks/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getSectionsRoute()}>
+              <Sections/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getCreateTaskRoute()}>
+              <CreateTask/>
+          </PrivateRoute>
+          <PrivateRoute path={routerService.getCourseRoute()}>
           <Course/>
         </PrivateRoute>
         <PrivateRoute path={routerService.getAllCoursesRoute()}>

@@ -95,6 +95,11 @@ class Header extends React.PureComponent {
                       Профиль
                     </Link>
                   </MenuItem>
+                  <MenuItem>
+                    <Link to={appRouter.getDatabasesRoute()} className={classNames(classes.menuLink, classes.help)}>
+                      Админка
+                    </Link>
+                  </MenuItem>
                   <MenuItem onClick={this.handleLogout}>
                     <Link to={appRouter.getLandingPath()}
                           className={classes.menuLink}
@@ -111,6 +116,8 @@ class Header extends React.PureComponent {
     );
   }
 }
+
+//TODO: уровень доступа к кнопке только админу
 
 Header.propTypes = {
   isAuth: PropTypes.bool,

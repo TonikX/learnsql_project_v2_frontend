@@ -1,0 +1,11 @@
+export const SECTIONS = 'sections';
+export const COURSES = 'courses';
+export const CURRENT_SECTIONS = 'CURRENT_SECTIONS';
+export const GET_SECTIONS_FETCHING = 'GET_SECTIONS_FETCHING';
+export const GET_COURSES_FETCHING = 'GET_SECTIONS_FETCHING';
+export const GET_CURRENT_SECTIONS_FETCHING = 'GET_CURRENT_SECTIONS_FETCHING';
+export const DELETE_SECTION_FETCHING = 'DELETE_SECTION_FETCHING';
+export const NUMBER_FIELD = 'number';
+export const SECTION_NAME_FIELD = 'section_name';
+export const COURSE_FIELD = 'course';
+export const CREATE_SECTION_FETCHING = 'CREATE_SECTION_FETCHING';
