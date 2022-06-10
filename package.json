@@ -10,6 +10,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "@uiw/react-textarea-code-editor": "^2.0.1",
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
     "classnames": "^2.2.6",
@@ -20,6 +21,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
     "react-chartjs-2": "^2.9.0",
+    "react-ckeditor-component": "^1.1.0",
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "^16.13.0",
     "react-highlight.js": "^1.0.7",
@@ -56,5 +58,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "ckeditor4": "^4.18.0",
+    "ckeditor4-react": "^3.0.0"
   }
 }

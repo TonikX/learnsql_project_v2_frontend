@@ -10,6 +10,18 @@ const FAQ = 'faq';
 const FEEDBACK = 'feedback';
 const ALL_COURSES = 'all-courses';
 const MY_COURSES = 'my-courses';
+const DATABASES = 'databases';
+const DATABASE = 'database'
+const THEMES = 'themes';
+const CREATE = 'create';
+const COURSES = 'courses';
+const CREATE_COURSE = 'create_course';
+const CREATE_TOPIC = 'create_topic';
+const TASKS = 'tasks';
+const CREATE_TASK = 'create_task';
+const TOPICS = 'topics';
+const SECTIONS = 'sections';
+
 
 const SEPARATOR = '/';
 
@@ -21,6 +33,50 @@ export default class RouterService {
 
         return routerServiceInstance;
     }
+
+    getDatabasesRoute = () => {
+        return SEPARATOR + DATABASES;
+    };
+
+    getDatabaseRoute = (id) => {
+        return SEPARATOR + DATABASE + SEPARATOR + id;
+    };
+
+    getCreateDatabaseRoute = () => {
+        return SEPARATOR + 'create_database';
+    };
+
+    getThemesRoute = () => {
+        return SEPARATOR + THEMES;
+    };
+
+    getCoursesRoute = () => {
+        return SEPARATOR + COURSES;
+    };
+
+    getCreateCourseRoute = () => {
+        return SEPARATOR + CREATE_COURSE;
+    };
+
+    getTasksRoute = () => {
+        return SEPARATOR + TASKS;
+    };
+
+    getCreateTaskRoute = () => {
+        return SEPARATOR + CREATE_TASK;
+    };
+
+    getTopicsRoute = () => {
+        return SEPARATOR + TOPICS;
+    };
+
+    getCreateTopicRoute = () => {
+        return SEPARATOR + CREATE_TOPIC;
+    };
+
+    getSectionsRoute = () => {
+        return SEPARATOR + SECTIONS;
+    };
 
     getSignInRoute = () => {
         return SEPARATOR + SIGN_IN;
