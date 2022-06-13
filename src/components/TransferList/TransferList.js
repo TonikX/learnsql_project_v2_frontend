@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React  from 'react';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -8,21 +8,23 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
-function not(a, b) {
-    return a.filter((value) => b.indexOf(value) === -1);
-}
-
-function intersection(a, b) {
-    return a.filter((value) => b.indexOf(value) !== -1);
-}
-
-export default function TransferList() {
+export default function TransferList({
+  onChange, // вернет полный объект из options
+  value, // массив выбранных options
+  options, // id и title
+}) {
     const [checked, setChecked] = React.useState([]);
-    const [left, setLeft] = React.useState([0, 1, 2, 3]);
-    const [right, setRight] = React.useState([4, 5, 6, 7]);
 
-    const leftChecked = intersection(checked, left);
-    const rightChecked = intersection(checked, right);
+    const left = React.useMemo(() => (
+      options.filter((item) => !value?.find((valueItem) => valueItem.id === item.id))
+    ), [options, value])
+
+    const right = React.useMemo(() => (
+        options.filter((item) => value?.find((valueItem) => valueItem.id === item.id))
+    ), [options, value])
+
+    const leftChecked = React.useMemo(() => left.filter(({ id })=> checked.includes(id)), [left, checked])
+    const rightChecked = React.useMemo(() => right.filter(({ id })=> checked.includes(id)), [right, checked])
 
     const handleToggle = (value) => () => {
         const currentIndex = checked.indexOf(value);
@@ -38,43 +40,43 @@ export default function TransferList() {
     };
 
     const handleAllRight = () => {
-        setRight(right.concat(left));
-        setLeft([]);
+        onChange([
+          ...right,
+          ...left,
+        ])
     };
 
     const handleCheckedRight = () => {
-        setRight(right.concat(leftChecked));
-        setLeft(not(left, leftChecked));
-        setChecked(not(checked, leftChecked));
+        onChange([
+            ...value,
+            ...leftChecked,
+        ])
     };
 
     const handleCheckedLeft = () => {
-        setLeft(left.concat(rightChecked));
-        setRight(not(right, rightChecked));
-        setChecked(not(checked, rightChecked));
+        onChange(value.filter((item) => !rightChecked.find(rightCheckedItem => rightCheckedItem.id === item.id)))
     };
 
     const handleAllLeft = () => {
-        setLeft(left.concat(right));
-        setRight([]);
+        onChange([])
     };
 
     const customList = (items) => (
         <Paper sx={{ width: 200, height: 230, overflow: 'auto' }}>
             <List dense component="div" role="list">
-                {items.map((value) => {
-                    const labelId = `transfer-list-item-${value}-label`;
+                {items.map(({ id, title }) => {
+                    const labelId = `transfer-list-item-${id}-label`;
 
                     return (
                         <ListItem
-                            key={value}
+                            key={id}
                             role="listitem"
                             button
-                            onClick={handleToggle(value)}
+                            onClick={handleToggle(id)}
                         >
                             <ListItemIcon>
                                 <Checkbox
-                                    checked={checked.indexOf(value) !== -1}
+                                    checked={checked.indexOf(id) !== -1}
                                     tabIndex={-1}
                                     disableRipple
                                     inputProps={{
@@ -82,7 +84,7 @@ export default function TransferList() {
                                     }}
                                 />
                             </ListItemIcon>
-                            <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+                            <ListItemText id={labelId} primary={title} />
                         </ListItem>
                     );
                 })}

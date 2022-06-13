@@ -18,12 +18,14 @@ import Button from "../../components/Button";
 import AdminNavigation from "../../components/AdminNavigation";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import {Checkbox, FormControlLabel, InputLabel, MenuItem, Select, TextField, Typography} from "@material-ui/core";
+import TransferList from "../../components/TransferList/TransferList";
 
 const userService = UserService.factory();
 
 class CreateTask extends React.PureComponent {
     state = {
-        runtime: false
+        runtime: false,
+        themes: [],
     }
 
     componentDidMount = () => {
@@ -67,8 +69,10 @@ class CreateTask extends React.PureComponent {
     setHelp = (e) => {
         this.props.actions.taskChangeField({destination: Enum.HELP_FILED, value: get(e, 'target.value', '')})
     };
-    setThemesField = (e) => {
-        this.props.actions.courseChangeField({destination: Enum.THEMES_FIELD, value: [...e.target.selectedOptions].map(o => parseInt(o.value))})
+    setThemesField = (selectedOptions) => {
+        console.log('selectedOptions', selectedOptions)
+        this.setState({ themes: selectedOptions })
+        // this.props.actions.courseChangeField({destination: Enum.THEMES_FIELD, value: [...selectedOptions].map(o => parseInt(o.value))})
     };
 
     createTask = () => {
@@ -202,22 +206,27 @@ class CreateTask extends React.PureComponent {
                         <InputLabel className={classes.selectTitle}>
                             Темы
                         </InputLabel>
-                        <Select
-                            multiple
-                            native
-                            value={1}
-                            onChange={this.setThemesField}
-                            label="Темы"
-                            inputProps={{
-                                id: 'select-multiple-native',
-                            }}
-                        >
-                            {themes.map((theme) => (
-                                <option key={theme.id} value={theme.id}>
-                                    {theme.title}
-                                </option>
-                            ))}
-                        </Select>
+                        <TransferList
+                          onChange={this.setThemesField}
+                          options={themes}
+                          value={this.state.themes}
+                        />
+                        {/*<Select*/}
+                        {/*    multiple*/}
+                        {/*    native*/}
+                        {/*    value={1}*/}
+                        {/*    onChange={this.setThemesField}*/}
+                        {/*    label="Темы"*/}
+                        {/*    inputProps={{*/}
+                        {/*        id: 'select-multiple-native',*/}
+                        {/*    }}*/}
+                        {/*>*/}
+                        {/*    {themes.map((theme) => (*/}
+                        {/*        <option key={theme.id} value={theme.id}>*/}
+                        {/*            {theme.title}*/}
+                        {/*        </option>*/}
+                        {/*    ))}*/}
+                        {/*</Select>*/}
                     </div>
 
                     <FormControlLabel className={classes.marginBottom} control={<Checkbox color="default"/>} label="Проверка времени"/>

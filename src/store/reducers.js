@@ -7,7 +7,6 @@ import {GENERAL_PATH as homePath, reducer as homeReducer} from "../containers/Co
 import {GENERAL_PATH as resetPasswordPath, reducer as resetPasswordReducer} from "../containers/ResetPassword/reducer";
 import {GENERAL_PATH as mainPath, reducer as mainReducer} from "../layout/reducer";
 import {GENERAL_PATH as feedbackPath, reducer as feedbackReducer} from "../containers/Feedback/reducer";
-<<<<<<< HEAD
 import {GENERAL_PATH as databasesPath, reducer as databasesReducer} from "../containers/Databases/reducer";
 import {GENERAL_PATH as databasePath, reducer as databaseReducer} from "../containers/Database/reducer";
 import {GENERAL_PATH as createDatabasePath, reducer as createDatabaseReducer} from "../containers/CreateDatabase/reducer";
@@ -19,9 +18,7 @@ import {GENERAL_PATH as createTaskPath, reducer as createTaskReducer} from "../c
 import {GENERAL_PATH as createTopicPath, reducer as createTopicReducer} from "../containers/CreateTopic/reducer";
 import {GENERAL_PATH as topicsPath, reducer as topicsReducer} from "../containers/Topics/reducer";
 import {GENERAL_PATH as sectionsPath, reducer as sectionsReducer} from "../containers/Sections/reducer";
-=======
 import {GENERAL_PATH as statisticPath, reducer as statisticReducer} from "../containers/Statistic/reducer";
->>>>>>> a02d5ac970de7ebfacd07543bbbf1844f110d3b9
 
 export default combineReducers({
     [mainPath]: mainReducer,
@@ -32,7 +29,6 @@ export default combineReducers({
     [homePath]: homeReducer,
     [resetPasswordPath]: resetPasswordReducer,
     [feedbackPath] : feedbackReducer,
-<<<<<<< HEAD
     [databasesPath] : databasesReducer,
     [databasePath] : databaseReducer,
     [createDatabasePath] : createDatabaseReducer,
@@ -44,8 +40,5 @@ export default combineReducers({
     [createTopicPath]: createTopicReducer,
     [topicsPath]: topicsReducer,
     [sectionsPath]: sectionsReducer,
-=======
     [statisticPath] : statisticReducer,
-
->>>>>>> a02d5ac970de7ebfacd07543bbbf1844f110d3b9
 });
