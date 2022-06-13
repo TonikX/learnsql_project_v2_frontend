@@ -10,6 +10,7 @@ const FAQ = 'faq';
 const FEEDBACK = 'feedback';
 const ALL_COURSES = 'all-courses';
 const MY_COURSES = 'my-courses';
+const CHAT = 'chat';
 
 const SEPARATOR = '/';
 
@@ -76,6 +77,9 @@ export default class RouterService {
 
     getLandingPath = () => {
         return SEPARATOR;
+    };
+    getChatRoute = () => {
+        return SEPARATOR + CHAT;
     };
 
     getCourseLink = (id) => {

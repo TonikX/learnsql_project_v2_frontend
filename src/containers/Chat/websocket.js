@@ -14,8 +14,6 @@ export class WebSocketService {
   }
 
   connect({roomName, id, user}) {
-    // const users = usernames.map(user => `&users=${user}`)
-
     const path = `ws://127.0.0.1:8001/ws/chat/${roomName}/?id=${id}${user ? `&user=${user}` : ``}`;
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
@@ -32,7 +30,6 @@ export class WebSocketService {
     };
     this.socketRef.onclose = () => {
       console.log("WebSocket closed let's reopen");
-      // this.connect();
     };
   }
 

@@ -299,7 +299,7 @@ class Task extends React.PureComponent{
                             pathname: `/chat/`,
                         }}
                     >
-                        Помощь по заданию
+                        Помощь по заданию {task.id}
                     </Link>
                     {nextRoute.id &&
                         <Button color={'primary'}

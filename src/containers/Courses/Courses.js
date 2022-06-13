@@ -51,26 +51,26 @@ class Courses extends React.PureComponent{
                 {courses.map(course => {
                     const isMyCourse = myCourses.find(myCourse => myCourse.course === course.id);
 
-                    if (isMy && !isMyCourse) return <></>
+                    if (isMy && !isMyCourse) return null
 
                     return (
-                        <Card className={classes.card} key={`course-${course.id}`}>
+                          <Card className={classes.card} key={`course-${course.id}`}>
                             <CardContent>
-                                <Typography className={classes.title}>
+                                <Typography className={classes.title} component={'span'} >
                                     {get(course, 'title', '')}
                                 </Typography>
-                                <Typography className={classes.ratingSubtitle}>
+                                <Typography className={classes.ratingSubtitle} component={'span'} >
                                     <b className={classes.subTitle}>Сложность курса:</b> <ReactStars edit={false} value={course.difficulty} size={30} />
                                 </Typography>
-                                <Typography>
+                                <Typography component={'span'} >
                                     <b className={classes.subTitle}>Выбор заданий в курсе:</b> {tasksTypes[course.type]}
                                 </Typography>
-                                <Typography className={classes.themesSubtitle}>
+                                <Typography className={classes.themesSubtitle} component={'span'} >
                                     Темы курса:
                                 </Typography>
                                 <div className={classes.themeGrid}>
-                                    {course.themes.map(theme => (
-                                      <Typography> {theme} </Typography>
+                                    {course.themes.map((theme, i) => (
+                                      <Typography key={i} component={'span'} > {theme} </Typography>
                                     ))}
                                 </div>
                             </CardContent>

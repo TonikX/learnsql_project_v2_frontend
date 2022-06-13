@@ -62,6 +62,9 @@ class Header extends React.PureComponent {
               <Typography variant="button">
                 <Link to={appRouter.getFAQLink()} className={classes.link}>FAQ</Link>
               </Typography>
+              <Typography variant="button">
+                <Link to={appRouter.getChatRoute()} className={classes.link}>Чат</Link>
+              </Typography>
               <Link to={appRouter.getFeedbackLink()} className={classNames(classes.link, classes.help)}><HelpIcon/></Link>
               <div>
                 <IconButton

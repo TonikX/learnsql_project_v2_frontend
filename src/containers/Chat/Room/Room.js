@@ -1,69 +1,61 @@
 import {WebSocketService} from "../websocket";
-import styles from "../Chat.styles";
+import styles from "./Room.styles";
 import connect from "../Chat.connect";
 import {useLocation, withRouter} from "react-router-dom";
 import withStyles from '@material-ui/core/styles/withStyles';
-import React,{useEffect, useState} from "react";
-import AddUserModal from "../AddUserModal/AddUserModal";
+import React, {useEffect, useRef, useState} from "react";
+import Typography from "@material-ui/core/Typography";
+import ModalWindowWidthButton from "../../../components/ModalWindowWithButton/ModalWindowWithButton";
+import RoomInfo from "../RoomInfo/RoomInfo";
+
+
+
 
 function Room(state) {
 
-    const [roomIsLoad, setRoomIsLoad] = useState(false);
-    const {userData, classes} = state;
+    const {classes, room, userData} = state;
+    const scrollRef = useRef();
 
     const [WebSocketInstance, setWebsocketInstance] = useState(new WebSocketService());
 
-    const location = useLocation();
-    const [interlocutor, setInterlocutor] = useState();
     const [messages, setMessages] = useState([]);
-    const [room, setRoom] = useState(null)
-    const getRoomNameByUsernames = (yourUsername) => {
-        return userData.username > yourUsername ? `${userData.username}_and_${yourUsername}` : `${yourUsername}_and_${userData.username}`
-    };
 
+    const [messagesLoad, setMessagesLoad] = useState(false);
 
-    const [roomName, setRoomName] = useState( "")
-    const [roomLabel, setRoomLabel] = useState("")
+    const [myRightLikeAdmin, setMyRightLikeAdmin] = useState({
+        admin: false,
+        main_admin: false,
+        can_add_user: false ,
+        can_set_chat: false,
+        can_delete_user: false
 
-    useEffect(()=>{
-        if(location.interlocutor || location.roomName){
-            setInterlocutor(location.interlocutor)
-            setRoomName(location.roomName ? location.roomName : getRoomNameByUsernames(location.interlocutor.username))
-            setRoomLabel(location.roomName ? location.roomName : location.interlocutor.username)
-            setRoom(location.room)
-            console.log(location.room)
-            setRoomIsLoad(true)
-        } else {
-            state.history.push('/chat');
+    })
+    useEffect(() => {
+        if (room) {
+            for (let i = 0; i < room.administrators.length; i++) {
+                if (room.administrators[i].user.id === userData.id) {
+                    setMyRightLikeAdmin(prevState => ({
+                        admin: true,
+                        main_admin: room.administrators[i].main_admin,
+                        can_add_user: room.administrators[i].can_add_user,
+                        can_set_chat: room.administrators[i].can_set_chat,
+                        can_delete_user: room.administrators[i].can_delete_user
+                    }))
+                }
+            }
         }
     }, [])
 
-
-    useEffect(() => {
-        if(!roomIsLoad) {
-            return;
-        }
-        console.log(userData)
-        WebSocketInstance.connect(
-            {
-                roomName,
-                id: userData.id,
-                user: interlocutor ? interlocutor.id : null
-            }
-        );
-        //
-        waitForSocketConnection(() => {
-            WebSocketInstance.addCallbacks(setMessages, addMessage);
-            WebSocketInstance.fetchMessages(userData.username, roomName);
-        });
-
-    }, [roomIsLoad]);
-
-
     const addMessage = (message) => {
         setMessages((prev) => [...prev, message]);
+        if (scrollRef) {
+            scrollRef.current.scrollTo({
+                top: scrollRef.current.scrollHeight,
+                left: 0,
+                behavior: 'smooth'
+            });
+        }
     };
-
 
     const waitForSocketConnection = (callback) => {
         setTimeout(
@@ -81,113 +73,153 @@ function Room(state) {
 
     const renderMessages = (messages) => {
         const currentUser = userData.username;
-        return messages.map((message, i) => (
-            <li
-                key={i}
-                className={message.author === currentUser ? 'sent' : 'replies'}>
-                {/*<img src="http://emilcarlsson.se/assets/mikeross.png" />*/}
-                <p>
-                    author: {message.author}
-                    <br/>
-                    {message.content}
-                    <br/>
-                    <small className={message.author === currentUser ? 'sent' : 'replies'}>
-                        {Math.round((new Date().getTime() - new Date(message.timestamp).getTime()) / 60000)} minutes ago
-                    </small>
-                </p>
-            </li>
-        ));
+
+        return messages.map((message, i) => {
+            const date = new Date(message.timestamp)
+            if (message.author === currentUser) {
+                return (
+                    <div key={i} className={classes.roomMessage + ` ${classes.roomMessage_right}`}>
+                        <div className={classes.roomMessageInfo}>
+                        <span className={classes.roomMessageUserInfo}>
+                                {message.author}
+                        </span>
+                            <span className={classes.roomMessageText}>
+                                {message.content}
+                            </span>
+                            <span className={classes.roomMessageTime}>
+                                {date.getHours()}:{date.getMinutes()}
+                            </span>
+                        </div>
+                        <div className={classes.roomMessageAvatar}/>
+                    </div>
+                )
+            } else {
+                return (
+                    <div key={i} className={classes.roomMessage + ` ${classes.roomMessage_left}`}>
+                        <div className={classes.roomMessageAvatar}/>
+                        <div className={classes.roomMessageInfo}>
+                        <span className={classes.roomMessageUserInfo}>
+                  {message.author}
+                        </span>
+                            <span className={classes.roomMessageText}>
+                          {message.content}
+                        </span>
+                            <span className={classes.roomMessageTime}>
+                                {date.getHours()}:{date.getMinutes()}
+                            </span>
+                        </div>
+                    </div>
+                )
+
+            }
+        })
     }
-
-
     const sendMessageHandler = (e) => {
         e.preventDefault();
         const messageObject = {
             from: userData.username,
             content: message,
-            room: roomName
+            room: room.id
         };
         WebSocketInstance.newChatMessage(messageObject);
         setMessage('');
     }
 
-
     const [message, setMessage] = useState(``)
 
-    useEffect(() => {
-        return () => {
-            if(roomIsLoad){
-                WebSocketInstance.close();
-                setWebsocketInstance(null)
-            }
-        }
-    }, [])
 
-
-    const getSubscribersOfRoom = () => {
-        if(!room){
-            return null;
+    const getRoomName = (room) => {
+        if (room.is_room) {
+            return room.name
         }
-        if(!room.is_room){
-            return <span>{room.subscribers[0].username}</span>;
-        }
-        return <>
-            {
-                room.name
-            }
-        <br/>
-            {
-                room.subscribers.map((subscriber, i) => (
-            <span key={i}>{subscriber.username},{" "}</span>
-        ))
-            }
-        </>
+        const array = room.subscribers.filter(subscriber => subscriber.username !== userData.username);
+        return array.length > 0 ? array[0].username : ""
     }
 
-    const isAdmin = () => {
-        if(location.isDialog || !room){
-            console.log("not admin")
-            return null;
-        }
 
-        if(room.administrators.includes(userData.id)){
-            return <AddUserModal thisRoom ={room}/>
-        }
+    useEffect(() => {
+        console.log(room)
+        WebSocketInstance.connect(
+            {
+                roomName: room.id,
+                id: userData.id,
+                // user: interlocutor ? interlocutor.id : null
+            }
+        );
+        //
+        waitForSocketConnection(() => {
+            WebSocketInstance.addCallbacks(setMessages, addMessage);
+            WebSocketInstance.fetchMessages(userData.username, room.name);
+        });
 
-        return null;
+        return () => {
+            WebSocketInstance.close();
+            setWebsocketInstance(null);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (scrollRef) {
+            if (!messagesLoad && messages.length > 0) {
+                scrollRef.current.scrollTo({
+                    top: scrollRef.current.scrollHeight,
+                    left: 0,
+                });
+                setMessagesLoad(true)
+            }
+
+        }
+    }, [scrollRef, messages])
+
+
+    const roomInfoButton = (props) => {
+        const {isOpen, setIsOpen} = props;
+        return <div className={classes.roomAvatar} onClick={()=>setIsOpen(true)}/>
     }
 
     return (
-        <div style={{
-            width: "100%",
-            padding: "20px",
-            display: "flex",
-            "flexDirection": "column",
-            justifyContent: "space-between"
-        }}>
-            <div style={{height: `10%`, display: "flex"}}>
-                <div>
-                {getSubscribersOfRoom()}
+        <div className={classes.room}>
+            <div className={classes.roomPanel}>
+                <div className={classes.roomInfoContainer}>
+                    <ModalWindowWidthButton Button = {(props) => roomInfoButton(props)} blackout={true}>
+                       <RoomInfo room={room} myRightLikeAdmin={myRightLikeAdmin}/>
+                    </ModalWindowWidthButton>
+
+                    <Typography variant="button" className={classes.roomNameContainer}>
+                    <span className={classes.roomName}>
+                        {getRoomName(room)}
+                    </span>
+                        <span className={classes.chatElSubs}>
+                            {room.subscribers.length} участников
+                    </span>
+                    </Typography>
                 </div>
-                <div>
-                    {isAdmin()}
+            </div>
+            <div className={classes.roomBody} ref={scrollRef}>
+                <div className={classes.roomMessages}>
+                    <div className={classes.roomMessageVoid}/>
+                    {renderMessages(messages)}
+                    <div className={classes.roomMessageVoid}/>
                 </div>
             </div>
+            <div className={classes.roomPanel + ` ${classes.messagePanel}`}>
 
+                <input value={message} onChange={(e) => setMessage(e.target.value)} placeholder={'Введите сообщение'}
+                       className={classes.messageInput}/>
+                <button
+                    onClick={(e) => sendMessageHandler(e)}
+                    className={classes.messageButton + ` ${message.length === 0 ? classes.messageButton_disabled : ''} `}
+                    disabled={message.length === 0}
 
-            <div style={{height: `80%`, overflowY: "scroll"}}>
-                {renderMessages(messages)}
+                >
+                    Отправить
+                </button>
+
             </div>
-
-            <div className={{height: `10%`, display: "flex", alignItems: "flex-end"}}>
-                <input placeholder={`Введите сообщение`} value={message} onChange={(e) => setMessage(e.target.value)}/>
-                <button onClick={(e) => sendMessageHandler(e)}>Отправить</button>
-            </div>
-
-
         </div>
     )
+
 }
 
 
-export default  withStyles(styles)(connect(withRouter(Room)));
+export default withStyles(styles)(connect(withRouter(Room)));
