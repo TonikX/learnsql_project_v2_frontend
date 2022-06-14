@@ -90,9 +90,67 @@ export const addUserOnRoom = createLogic({
     }
 });
 
+export const addAdminOnRoom = createLogic({
+    type: C.ADD_ADMINISTRATOR_ON_ROOM,
+    latest: true,
+    process({getState, action}, dispatch, done) {
+        const state = getState();
+        console.log("aloaloalaaoa")
+        service.addAdminOnRoom(action.payload.data, action.payload.id)
+            .then((res) => {
+                console.log("hehehehe")
+                dispatch(chatActions.setAdmin({data: res.data, id: action.payload.id}));
+            })
+            .catch((errors) => {
+                 console.log(errors)
+            })
+            .then(() => {
+
+            });
+    }
+});
+
+export const delAdminOnRoom = createLogic({
+    type: C.DEL_ADMIN_FROM_ROOM,
+    latest: true,
+    process({getState, action}, dispatch, done) {
+        const state = getState();
+        service.delAdminOnRoom(action.payload.data, action.payload.id, action.payload.idAdmin)
+            .then((res) => {
+                dispatch(chatActions.setAdmin({data: res.data, id: action.payload.id}));
+            })
+            .catch((errors) => {
+                 console.log(errors)
+            })
+            .then(() => {
+
+            });
+    }
+});
+export const putAdminOnRoom = createLogic({
+    type: C.PUT_ADMIN_FOR_ROOM,
+    latest: true,
+    process({getState, action}, dispatch, done) {
+        const state = getState();
+        service.putAdminOnRoom(action.payload.data, action.payload.id)
+            .then((res) => {
+                dispatch(chatActions.setAdmin({data: res.data, id: action.payload.id}));
+            })
+            .catch((errors) => {
+                 console.log(errors)
+            })
+            .then(() => {
+
+            });
+    }
+});
+
 export default [
     getListOfUsers,
     getRoomsOfUsers,
     createRoom,
-    addUserOnRoom
+    addUserOnRoom,
+    addAdminOnRoom,
+    delAdminOnRoom,
+    putAdminOnRoom
 ]

@@ -52,6 +52,7 @@ export default (theme) => ({
     },
 
     modalWindowCloseButton: {
+        cursor: 'pointer',
         position: 'absolute',
         height: '10px',
         width: '10px',

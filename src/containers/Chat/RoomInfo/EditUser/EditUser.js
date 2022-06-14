@@ -7,17 +7,17 @@ import {withRouter} from "react-router-dom";
 
 import moc from "./moc.svg";
 import Button from "@material-ui/core/Button";
+import {addAdminOnRoom} from "../../logics";
 
 function EditUser (props) {
-    const {editUser, classes} = props;
-    const [o ,setO] = useState(false);
+    const {editUser, classes, actions, room} = props;
 
     const [rightsState, setRightsState] = useState({
-        admin: false,
-        main_admin: false,
-        can_add_user: false,
-        can_set_chat: false,
-        can_delete_user: false
+        admin: editUser.admin,
+        main_admin: editUser.main_admin,
+        can_add_user: editUser.can_add_user,
+        can_set_chat: editUser.can_set_chat,
+        can_delete_user: editUser.can_delete_user
     });
 
     if (!editUser) {
@@ -25,8 +25,6 @@ function EditUser (props) {
     }
 
     const setRights = (field) => {
-        console.log(rightsState)
-        console.log("alo")
         if (field === 'admin' && rightsState[field]) {
             setRightsState(prevState => ({
                 admin: false,
@@ -37,11 +35,73 @@ function EditUser (props) {
             }))
             return;
         }
-        console.log("alo after")
         setRightsState(prevState => ({
             ...prevState,
             [field]: !prevState[field]
         }))
+    }
+
+    const createAdmin = () => {
+        const data = new FormData();
+
+        data.append("admin", rightsState.admin);
+        data.append("main_admin", rightsState.main_admin);
+        data.append("can_add_user", rightsState.can_add_user);
+        data.append("can_set_chat", rightsState.can_set_chat);
+        data.append("can_delete_user", rightsState.can_delete_user);
+        data.append("user", editUser.user.id);
+
+        actions.addAdmin({data, id: room.id});
+    }
+
+    const updateAdmin = () => {
+        const data = new FormData();
+
+        data.append("id", editUser.id);
+        data.append("admin", rightsState.admin);
+        data.append("main_admin", rightsState.main_admin);
+        data.append("can_add_user", rightsState.can_add_user);
+        data.append("can_set_chat", rightsState.can_set_chat);
+        data.append("can_delete_user", rightsState.can_delete_user);
+        data.append("user", editUser.user.id);
+
+        actions.updateAdmin({data, id: room.id})
+    }
+
+    const delAdmin = () => {
+        const data = new FormData();
+        data.append("id", editUser.id);
+        actions.delAdmin({data, id: room.id, idAdmin: editUser.id})
+    }
+
+    const onSave = (e) => {
+        e.preventDefault();
+        console.log(editUser)
+        if(!editUser.id){
+            createAdmin();
+        } else {
+            if(rightsState.admin){
+                 updateAdmin()
+            } else {
+                delAdmin()
+            }
+
+        }
+    }
+
+
+
+    const delUser = () => {
+        const data = new FormData();
+        data.append("id", editUser.id);
+        // actions.delAdmin({data, id: room.id});
+    }
+
+    const onDelete = (e) => {
+        e.preventDefault();
+
+        delUser()
+
     }
 
     const getRights = (text, field) => {
@@ -67,11 +127,11 @@ function EditUser (props) {
         <div>
             <div className={classes.header}>
                 <div className={classes.avatar}>
-                    {editUser.username[0]}
+                    {editUser.user.username[0]}
                 </div>
                 <div className={classes.chatElInfo}>
                     <span className={classes.chatElName}>
-                        {editUser.username}
+                        {editUser.user.username}
                     </span>
                     <span className={classes.chatElSubs}>
                        Был в сети только что
@@ -86,19 +146,19 @@ function EditUser (props) {
                 {getRights('Главный Администратор', 'main_admin')}
 
             </div>
-            <Button color={'primary'}
-                    variant={'outlined'}
-                    className={classes.saveButton}
-            >
-                Сохранить
-            </Button>
-
             <div className={classes.footer}>
+                <Button color={'primary'}
+                        variant={'outlined'}
+                        className={classes.saveButton}
+                        onClick={onSave}
+                >
+                    Сохранить
+                </Button>
                 <Button
                     // color={'primary'}
                     //     variant={'contained'}
-                    variant="outlined" color="error"
-                        className={classes.deleteButton}
+                    variant="outlined" color="primary"
+                    className={classes.deleteButton}
                 >
                     Удалить
                 </Button>

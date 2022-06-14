@@ -85,14 +85,17 @@ export default (theme) => ({
         marginLeft: 'calc(100% - 24px)'
     },
     saveButton: {
-      marginTop: '15px'
+      width: '100%'
     },
     deleteButton: {
-      marginTop: '15px'
+           width: '100%'
     },
     footer: {
+        marginTop: '20px',
         display: 'flex',
-        justifyContent: 'center'
+        flexDirection: 'column',
+        gap: '15px',
+        alignItems: 'center'
     }
 
 })

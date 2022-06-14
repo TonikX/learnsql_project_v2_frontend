@@ -31,7 +31,7 @@ function ModalWindow(state) {
     return (
         <div className={classes.modalWindowContainer + ` ${animated ? classes.modalWindowContainer_open : ''}` + ` ${blackout ? classes.modalWindowContainer_blackout : ''}`} onClick={(e) => e.target === e.currentTarget && setIsOpen(false)}>
             <div className={classes.modalWindowBody + ` ${animated ? classes.modalWindowBody_open : ''}` + ` ${blackout ? '' :  classes.modalWindowBody_shadow}` + ` ${inCenter ? classes.modalWindowBody_center : ''}`}>
-                <div className={classes.modalWindowCloseButton}/>
+                <div className={classes.modalWindowCloseButton} onClick={() =>setIsOpen(false)}/>
                 {children}
             </div>
         </div>

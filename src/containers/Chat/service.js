@@ -16,6 +16,15 @@ class ChatService extends BaseService {
     addUserOnRoom(formData, id) {
         return this.put(`/chat/api/rooms/${id}/`, formData);
     }
+    addAdminOnRoom(formData, id) {
+        return this.post(`/chat/api/rooms/${id}/administrators/`, formData);
+    }
+    delAdminOnRoom(formData, id, idAdmin) {
+        return this.delete(`/chat/api/rooms/${id}/administrators/?id=${idAdmin}`, formData);
+    }
+    putAdminOnRoom(formData, id) {
+        return this.put(`/chat/api/rooms/${id}/administrators/`, formData);
+    }
 }
 
 export default ChatService;

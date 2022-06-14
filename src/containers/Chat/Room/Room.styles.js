@@ -74,6 +74,7 @@ export default (theme) => ({
         width: '30px',
         background: '#DC3183',
         borderRadius: '50%',
+        cursor: 'pointer'
     },
     roomMessageVoid: {
         height: '20px',

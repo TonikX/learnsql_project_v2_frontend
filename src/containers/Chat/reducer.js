@@ -33,9 +33,23 @@ const updateRoom = (state, {payload})=> ({
         return room;
     })
 })
+
+const updateAdmins = (state, {payload})=> ({
+    ...state,
+    [Enum.ROOMS]: state.rooms.map(room => {
+        if(room.id === payload.id){
+            return {
+                ...room,
+                administrators: payload.data
+            };
+        }
+        return room;
+    })
+})
 export const reducer = createReducer(initialState, {
     [C.SET_ROOMS]: setRoomList,
     [C.SET_USERS]: setUserList,
     [C.ADD_ROOM]: addRoom,
     [C.UPDATE_ROOM]: updateRoom,
+    [C.SET_ADMINISTRATOR_ON_ROOM]: updateAdmins,
 });
