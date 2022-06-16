@@ -17,6 +17,7 @@ import FAQ from "./containers/FAQ";
 import Feedback from "./containers/Feedback";
 import Landing from './containers/Landing'
 import ChatRoom from "./containers/Chat/Chat";
+import Statistic from "./containers/Statistic";
 
 const routerService = RouterService.factory();
 const userService = UserService.factory();
@@ -66,6 +67,9 @@ export default () => (
                 </PrivateRoute>
                 <PrivateRoute path={routerService.getChatRoute()}>
                     <ChatRoom/>
+                </PrivateRoute>
+                <PrivateRoute path={routerService.getStatisticRoute()}>
+                    <Statistic/>
                 </PrivateRoute>
                 <Route path={routerService.getLandingPath()}>
                     <Landing/>
