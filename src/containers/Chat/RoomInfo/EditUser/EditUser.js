@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 import {addAdminOnRoom} from "../../logics";
 
 function EditUser (props) {
-    const {editUser, classes, actions, room} = props;
+    const {editUser, classes, actions, room, myRightLikeAdmin} = props;
 
     const [rightsState, setRightsState] = useState({
         admin: editUser.admin,
@@ -35,6 +35,16 @@ function EditUser (props) {
             }))
             return;
         }
+         if (field === 'main_admin' && !rightsState[field]) {
+            setRightsState(prevState => ({
+                admin: true,
+                main_admin: true,
+                can_add_user: true,
+                can_set_chat: true,
+                can_delete_user: true
+            }))
+            return;
+        }
         setRightsState(prevState => ({
             ...prevState,
             [field]: !prevState[field]
@@ -50,12 +60,15 @@ function EditUser (props) {
         data.append("can_set_chat", rightsState.can_set_chat);
         data.append("can_delete_user", rightsState.can_delete_user);
         data.append("user", editUser.user.id);
+        data.append("main_admin_id", myRightLikeAdmin.id);
 
         actions.addAdmin({data, id: room.id});
     }
 
     const updateAdmin = () => {
         const data = new FormData();
+
+        console.log("alo")
 
         data.append("id", editUser.id);
         data.append("admin", rightsState.admin);
@@ -64,7 +77,7 @@ function EditUser (props) {
         data.append("can_set_chat", rightsState.can_set_chat);
         data.append("can_delete_user", rightsState.can_delete_user);
         data.append("user", editUser.user.id);
-
+        data.append("main_admin_id", myRightLikeAdmin.id);
         actions.updateAdmin({data, id: room.id})
     }
 
@@ -76,7 +89,7 @@ function EditUser (props) {
 
     const onSave = (e) => {
         e.preventDefault();
-        console.log(editUser)
+        console.log(rightsState)
         if(!editUser.id){
             createAdmin();
         } else {
@@ -112,12 +125,20 @@ function EditUser (props) {
                         <span
                             className={classes.switcherTrigger + ` ${rightsState[field] ? classes.switcherTrigger_turn : ''}`}>
                             {
-                                rightsState.admin || field === 'admin' ? '' : <img src={moc}/>
+                                rightsState.admin || field === 'admin' ?
+                                    <span className={classes.warn + ` ${ field === "main_admin" &&  myRightLikeAdmin.main_admin && rightsState.main_admin && classes.warn_show}`}>
+                                        !
+                                        <span className={classes.warnText}>
+                                            Назначая пользователя главным администратором вы лишитесь этого статуса
+                                        </span>
+                                    </span>
+                                    :
+                                    <img src={moc}/>
                             }
                         </span>
                 </div>
                 <span className={classes.rightsText}>
-                        {text}
+                    {text}
                 </span>
             </div>
         )
@@ -143,7 +164,12 @@ function EditUser (props) {
                 {getRights('Удаление пользователей', 'can_delete_user')}
                 {getRights('Добавленин пользователей', 'can_add_user')}
                 {getRights('Изменение чата', 'can_set_chat')}
-                {getRights('Главный Администратор', 'main_admin')}
+                <span className={classes.mainAdminInfo}>
+
+                    {getRights('Главный Администратор', 'main_admin')}
+                </span>
+
+
 
             </div>
             <div className={classes.footer}>

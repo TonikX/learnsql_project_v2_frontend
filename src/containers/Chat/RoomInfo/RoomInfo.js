@@ -51,7 +51,7 @@ function RoomInfo(state) {
     return (
         <div className={classes.container}>
             <ModalWindow isOpen={modalWindowIsOpen} setIsOpen={setModalWindowIsOpen} blackout={false} inCenter={true}>
-                <EditUser editUser={editUser} room={room}/>
+                <EditUser editUser={editUser} room={room} myRightLikeAdmin={myRightLikeAdmin}/>
             </ModalWindow>
             <div className={classes.title}>
                 <span className={classes.titleText}>
@@ -92,7 +92,7 @@ function RoomInfo(state) {
                                 <div className={classes.right}>
                                     <div className={classes.rightText}>
                                         {
-                                            myRightLikeAdmin.main_admin ? (
+                                            myRightLikeAdmin.main_admin && sub.id !== myRightLikeAdmin.id? (
                                                 <span className={classes.edit}
                                                       onClick={()=> {
                                                           setEditUser(getUserByAdmin(sub))

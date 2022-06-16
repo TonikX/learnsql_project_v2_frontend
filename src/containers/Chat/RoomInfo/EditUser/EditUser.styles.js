@@ -96,6 +96,40 @@ export default (theme) => ({
         flexDirection: 'column',
         gap: '15px',
         alignItems: 'center'
+    },
+    warn: {
+        color: `red`,
+        textTransform: 'initial',
+        textDecoration: 'none',
+        fontSize: '16px',
+        background: 'white',
+        height: '100%',
+        width: '100%',
+        display: 'none',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '50%',
+        position: 'relative'
+    },
+    warn_show: {
+        display: 'flex'
+    },
+    warnText: {
+        position: 'absolute',
+        height: 'auto',
+        maxWidth: '350px',
+        top: '100%',
+        marginTop: '20px',
+        opacity: 0,
+        transition: '.5s',
+        ':hover > &': {
+            opacity: 1
+        },
+        background: 'white',
+        padding: '15px',
+        boxShadow: '0px 4px 40px rgba(0, 0, 0, 0.05)',
+        borderRadius: '14px',
+        zIndex: '10003'
     }
 
 })

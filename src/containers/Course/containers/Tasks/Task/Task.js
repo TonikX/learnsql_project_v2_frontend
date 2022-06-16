@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import get from 'lodash/get';
-import Highlight from 'react-highlight.js';
 
 import Scrollbars from "react-custom-scrollbars";
 
@@ -77,8 +76,8 @@ class Task extends React.PureComponent{
             <Box display={'block'} className={classes.answerFieldContainer}>
                 <TextField label={'Запрос'}
                            multiline
-                           rowsMax={10}
-                           rows={7}
+                           maxrow={10}
+                           minRows={7}
                            variant={'outlined'}
                            fullWidth
                            maxwidth={500}
@@ -235,15 +234,25 @@ class Task extends React.PureComponent{
         return errors[courseId]?.[task.id] || []
     }
 
+
+    chatExist = (userData, chat) =>{
+        return chat.length > 0;
+        // for(let i = 0 ; i < chat.length; i++){
+        //     if(chat[i].creator === userData.id){
+        //         return true;
+        //     }
+        // }
+        // return false;
+    }
+
     render() {
-        const {task, classes, error, tableErrorData, answer, nextRoute, isDone} = this.props;
+        const {task, classes, error, tableErrorData, answer, nextRoute, isDone, userData} = this.props;
         const taskText = get(task, `task_text`, null);
         const taskTitle = get(task, `title`, '');
         const refResult = get(tableErrorData, [Enum.ERROR_REF_RESULT, 1, 1], []);
         const studentResult = get(tableErrorData, [Enum.ERROR_STUDENT_RESULT, 1, 1], []);
         const taskImage = get(task, `database_image`, '');
         const errors = this.getCurrentTaskErrors().reverse();
-
         const {openBigImage} = this.state;
 
         if (!taskText) return <></>;
@@ -293,14 +302,27 @@ class Task extends React.PureComponent{
                 </div>
 
                 <div className={classes.taskInfo}>
-                    <Link
+                    {
+                        !isDone &&
+                        <Link
                         className={classes.nextTaskButton}
                         to={{
                             pathname: `/chat/`,
+                            taskId: task.id,
+                            required_words: task.required_words,
+                            exist: this.chatExist(userData, task.chat)
                         }}
                     >
-                        Помощь по заданию {task.id}
+                        <Button color={'primary'}
+                                className={classes.nextTaskButton}
+                                onClick={this.goToNextTaskClickHandler}
+                                endIcon={<ArrowForward/>}
+                        >
+                            Помощь по заданию
+                        </Button>
+
                     </Link>
+                    }
                     {nextRoute.id &&
                         <Button color={'primary'}
                                 className={classes.nextTaskButton}

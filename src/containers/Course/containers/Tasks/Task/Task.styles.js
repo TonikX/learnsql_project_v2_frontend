@@ -105,7 +105,8 @@ export default (theme) => ({
         fontWeight: 'bold'
     },
     nextTaskButton: {
-        marginLeft: 'auto'
+        marginLeft: 'auto',
+        textDecoration: 'none'
     },
     simpleErrorBlock: {
         margin: 20,

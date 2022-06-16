@@ -39,12 +39,24 @@ function Room(state) {
                         main_admin: room.administrators[i].main_admin,
                         can_add_user: room.administrators[i].can_add_user,
                         can_set_chat: room.administrators[i].can_set_chat,
-                        can_delete_user: room.administrators[i].can_delete_user
+                        can_delete_user: room.administrators[i].can_delete_user,
+                        id: room.administrators[i].id,
+                        user: room.administrators[i].user,
                     }))
+                    return;
                 }
             }
+            setMyRightLikeAdmin(prev => ({
+                admin: false,
+                main_admin: false,
+                can_add_user: false,
+                can_set_chat: false,
+                can_delete_user: false,
+                id: false,
+                user: false
+            }))
         }
-    }, [])
+    }, [room])
 
     const addMessage = (message) => {
         setMessages((prev) => [...prev, message]);
@@ -138,7 +150,6 @@ function Room(state) {
 
 
     useEffect(() => {
-        console.log(room)
         WebSocketInstance.connect(
             {
                 roomName: room.id,

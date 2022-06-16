@@ -95,10 +95,8 @@ export const addAdminOnRoom = createLogic({
     latest: true,
     process({getState, action}, dispatch, done) {
         const state = getState();
-        console.log("aloaloalaaoa")
         service.addAdminOnRoom(action.payload.data, action.payload.id)
             .then((res) => {
-                console.log("hehehehe")
                 dispatch(chatActions.setAdmin({data: res.data, id: action.payload.id}));
             })
             .catch((errors) => {

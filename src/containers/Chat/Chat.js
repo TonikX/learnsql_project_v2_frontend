@@ -9,6 +9,9 @@ import * as Enum from "../Profile/enum";
 import Room from "./Room/Room";
 import ModalRoomCreator from "./ModalRoomCreator/ModalRoomCreator";
 import Button from "@material-ui/core/Button";
+import {useLocation} from "react-router";
+import ModalWindowWidthButton from "../../components/ModalWindowWithButton/ModalWindowWithButton";
+import RoomInfo from "./RoomInfo/RoomInfo";
 
 const ROOM_JUST_CHAT = 'ROOM_JUST_CHAT';
 const ROOM_BY_TASKS = 'ROOM_BY_TASKS';
@@ -20,8 +23,38 @@ function ChatRoom(state) {
     const [searchRooms, setSearchRooms] = useState(``);
     const {actions, rooms, userData, users, classes} = state;
 
-    const [selectedRoom, setSelectedRoom] = useState(null);
-    const [roomType, setRoomType] = useState(ROOM_JUST_CHAT)
+    const [selectedRoom, setSelectedRoom] = useState(undefined);
+    const [roomType, setRoomType] = useState(ROOM_JUST_CHAT);
+    const location = useLocation();
+
+    const [waitingRoom, setWaitingRoom] = useState(undefined);
+
+    useEffect(()=>{
+        if(location.taskId && !location.exist){
+            const data = new FormData();
+            data.append("type", "Room");
+            data.append("name", location.required_words + ` - ${location.taskId}`);
+            data.append("task", location.taskId);
+
+            actions.createRoom(data);
+            setWaitingRoom( location.taskId );
+            setRoomType(ROOM_BY_TASKS)
+        } else if (location.exist) {
+            for (let i = 0; i < rooms.length; i++) {
+                if (rooms[i].task && rooms[i].task === location.taskId) {
+                    setSelectedRoom(rooms[i].id)
+                }
+            }
+        }
+
+    }, [])
+
+    useEffect(()=>{
+        if(waitingRoom){
+            setSelectedRoom(rooms.filter(room => room.task && room.task === waitingRoom)[0].id)
+            setWaitingRoom(undefined)
+        }
+    }, [rooms])
 
     useEffect(() => {
         actions.getUsers();
@@ -35,6 +68,20 @@ function ChatRoom(state) {
         }
         const array = room.subscribers.filter(subscriber => subscriber.username !== userData.username);
         return array.length > 0 ? array[0].username : ""
+    }
+
+    const createButton = (props) => {
+         const {isOpen, setIsOpen} = props;
+        return (
+            <Button color={'primary'}
+                    variant={'outlined'}
+                    disabled={false}
+                    onClick={()=>setIsOpen(true)}
+
+            >
+                Создать комнату
+            </Button>
+        )
     }
 
     return (
@@ -65,11 +112,11 @@ function ChatRoom(state) {
                         rooms && rooms.filter(room => room.name.indexOf(searchRooms) > -1).filter(room => roomType === ROOM_JUST_CHAT ? room.task === null : room.task).map((room, i) => (
                             <div
 
-                                className={classes.chatEl + ` ${selectedRoom && room.id === selectedRoom.id ? classes.chatElSelect : ''}`}
+                                className={classes.chatEl + ` ${selectedRoom === room.id ? classes.chatElSelect : ''}`}
                                 onClick={() => {
-                                    setSelectedRoom(null)
+                                    setSelectedRoom(undefined)
                                     setTimeout(() => {
-                                        setSelectedRoom(room)
+                                        setSelectedRoom(room.id)
                                     }, 0)
                                 }}
                                 key={i}
@@ -92,20 +139,15 @@ function ChatRoom(state) {
                         ))
                     }
                 </div>
-                <Button color={'primary'}
-                        variant={'outlined'}
-                    // className={classes.button}
-                        disabled={false}
-                >
-                    Создать комнату
-                </Button>
+                <ModalWindowWidthButton Button = {(props) => createButton(props)} blackout={true}>
+                       <ModalRoomCreator/>
+                </ModalWindowWidthButton>
+
             </div>
 
             {
-                selectedRoom && <Room room={selectedRoom}/>
+                selectedRoom && <Room room={rooms.filter(room => room.id === selectedRoom)[0]}/>
             }
-
-
         </div>
     )
 }

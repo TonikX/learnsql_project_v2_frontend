@@ -1,6 +1,7 @@
 import createReducer from "../../store/createReducer";
 import * as C from './constants';
 import * as Enum from './enum';
+import {PUT_ADMIN_FOR_ROOM} from "./constants";
 
 export const GENERAL_PATH = `chat`;
 
@@ -34,18 +35,24 @@ const updateRoom = (state, {payload})=> ({
     })
 })
 
-const updateAdmins = (state, {payload})=> ({
-    ...state,
-    [Enum.ROOMS]: state.rooms.map(room => {
-        if(room.id === payload.id){
-            return {
-                ...room,
-                administrators: payload.data
-            };
-        }
-        return room;
+const updateAdmins = (state, {payload}) => {
+    return ({
+        ...state,
+        [Enum.ROOMS]: state.rooms.map(room => {
+
+            if (room.id === payload.id) {
+                return {
+                    ...room,
+                    administrators: payload.data.map(admin => ({
+                        ...admin,
+                        user: {...admin.user}
+                    }))
+                };
+            }
+            return room;
+        })
     })
-})
+}
 export const reducer = createReducer(initialState, {
     [C.SET_ROOMS]: setRoomList,
     [C.SET_USERS]: setUserList,

@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import styles from "../Chat.styles";
+import styles from "./ModalRoomCreator.styles";
 import connect from "../Chat.connect";
 import {withRouter} from "react-router-dom";
 import withStyles from '@material-ui/core/styles/withStyles';
 import TextField from '@material-ui/core/TextField';
+import Button from "@material-ui/core/Button";
 
-function ModalRoomCreator(state){
+function ModalRoomCreator(state) {
     const [roomName, setRoomName] = useState(``);
     const [isOpen, setIsOpen] = useState(false);
     const {actions, rooms, userData, users, classes} = state;
@@ -24,53 +25,89 @@ function ModalRoomCreator(state){
         actions.createRoom(data)
     }
 
-    const addUser = (user) =>{
+    const addUser = (user) => {
         console.log(userList.filter(el => el === user))
-        setUserList(prev => [...prev, user] )
+        setUserList(prev => [...prev, user])
     }
     return (
         <>
-            <button onClick={()=>setIsOpen(true)}>
-                Создать комнату
-            </button>
-        <div
-            onClick={(e)=> e.target === e.currentTarget && setIsOpen(false)}
-            className={ `${classes.modal} ${isOpen ? classes.modal_show : ``}`}>
             <div className={classes.modalContent}>
+                <div className={classes.title}>
+                    Создание комнаты
+                </div>
                 <TextField
                     label={"Название комнаты"}
                     value={roomName}
                     onChange={e => setRoomName(e.target.value)}
                     type="text"
+                    className={classes.roomName}
                 />
                 <div className={classes.roomList}>
-                    <input onChange={(e) => setSearchUser(e.target.value)} value={searchUser} style={{height: "30px"}}/>
-                    <div className={classes.userList}>
-                        {
-                            userList.map((user, i) => (
-                                <div key={i}  onClick={()=>setUserList(prev => prev.filter(el => el.id !== user.id))}>
-                                    {user.username}
-                                </div>
-                            ))
-                        }
-                    </div>
-                    <div className={classes.userList}>
+                    <div className={classes.searchBlock}>
+                        <TextField label={'Поиск'}
+                                   variant={'outlined'}
+                                   fullWidth
+                                   maxwidth={'100%'}
+                                   value={searchUser}
+                             onChange={(e) => setSearchUser(e.target.value)}
+
+                        />
                         {
                             searchUser !== "" &&
-                            users.filter(user => user.username.indexOf(searchUser) > -1 && userList.indexOf(user) === -1).map((user, i) => (
-                                <div key={i} onClick={()=>addUser(user)}>
-                                    {user.username}
+                            <div className={classes.scrollList + ` ${classes.searchedUsers}`}>
+                                {
+                                    users.filter(user => user.username.indexOf(searchUser) > -1 && userList.indexOf(user)
+                                        === -1).map((user, i) => (
+                                        <div key={i} onClick={() => {
+                                            setSearchUser('');
+                                            addUser(user)
+                                        }} className={classes.searchedUser}>
+                                            {user.username}
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div className={classes.scrollList + ` ${classes.selectedUsers}`}>
+                        {
+                            userList.map((user, i) => (
+
+                                <div key={i} onClick={() => {
+                                    setUserList(prev => prev.filter(el => el.id !== user.id))
+                                }} className={classes.elInBody}>
+                                    <div className={classes.left}>
+                                        <div className={classes.avatar}>
+                                            {user.username[0]}
+                                        </div>
+                                        <div className={classes.infoEL}>
+                                        <span className={classes.elName}>
+                                            {user.username}
+                                        </span>
+                                        </div>
+                                    </div>
+                                    <div className={classes.right}>
+
+                                    </div>
                                 </div>
                             ))
                         }
                     </div>
                 </div>
-                <button onClick={(e) => createRoom(e)} >Создать</button>
+                <Button color={'primary'}
+                        variant={'outlined'}
+                        disabled={roomName.length === 0 || userList.length === 0}
+                        onClick={(e) => createRoom(e)}
+
+                >
+                    Создать комнату
+                </Button>
+
             </div>
-        </div>
         </>
     )
 }
 
 
-export default  withStyles(styles)(connect(withRouter(ModalRoomCreator)));
+export default withStyles(styles)(connect(withRouter(ModalRoomCreator)));
