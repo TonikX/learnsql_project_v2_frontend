@@ -24,6 +24,7 @@ import {getTaskId} from "../../../getters";
 import connect from './Task.connect';
 import styles from './Task.styles';
 import BigImageModal from "../../BigImageModal";
+import math from "lodash";
 
 
 class Task extends React.PureComponent{
@@ -241,6 +242,9 @@ class Task extends React.PureComponent{
         const refResult = get(tableErrorData, [Enum.ERROR_REF_RESULT, 1, 1], []);
         const studentResult = get(tableErrorData, [Enum.ERROR_STUDENT_RESULT, 1, 1], []);
         const taskImage = get(task, `database_image`, '');
+
+        const taskStats = get(task, `statistics_brief`, null);
+
         const errors = this.getCurrentTaskErrors().reverse();
 
         const {openBigImage} = this.state;
@@ -276,6 +280,13 @@ class Task extends React.PureComponent{
                             </div>
 
                             <div className={classes.errorsList}>
+                                {
+                                    taskStats &&
+                                    <Typography className={classes.historyTitle}>
+                                        Верно решили <b>{taskStats.successful}</b> учащихся,
+                                        из всех попыток <b>{math.round((taskStats.successful / taskStats.overall) * 100)}%</b> верных
+                                    </Typography>
+                                }
                                 <Typography className={classes.historyTitle}><b>История выполнения</b></Typography>
                                 {errors.map((item, index) =>
                                   <div className={classes.errorBlock}>
