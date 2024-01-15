@@ -96,8 +96,13 @@ class Header extends React.PureComponent {
                     </Link>
                   </MenuItem>
                   <MenuItem>
-                    <Link to={appRouter.getDatabasesRoute()} className={classNames(classes.menuLink, classes.help)}>
+                    <Link to={appRouter.getDatabasesRoute()} className={classNames(classes.menuLink)}>
                       Админка
+                    </Link>
+                  </MenuItem>
+                  <MenuItem>
+                    <Link to={appRouter.getStatsRoute()} className={classNames(classes.menuLink)}>
+                      Статистика
                     </Link>
                   </MenuItem>
                   <MenuItem onClick={this.handleLogout}>

@@ -21,6 +21,7 @@ const TASKS = 'tasks';
 const CREATE_TASK = 'create_task';
 const TOPICS = 'topics';
 const SECTIONS = 'sections';
+const STATS = 'personal_stats';
 
 
 const SEPARATOR = '/';
@@ -36,6 +37,10 @@ export default class RouterService {
 
     getDatabasesRoute = () => {
         return SEPARATOR + DATABASES;
+    };
+
+    getStatsRoute = () => {
+        return SEPARATOR + STATS;
     };
 
     getDatabaseRoute = (id) => {
