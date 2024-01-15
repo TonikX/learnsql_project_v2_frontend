@@ -27,6 +27,7 @@ import CreateTask from "./containers/CreateTask";
 import CreateTopic from "./containers/CreateTopic";
 import Topics from "./containers/Topics";
 import Sections from "./containers/Sections";
+import PersonalStats from "./containers/PersonalStats/PersonalStats";
 
 const routerService = RouterService.factory();
 const userService = UserService.factory();
@@ -106,6 +107,9 @@ export default () => (
         </PrivateRoute>
         <PrivateRoute path={routerService.getMyCoursesRoute()}>
           <Courses isMy />
+        </PrivateRoute>
+        <PrivateRoute path={routerService.getStatsRoute()}>
+          <PersonalStats />
         </PrivateRoute>
         <Route path={routerService.getLandingPath()}>
           <Landing />

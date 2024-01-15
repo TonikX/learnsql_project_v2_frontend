@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import get from 'lodash/get';
 import {Redirect} from "react-router";
 import {Link} from "react-router-dom";
-import ReactStars from "react-rating-stars-component";
 
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -20,6 +19,7 @@ import UserService from "../../service/user-service";
 
 import connect from './Courses.connect';
 import styles from './Courses.styles';
+import ReactStars from "react-rating-stars-component/dist/react-stars";
 // import moment from "moment";
 
 const userService = UserService.factory();
@@ -52,11 +52,10 @@ class Courses extends React.PureComponent{
                     const isMyCourse = myCourses.find(myCourse => myCourse.course === course.id);
 
                     if (isMy && !isMyCourse) return <></>
-
                     return (
                         <Card className={classes.card} key={`course-${course.id}`}>
-                            <CardContent>
-                                <Typography className={classes.title}>
+                            <CardContent key={course.id}>
+                                <Typography className={classes.title} key={course.id}>
                                     {get(course, 'title', '')}
                                 </Typography>
                                 <Typography className={classes.ratingSubtitle}>
@@ -64,6 +63,10 @@ class Courses extends React.PureComponent{
                                 </Typography>
                                 <Typography>
                                     <b className={classes.subTitle}>Выбор заданий в курсе:</b> {tasksTypes[course.type]}
+                                </Typography>
+                                <Typography>
+                                    <b className={classes.subTitle}>Статистика по курсу:</b>
+                                    всего решений - {course.course_stats_brief.overall}, успешных решений - {course.course_stats_brief.successful}
                                 </Typography>
                                 <Typography className={classes.themesSubtitle}>
                                     Темы курса:
@@ -74,7 +77,7 @@ class Courses extends React.PureComponent{
                                     ))}
                                 </div>
                             </CardContent>
-                            <CardActions className={classes.actions}>
+                            <CardActions className={classes.actions} key={course.id}>
                                 <Typography className={classes.dates}>
                                     {/*<div className={classes.date}>*/}
                                     {/*    <DateRangeIcon color="primary"/> Старт:&nbsp;*/}
