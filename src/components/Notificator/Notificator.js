@@ -10,7 +10,7 @@ class Notificator extends React.Component{
         return !shallowEqual(this.props.errors, nextProps.errors)
             || !shallowEqual(this.props.successMessages, nextProps.successMessages)
         ;
-    }
+    }d
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (!shallowEqual(this.props.errors, prevProps.errors)){
