@@ -13,12 +13,6 @@ export default class BaseService {
         });
     }
 
-    delete(url, deleteData) {
-        return new Promise((successFn, errorFn) => {
-            this.getAxios().delete(url, deleteData).then(successFn).catch(errorFn);
-        });
-    }
-
     post(url, postData) {
         return new Promise((successFn, errorFn) => {
             this.getAxios().post(url, postData).then(successFn).catch(errorFn);

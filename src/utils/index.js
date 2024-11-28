@@ -11,24 +11,3 @@ const validateEmail = (email) => {
 export const getIsPasswordError = (password, passwordRepeat) => {
     return password.length > 0 && passwordRepeat.length > 0 && password !== passwordRepeat;
 };
-
-export const getPagesCount = (totalCount, limit) => {
-    return Math.ceil(totalCount / limit)
-};
-
-export const getPagesArray = (pageCount) => {
-    let res = [];
-    for (let i = 0; i < pageCount; i++) {
-        res.push(i + 1)
-    }
-    return res;
-};
-
-export const getSliceIndexes = (listLength, limit, currentPage) => {
-    if (limit * currentPage > listLength - 1) {
-        return {start: limit * (currentPage - 1), end: listLength }
-    }
-    else {
-        return {start: limit * (currentPage - 1), end: limit * currentPage }
-    }
-};

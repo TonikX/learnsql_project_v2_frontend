@@ -1,8 +1,0 @@
-export const GET_THEMES = 'GET_THEMES';
-export const SET_THEMES = 'SET_THEMES';
-export const GET_THEMES_COUNT = 'GET_THEMES_COUNT';
-export const SET_THEMES_COUNT = 'SET_THEMES_COUNT';
-export const CREATE_THEME = 'CREATE_THEME';
-export const THEME_CHANGE_FIELD ='THEME_CHANGE_FIELD';
-export const UPDATE_THEME = 'UPDATE_THEME';
-export const DELETE_THEME = 'DELETE_THEME';

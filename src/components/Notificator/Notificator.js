@@ -1,5 +1,3 @@
-// noinspection JSValidateTypes
-
 import React from 'react';
 import shallowEqual from "recompose/shallowEqual";
 import {withSnackbar} from 'notistack';

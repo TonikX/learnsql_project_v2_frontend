@@ -1,8 +1,0 @@
-export const DATABASE = 'DATABASE';
-export const GET_DATABASE_FETCHING = 'GET_DATABASE_FETCHING';
-export const UPDATE_DATABASE_FETCHING = 'UPDATE_DATABASE_FETCHING';
-export const DELETE_DATABASE_FETCHING = 'DELETE_DATABASE_FETCHING';
-
-export const TITLE_FIELD = 'title'
-export const DESCRIPTION_FIELD = 'description'
-export const SOURCE_CODE_FIELD = 'source_code'

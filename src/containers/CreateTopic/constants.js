@@ -1,7 +1,0 @@
-export const CREATE_TOPIC = 'CREATE_TOPIC';
-export const TOPIC_CHANGE_FIELD = 'TOPIC_CHANGE_FIELD';
-export const GET_THEMES = 'GET_THEMES';
-export const SET_THEMES = 'SET_THEMES';
-export const GET_SECTIONS = 'GET_SECTIONS';
-export const SET_SECTIONS = 'SET_SECTIONS';
-export const DELETE_TOPIC = 'DELETE_TOPIC';

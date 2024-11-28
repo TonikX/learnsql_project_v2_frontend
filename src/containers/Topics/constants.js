@@ -1,5 +1,0 @@
-export const GET_TOPICS = 'GET_TOPICS';
-export const SET_TOPICS = 'SET_TOPICS';
-export const GET_CURRENT_TOPICS = 'GET_CURRENT_TOPICS';
-export const SET_CURRENT_TOPICS = 'SET_CURRENT_TOPICS';
-export const DELETE_TOPIC = 'DELETE_TOPIC';

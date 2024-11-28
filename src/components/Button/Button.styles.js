@@ -26,14 +26,5 @@ export const useStyles = makeStyles((theme) => createStyles({
       background: theme.palette.primary.main,
       color: '#fff'
     }
-  },
-  delete: {
-    background: '#e61919',
-    border: '2px solid',
-    color: 'white',
-    '&:hover': {
-      background: 'red',
-      color: '#fff'
-    }
   }
 }))
