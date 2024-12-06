@@ -185,7 +185,7 @@ class Task extends React.PureComponent{
     }
 
     changeTabToMethodical = (subMaterialId) => () => {
-        this.props.actions.setCurrentCourseTab(1);
+        this.props.actions.setCurrentCourseTab(2);
         this.props.actions.getCourseMethodicalMaterial(subMaterialId);
         this.props.actions.getCourseMethodicalMaterials();
     }
