@@ -43,6 +43,7 @@ class Courses extends React.PureComponent{
     render() {
         const {classes, auth, courses, myCourses, isMy} = this.props;
         const isAuth = userService.isAuth() && auth;
+        const showOnlyMyCourses = isMy && myCourses.length > 0;
 
         if (!isAuth) return <Redirect to={appRouter.getLandingPath()} />;
 
@@ -51,7 +52,7 @@ class Courses extends React.PureComponent{
                 {courses.map(course => {
                     const isMyCourse = myCourses.find(myCourse => myCourse.course === course.id);
 
-                    if (isMy && !isMyCourse) return <></>
+                    if (showOnlyMyCourses && !isMyCourse) return <></>
 
                     return (
                         <Card className={classes.card} key={`course-${course.id}`}>

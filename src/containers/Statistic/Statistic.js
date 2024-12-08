@@ -48,7 +48,8 @@ export default () => {
       xAxes: [{
         ticks: {
           stepSize: 1,
-          unit: 1
+          unit: 1,
+          beginAtZero: true,
         },
       }]
     },
