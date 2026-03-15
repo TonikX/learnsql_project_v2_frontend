@@ -12,7 +12,7 @@ class AuthService extends BaseService{
         formData.append('client_id',  AppConfig.getClientId());
         formData.append('client_secret', AppConfig.getClientSecret());
 
-        return this.post('/social_auth_v2/token', formData);
+        return this.post('/auth/jwt/create/', formData);
     }
 
     signUp(formData) {
