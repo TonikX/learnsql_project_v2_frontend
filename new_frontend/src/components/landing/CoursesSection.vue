@@ -1,19 +1,21 @@
 <script setup lang="ts">
-import AppContainer from '@/components/layout/AppContainer.vue'
 import AppSectionTitle from '@/components/ui/AppSectionTitle.vue'
-import CourseCard from '@/components/landing/CourseCard.vue'
+import CourseCard from './CourseCard.vue'
 import { useCoursesStore } from '@/stores/coursesStore'
 
 const store = useCoursesStore()
 </script>
 
 <template>
-    <AppContainer as="section" class="py-16">
-        <AppSectionTitle title="Все курсы" subtitle="Выберите тему и начните практику." />
+    <section id="courses" class="app-container scroll-mt-10 py-16">
+        <AppSectionTitle
+        title="Курсы"
+        subtitle="Начните с базовых тем и двигайтесь дальше."
+        />
 
         <div class="mt-10 grid gap-6 lg:grid-cols-3">
         <CourseCard
-            v-for="c in store.courses"
+            v-for="c in store.previewCourses"
             :key="c.id"
             :title="c.title"
             :description="c.description"
@@ -23,5 +25,5 @@ const store = useCoursesStore()
             to="/courses"
         />
         </div>
-    </AppContainer>
+    </section>
 </template>

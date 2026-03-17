@@ -1,5 +1,6 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import PublicLayout from ''
+import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import PublicLayout from '@/components/layout/PublicLayout.vue'
 
 const routes: RouteRecordRaw[] = [
     {
@@ -21,6 +22,11 @@ const routes: RouteRecordRaw[] = [
                 name: 'register',
                 component: () => import('@/views/RegisterView.vue')
             },
+            {
+                path: 'courses',
+                name: 'courses',
+                component: () => import('@/views/CoursesView.vue')
+            },
         ]
     }
 ]
@@ -29,7 +35,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes,
     scrollBehavior(to) {
-        if (to.hash) return { el: to.hash, behavior: 'smooth'}
+        if (to.hash) return { el: to.hash, top: 95, behavior: 'smooth'}
         return { top: 0}
     },
 })
