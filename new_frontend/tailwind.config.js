@@ -7,8 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: '#F6F8FF',
-        text: '#0F172A',
+        bg: 'var(--bg-main)',
+        'bg-header': 'var(--bg-header)',
+        text: {
+          main: 'var(--text-main)',
+          neg: 'var(--text-neg)',
+        },
         surface2: '#F2F5FF',
         primary: {
           50: '#EAF0FF',

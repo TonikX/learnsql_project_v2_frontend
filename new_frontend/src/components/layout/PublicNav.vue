@@ -8,20 +8,12 @@ const isHome = computed(() => route.name === 'home')
 
 <template>
     <nav class="hidden items-center gap-2 md:flex">
-        <a
-            v-if="isHome"
-            href="#why"
-            class="rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-primary-100"
-        >
-            Почему SQL
+        <a v-if="isHome" href="#why" class="text-lg text-text-neg">
+            [ Почему SQL ]
         </a>
 
-        <a
-            v-if="isHome"
-            href="#steps"
-            class="rounded-full bg-primary-50 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-primary-100"
-        >
-            Как работает
+        <a v-if="isHome" href="#steps" class="text-lg text-text-neg">
+            [ Как работает ]
         </a>
 
         <a
