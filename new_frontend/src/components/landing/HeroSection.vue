@@ -3,7 +3,7 @@ import AppButton from '@/components/ui/AppButton.vue'
 import AppCard from '@/components/ui/AppCard.vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useProgressStore } from '@/stores/progressStore'
-import { useCoursesStore } from '@/stores/coursesStore'
+import { useCoursesStore } from '@/stores/coursesMockStore'
 
 const auth = useAuthStore()
 const progress = useProgressStore()

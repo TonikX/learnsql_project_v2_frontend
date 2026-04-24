@@ -9,6 +9,12 @@ export default {
       colors: {
         bg: 'var(--bg-main)',
         'bg-header': 'var(--bg-header)',
+        course: {
+          'card-begin': 'var(--cc-begin)',
+          'card-end': 'var(--cc-end)',
+          'grid': 'var(--course-grid)',
+          'grid-stroke': 'var(--course-stroke)',
+        },
         text: {
           main: 'var(--text-main)',
           neg: 'var(--text-neg)',
@@ -21,6 +27,10 @@ export default {
           500: '#1E4BFF',
           600: '#173FE0',
           700: '#1437C2',
+        },
+        success: {
+          begin: 'var(--success-begin)',
+          end: 'var(--success-end)',
         },
       },
       boxShadow: {
