@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppSectionTitle from '@/components/ui/AppSectionTitle.vue'
-import CourseCard from './CourseCard.vue'
-import { useCoursesStore } from '@/stores/coursesStore'
+import CourseCard from '../courses/CourseCard.vue'
+import { useCoursesStore } from '@/stores/coursesMockStore'
 
 const store = useCoursesStore()
 </script>
@@ -16,12 +16,7 @@ const store = useCoursesStore()
         <div class="mt-10 grid gap-6 lg:grid-cols-3">
         <CourseCard
             v-for="c in store.previewCourses"
-            :key="c.id"
-            :title="c.title"
-            :description="c.description"
-            :level="c.level"
-            :meta="c.meta"
-            :status="c.status"
+            :course="c"
             to="/courses"
         />
         </div>

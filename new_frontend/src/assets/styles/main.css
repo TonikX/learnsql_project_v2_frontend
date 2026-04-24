@@ -1,22 +1,51 @@
-@import url("https://fonts.googleapis.com/css?family=JetBrains Mono");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'JetBrains Mono NL';
+    src: url('../fonts/jetbrains-mono-nl-regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
 @layer base {
     :root {
+        /* основные цвета */
         --bg-main: #FFFFFF;
         --bg-header: #27272A;
         --text-main: #000000;
         --text-neg: #FFFFFF;
+
+        /* кнопки */
+        --success-begin: #50C878;
+        --success-end: #8ADAA5;
+
+        /* курсы */
+        --cc-begin: #D4D4D8;
+        --cc-end:  #F0F0F0;
+        --course-grid: #F2F3F4;
+        --course-stroke: #B6B6B6;
     }
 
+    /* темная тема в браузере */
     @media (prefers-color-scheme: dark) {
         :root {
+            /* основные цвета */
             --bg-main: #27272A;
             --bg-header: #F2F3F4;
             --text-main: #FFFFFF;
             --text-neg: #000000;
+
+            /* кнопки */
+            --success-begin: #50C878;
+            --success-end: #27623B;
+
+            /* курсы */
+            --cc-begin: #424242;
+            --cc-end:  #202124;
+            --course-grid: #16171B;
+            --course-stroke: #828282;
         }
     }
 
@@ -27,7 +56,7 @@
     }
 
     body {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: 'JetBrains Mono NL', monospace;
         margin: 0;
         @apply bg-bg text-text-main antialiased;
     }
@@ -35,7 +64,6 @@
 
 @layer components {
     .app-container {
-        /* @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8; */
-        @apply mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-8;
+        @apply mx-auto max-w-[90%] px-4 sm:px-6 lg:px-8;
     }
 }

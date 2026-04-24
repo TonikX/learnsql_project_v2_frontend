@@ -8,7 +8,7 @@ const auth = useAuthStore()
 const { isAuth } = storeToRefs(auth)
 
 const negative_hover = "hover:text-text-main hover:bg-bg"
-const btn_group = "flex items-center gap-2 text-lg text-text-neg font-semibold"
+const btn_group = "flex items-center gap-2 text-lg text-text-neg font-medium"
 </script>
 
 <template>

@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
+type Variant = 'primary' | 'success' | 'ghost' | 'danger'
 type Size = 'sm' | 'md' | 'lg'
 
 const props = withDefaults(defineProps<{
@@ -21,7 +21,7 @@ const props = withDefaults(defineProps<{
     loading: false,
 })
 
-const base = 'inline-flex items-center justify-center gap-2 rounded-xl font-bold transition active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none'
+const base = 'inline-flex items-center justify-center gap-2 rounded-xl transition cursor-pointer active:scale-[0.99] disabled:opacity-50 disabled:pointer-events-none'
 
 const sizes = computed(() => {
     if (props.size === 'sm') return 'h-9 px-4 text-sm'
@@ -31,10 +31,10 @@ const sizes = computed(() => {
 
 const variants = computed(() => {
     switch (props.variant) {
-        case 'secondary':
-            return 'bg-white text-slate-800 ring-2 ring-primary-100 hover:ring-primary-200'
+        case 'success':
+            return 'bg-gradient-to-r from-success-begin to-success-end'
         case 'ghost':
-            return 'bg-transparent text-slate-800 hover:bg-slate-100'
+            return 'bg-transparent hover:bg-slate-100'
         case 'danger':
             return 'bg-rose-500 text-white hover:bg-rose-600'
         default:
