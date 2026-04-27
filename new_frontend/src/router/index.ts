@@ -27,8 +27,40 @@ const routes: RouteRecordRaw[] = [
             {
                 path: 'courses',
                 name: 'courses',
-                component: () => import('@/views/CoursesView.vue')
+                component: () => import('@/views/CoursesListView.vue')
             },
+            {
+                path: 'courses/:course_id',
+                name: 'course',
+                component: () => import('@/views/CourseView.vue'),
+                children: [
+                    {
+                        path: '',
+                        component: () => import('@/components/courses/CourseDetails.vue'),
+                    },
+                    {
+                        path: 'details',
+                        name: 'details',
+                        component: () => import('@/components/courses/CourseDetails.vue'),
+                    }, 
+                    {
+                        path: 'schema/:task_id',
+                        name: 'schema',
+                        component: () => import('@/components/courses/DbSchema.vue')
+                    },
+                    {
+                        path: 'problem/:task_id',
+                        name: 'problem',
+                        component: () => import('@/components/courses/Problem.vue')
+                    },
+                ],
+            },
+            {
+                path: '/:pathMatch(.*)*',
+                name: 'not_found',
+                component: () => import('@/views/errors/NotFoundView.vue'),
+                meta: { hideFooter: true }
+            }
         ]
     }
 ]

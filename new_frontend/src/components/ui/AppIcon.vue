@@ -1,11 +1,13 @@
 <template>
-    <svg :style="{ width: size, height: size }" class="fill-text-neg">
+    <svg :style="{ width: size, height: size }" :class="fillClass">
         <use :href="`/assets/sprite.svg#${name}-icon`"></use>
     </svg>
 </template>
 
 <script setup lang="ts">
-defineProps({
+import { toRefs, computed } from 'vue';
+
+const props = defineProps({
     name: {
         type: String,
         required: true
@@ -14,5 +16,12 @@ defineProps({
         type: [String, Number],
         default: '24px'
     },
+    negative: {
+        type: Boolean,
+        default: false
+    }
 })
+
+const { negative } = toRefs(props)
+const fillClass = computed(() => { return negative.value ? "fill-text-neg" : "fill-text-main" })
 </script>

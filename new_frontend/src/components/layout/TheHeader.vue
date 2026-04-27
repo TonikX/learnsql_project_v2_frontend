@@ -23,8 +23,8 @@ const btn_group = "flex items-center gap-2 text-lg text-text-neg font-medium"
             <div :class="btn_group">
                 <RouterLink to="/" :class="negative_hover">[ Помощь ]</RouterLink>
                 <RouterLink to="/" :class="negative_hover">[ О сайте ]</RouterLink>
-                <template v-if="isAuth"> 
-                    <AppIcon :name="`profile`" :size="32"></AppIcon>
+                <template v-if="!isAuth"> 
+                    <AppIcon name="profile" :size="32" :negative="true"></AppIcon>
                 </template>
                 <template v-else>
                     <RouterLink to="/login" :class="negative_hover">[ Войти -> ]</RouterLink> 
