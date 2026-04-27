@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import AppSectionTitle from '@/components/ui/AppSectionTitle.vue'
 import CourseCard from '../courses/CourseCard.vue'
-import { useCoursesStore } from '@/stores/coursesMockStore'
+import { useCoursesStore } from '@/stores/courseStore'
 
 const store = useCoursesStore()
 </script>

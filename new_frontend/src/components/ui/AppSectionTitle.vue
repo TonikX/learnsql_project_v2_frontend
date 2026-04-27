@@ -1,19 +1,27 @@
 <script setup lang="ts">
+import IconTitle from './IconTitle.vue';
+
 const props = withDefaults(defineProps<{
     title: string
     subtitle?: string
+    icon?: string
     align?: 'left' | 'center'
 }>(), {
     align: 'left',
 })
+
 </script>
 
 <template>
-    <div :class="align === 'center' ? 'text-center' : 'text-left'">
-        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">{{ title }}</h2>
-        <p v-if="subtitle" class="mt-3 text-base font-semibold text-slate-600">{{ subtitle }}</p>
-        <div class="mt-6">
-        <slot />
-        </div>
-    </div>
+<div>
+    <IconTitle 
+        :title="title" 
+        :subtitle="subtitle"
+        :icon="icon"
+        :align="align"
+    >
+    </IconTitle>
+        
+    <slot /> 
+</div>
 </template>

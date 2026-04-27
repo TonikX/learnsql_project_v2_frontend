@@ -7,7 +7,7 @@ const router = useRoute()
 </script>
 
 <template>
-    <div>
+    <div class="grid grid-rows-[auto_1fr_auto] min-h-screen">
         <TheHeader />
         <main>
             <RouterView />

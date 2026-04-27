@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import AppButton from '@/components/ui/AppButton.vue'
+import useCourseDifficulty from '@/composables/courseDifficulty';
 import type { Course } from '@/types/courseTypes';
-import { computed } from 'vue';
+import { toRefs, computed } from 'vue';
 
 const props = defineProps<{
     course: Course
-    to?: string
 }>()
 
-const difficulty = computed(() => {
-    const times = props.course.level % 10
-    return ['█'.repeat(times), '░'.repeat(10 - times)]
-})
+const { course } = toRefs(props)
+const difficulty = useCourseDifficulty(course)
+const courseLink = computed(() => {
+    return course.value?.id 
+        ? `/courses/${course.value.id}/` 
+        : '/courses'; // fallback
+});
 
 </script>
 
@@ -31,7 +34,7 @@ const difficulty = computed(() => {
         <p v-if="course.meta" class="mt-3">{{ course.meta }}</p>
 
         <div class="mt-6 flex justify-end">
-            <AppButton v-if="course.status !== 'soon'" :to="to || '/courses'" size="md" variant="success">
+            <AppButton v-if="course.status !== 'soon'" :to="courseLink" size="md" variant="success">
                 Открыть курс
             </AppButton>
 

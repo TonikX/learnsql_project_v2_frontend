@@ -9,6 +9,8 @@ export default {
       colors: {
         bg: 'var(--bg-main)',
         'bg-header': 'var(--bg-header)',
+        'segment-begin': 'var(--segment-begin)',
+        'segment-end': 'var(--segment-end)',
         course: {
           'card-begin': 'var(--cc-begin)',
           'card-end': 'var(--cc-end)',
@@ -32,6 +34,7 @@ export default {
           begin: 'var(--success-begin)',
           end: 'var(--success-end)',
         },
+        danger: 'var(--danger)',
       },
       boxShadow: {
         card: '0 10px 30px rgba(15, 23, 42, 0.08)',

@@ -3,7 +3,7 @@ import AppButton from '@/components/ui/AppButton.vue'
 import AppCard from '@/components/ui/AppCard.vue'
 import { useAuthStore } from '@/stores/authStore'
 import { useProgressStore } from '@/stores/progressStore'
-import { useCoursesStore } from '@/stores/coursesMockStore'
+import { useCoursesStore } from '@/stores/courseStore'
 
 const auth = useAuthStore()
 const progress = useProgressStore()
@@ -28,7 +28,7 @@ const courses = useCoursesStore()
             <div class="mt-8 flex flex-wrap gap-3">
                 <AppButton v-if="auth.isAuth" to="/courses">Продолжить обучение</AppButton>
                 <AppButton v-else to="/register">Начать обучение</AppButton>
-                <AppButton variant="secondary" to="/courses">Посмотреть курсы</AppButton>
+                <AppButton variant="ghost" to="/courses">Посмотреть курсы</AppButton>
             </div>
 
             <div class="mt-6 flex flex-wrap gap-2">
@@ -78,8 +78,8 @@ const courses = useCoursesStore()
                 <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
                 <div class="flex items-center justify-between gap-4">
                     <div>
-                    <div class="text-sm font-extrabold text-slate-900">Курс: {{ courses.previewCourses[0].title }}</div>
-                    <div class="mt-1 text-sm font-semibold text-slate-500">{{ courses.previewCourses[0].meta }}</div>
+                    <!-- <div class="text-sm font-extrabold text-slate-900">Курс: {{ courses.previewCourses[0].title }}</div>
+                    <div class="mt-1 text-sm font-semibold text-slate-500">{{ courses.previewCourses[0].meta }}</div> -->
                     </div>
                     <AppButton size="sm" to="/courses">Открыть</AppButton>
                 </div>
@@ -88,10 +88,10 @@ const courses = useCoursesStore()
                 <div class="rounded-2xl bg-white p-4 ring-1 ring-slate-200">
                 <div class="flex items-center justify-between gap-4">
                     <div>
-                    <div class="text-sm font-extrabold text-slate-900">Курс: {{ courses.previewCourses[1].title }}</div>
-                    <div class="mt-1 text-sm font-semibold text-slate-500">{{ courses.previewCourses[1].meta }}</div>
+                    <!-- <div class="text-sm font-extrabold text-slate-900">Курс: {{ courses.previewCourses[1].title }}</div>
+                    <div class="mt-1 text-sm font-semibold text-slate-500">{{ courses.previewCourses[1].meta }}</div> -->
                     </div>
-                    <AppButton size="sm" variant="secondary" to="/courses">Смотреть</AppButton>
+                    <AppButton size="sm" variant="ghost" to="/courses">Смотреть</AppButton>
                 </div>
                 </div>
             </div>

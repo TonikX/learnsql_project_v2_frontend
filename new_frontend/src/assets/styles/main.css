@@ -16,6 +16,7 @@
         --bg-header: #27272A;
         --text-main: #000000;
         --text-neg: #FFFFFF;
+        --danger: #D64D4D;
 
         /* кнопки */
         --success-begin: #50C878;
@@ -26,6 +27,9 @@
         --cc-end:  #F0F0F0;
         --course-grid: #F2F3F4;
         --course-stroke: #B6B6B6;
+
+        --segment-begin: #F0F0F0;
+        --segment-end: #D4D4D8;
     }
 
     /* темная тема в браузере */
@@ -36,6 +40,7 @@
             --bg-header: #F2F3F4;
             --text-main: #FFFFFF;
             --text-neg: #000000;
+            --danger: #D64D4D;
 
             /* кнопки */
             --success-begin: #50C878;
@@ -46,6 +51,9 @@
             --cc-end:  #202124;
             --course-grid: #16171B;
             --course-stroke: #828282;
+
+            --segment-begin: #2D2D30;
+            --segment-end:  #34343A;
         }
     }
 
