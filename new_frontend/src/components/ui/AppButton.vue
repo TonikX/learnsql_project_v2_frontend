@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 
-type Variant = 'primary' | 'success' | 'ghost' | 'danger'
+type Variant = 'primary' | 'secondary' | 'success' | 'ghost' | 'danger'
 type Size = 'sm' | 'md' | 'lg'
 
 const props = withDefaults(defineProps<{
@@ -31,15 +31,25 @@ const sizes = computed(() => {
 
 const variants = computed(() => {
     switch (props.variant) {
+        case 'secondary':
+            return 'border border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-text)] hover:bg-[var(--color-panel)]'
         case 'success':
             return 'bg-gradient-to-r from-success-begin to-success-end'
         case 'ghost':
-            return 'bg-transparent hover:bg-slate-100'
+            return 'bg-transparent text-[var(--color-text)] hover:bg-[var(--color-panel)]'
         case 'danger':
             return 'bg-rose-500 text-white hover:bg-rose-600'
         default:
             return 'bg-primary-500 text-white hover:bg-primary-600'
     }
+})
+
+const spinnerClass = computed(() => {
+    if (props.variant === 'secondary' || props.variant === 'ghost') {
+        return 'border-[var(--color-text)]/30 border-t-[var(--color-text)]'
+    }
+
+    return 'border-white/60 border-t-white'
 })
 </script>
 
@@ -58,6 +68,9 @@ const variants = computed(() => {
         </span>
         <slot name="rightIcon" />
 
-        <span v-if="loading" class="ml-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/60 border-t-white"></span>
+        <span
+            v-if="loading"
+            :class="['ml-2 inline-block h-4 w-4 animate-spin rounded-full border-2', spinnerClass]"
+        ></span>
     </component>
 </template>

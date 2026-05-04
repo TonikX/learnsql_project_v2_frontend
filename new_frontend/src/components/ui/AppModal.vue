@@ -24,9 +24,9 @@ const emit = defineEmits<{ (e: 'close'): void }>()
             <AppCard padding="lg">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                <h3 v-if="title" class="text-lg font-extrabold text-slate-900">{{ title }}</h3>
+                <h3 v-if="title" class="text-lg font-extrabold text-app-text">{{ title }}</h3>
                 </div>
-                <button class="text-slate-500 hover:text-slate-900" @click="emit('close')">✕</button>
+                <button class="text-app-muted hover:text-app-text" @click="emit('close')">✕</button>
             </div>
 
             <div class="mt-4">

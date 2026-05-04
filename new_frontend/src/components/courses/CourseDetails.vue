@@ -30,7 +30,7 @@ const { loadCourseStats } = courseStore
 const { currentCourse } = storeToRefs(courseStore)
 
 const themeStore = useThemeStore()
-const { currentTheme } = storeToRefs(themeStore)
+const { resolvedTheme } = storeToRefs(themeStore)
 
 const stats = ref<StudentInCourseStats[]>([])
 const statPage = ref(1)
@@ -87,7 +87,7 @@ window.addEventListener("resize", () => {
 })
 
 // force chart redraw if theme changed
-watch(currentTheme, () => {
+watch(resolvedTheme, () => {
     chartMetaColor.value = getStyle('--text-main')
     chartKey.value++
 })
