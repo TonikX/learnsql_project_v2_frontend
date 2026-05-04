@@ -26,8 +26,8 @@ function submit() {
     <AppContainer as="section" class="py-16">
         <div class="mx-auto max-w-md">
             <AppCard padding="lg">
-                <h1 class="text-2xl font-extrabold text-slate-900">Регистрация</h1>
-                <p class="mt-2 text-sm font-semibold text-slate-600">
+                <h1 class="text-2xl font-extrabold text-app-text">Регистрация</h1>
+                <p class="mt-2 text-sm font-semibold text-app-muted">
                     Создайте аккаунт и начните обучение.
                 </p>
 
@@ -44,9 +44,9 @@ function submit() {
                     <AppButton class="w-full" @click="submit">Создать аккаунт</AppButton>
                 </div>
 
-                <div class="mt-6 text-sm font-semibold text-slate-600">
+                <div class="mt-6 text-sm font-semibold text-app-muted">
                     Уже есть аккаунт?
-                    <RouterLink to="/login" class="text-primary-600 hover:underline">
+                    <RouterLink to="/login" class="text-primary-action hover:underline">
                         Войти
                     </RouterLink>
                 </div>

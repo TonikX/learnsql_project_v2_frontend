@@ -23,4 +23,44 @@
 	<symbol id="materials-icon" viewBox="0 0 1920 1920">
 		<path d="M1468.183 451.76v1468.184H0V451.76h1468.183ZM1920 0v1468.296h-338.812V338.812H451.704V0H1920ZM338.812 1016.446h790.56V903.509h-790.56v112.937Zm0 225.874h564.686v-112.937H338.812v112.937Zm0 225.988h790.56v-113.05h-790.56v113.05Z" fill-rule="evenodd"/>
 	</symbol>
+	<symbol id="play-icon" viewBox="0 0 20 20">
+		<path fill-rule="evenodd" clip-rule="evenodd" d="M3.064.851A2.55 2.55 0 0 1 5.563.88l11.388 6.991a2.42 2.42 0 0 1 .001 4.205L5.565 19.119l-.031.018a2.55 2.55 0 0 1-2.47.01 2.43 2.43 0 0 1-1.304-2.093V2.946A2.43 2.43 0 0 1 3.064.851Zm1.226 1.47a.72.72 0 0 0-.407.118.58.58 0 0 0-.337.531v14.06c.003.119.04.234.107.332a.72.72 0 0 0 .27.221.74.74 0 0 0 .721.006l11.404-7.055.083-.044a.575.575 0 0 0 0-1.033l-.08-.043L4.644 2.411a.72.72 0 0 0-.354-.09Z" fill="currentColor"/>
+	</symbol>
+	<symbol id="book-icon" viewBox="0 0 24 24">
+		<path d="M12 6.042C10.351 4.564 8.214 3.747 6 3.75c-1.052 0-2.062.18-3 .512v14.25A9.07 9.07 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25c1.649-1.478 3.786-2.295 6-2.292 1.052 0 2.062.18 3 .512v14.25A9.07 9.07 0 0 0 18 18c-2.214-.003-4.351.814-6 2.292m0-14.25v14.25" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+	</symbol>
+	<symbol id="code-icon" viewBox="0 0 27 24">
+		<path d="M7.875 8 3.375 12l4.5 4M19.125 8l4.5 4-4.5 4M15.75 4l-4.5 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+	</symbol>
+	<symbol id="target-icon" viewBox="0 0 24 24">
+		<path d="M11 12a1 1 0 1 0 2 0 1 1 0 0 0-2 0Z" fill="none" stroke="currentColor" stroke-width="2"/>
+		<path d="M7 12a5 5 0 1 0 10 0 5 5 0 0 0-10 0Z" fill="none" stroke="currentColor" stroke-width="2"/>
+		<path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0Z" fill="none" stroke="currentColor" stroke-width="2"/>
+	</symbol>
+	<symbol id="chart-icon" viewBox="0 0 24 24">
+		<path d="m23 6-10 10-5-5-7 7M23 6h-7M23 6v7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+	</symbol>
+	<symbol id="chat-icon" viewBox="0 0 23 23">
+		<path d="M12.047 18.09c4.839 0 8.762-3.597 8.762-7.685 0-4.089-3.923-7.12-8.762-7.12-4.839 0-8.762 3.315-8.762 7.403 0 1.596.598 3.075 1.616 4.282l-1.068 5.018 4.289-2.68a10.2 10.2 0 0 0 3.925.782Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+	</symbol>
+	<symbol id="check-icon" viewBox="0 0 27 21">
+		<path d="m1.5 11.5 8 8 16-18" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+	</symbol>
+	<symbol id="check-circle-icon" viewBox="0 0 24 24">
+		<path fill-rule="evenodd" clip-rule="evenodd" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10Zm-1.177-7.86-2.765-2.767L7 12.431l3.119 3.121a1 1 0 0 0 1.414 0l5.952-5.95-1.062-1.062-5.6 5.6Z" fill="currentColor"/>
+	</symbol>
+	<symbol id="spark-icon" viewBox="0 0 24 24">
+		<path d="m21.45 11.11-3-1.5-2.68-1.34-.03-.03-1.34-2.68-1.5-3a1 1 0 0 0-1.79 0l-1.5 3-1.34 2.68-.03.03-2.68 1.34-3 1.5A1 1 0 0 0 2.01 12c0 .37.21.72.55.89l3 1.5 2.68 1.34.03.03 1.34 2.68 1.5 3a1 1 0 0 0 1.78 0l1.5-3 1.34-2.68.03-.03 2.68-1.34 3-1.5a1 1 0 0 0 0-1.78h.01ZM19.5 1.5l-.94 2.06-2.06.94 2.06.94.94 2.06.94-2.06 2.06-.94-2.06-.94-.94-2.06Z" fill="currentColor"/>
+	</symbol>
+	<symbol id="sun-icon" viewBox="0 0 60 60">
+		<path d="M20 30a10 10 0 1 0 20 0 10 10 0 0 0-20 0Z" fill="none" stroke="currentColor" stroke-width="3"/>
+		<path d="M7.5 30H10M30 7.5V10M50 30h2.5M30 50v2.5M14 14l1.75 1.75M46 14l-1.75 1.75M44.25 44.25 46 46M15.75 44.25 14 46" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+	</symbol>
+	<symbol id="moon-icon" viewBox="0 0 60 60">
+		<path d="M30 7.5h.983a22.5 22.5 0 1 0 19.8 31.115A20 20 0 0 1 30 7.48v.02ZM42.5 10a5 5 0 0 0 5 5 5 5 0 0 0-5 5 5 5 0 0 0-5-5 5 5 0 0 0 5-5ZM47.5 27.5h5M50 25v5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+	</symbol>
+	<symbol id="system-icon" viewBox="0 0 50 50">
+		<path d="M41.406 13.063a4.67 4.67 0 0 1 2.344 4.058v15.175a4.62 4.62 0 0 1-2.413 4.058l-14.062 8.896a4.73 4.73 0 0 1-4.55 0L8.662 36.354a4.62 4.62 0 0 1-2.412-4.058V17.119c0-1.686.923-3.238 2.413-4.057l14.062-8.291a4.86 4.86 0 0 1 4.688 0l14.062 8.291h-.069Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+		<path d="M18.75 25a6.25 6.25 0 1 0 12.5 0 6.25 6.25 0 0 0-12.5 0Z" fill="none" stroke="currentColor" stroke-width="2"/>
+	</symbol>
 </svg>

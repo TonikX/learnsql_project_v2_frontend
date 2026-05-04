@@ -11,50 +11,178 @@
 
 @layer base {
     :root {
-        /* основные цвета */
         --bg-main: #FFFFFF;
         --bg-header: #27272A;
         --text-main: #000000;
         --text-neg: #FFFFFF;
         --danger: #D64D4D;
 
-        /* кнопки */
+        --color-page: #FFFFFF;
+        --color-header: #27272A;
+        --color-header-text: #FFFFFF;
+        --color-header-link-hover: #FFFFFF;
+        --color-header-link-hover-text: #242428;
+        --color-footer: #FFFFFF;
+        --color-footer-text: #000000;
+        --color-panel: #E8E8E8;
+        --color-panel-strong: #E8E8E8;
+        --color-editor-card: #F7F7F7;
+        --color-result-header: #EBEBEB;
+        --color-card: #FFFFFF;
+        --color-card-muted: #E8E8E8;
+        --color-text: #000000;
+        --color-text-muted: #5F5F5F;
+        --color-border: #AFAFAF;
+        --color-border-soft: #BDBDBD;
+        --color-primary: #318CE7;
+        --color-primary-hover: #247BD0;
+        --color-primary-gradient-start: #318CE7;
+        --color-primary-gradient-end: #76B2EF;
+        --color-success: #34C766;
+        --color-progress-track: #D0D0D0;
+        --color-progress-green: #59C97A;
+        --color-icon-box: #EEF3FF;
+        --color-surface-contrast: #FFFFFF;
+        --color-sql-pink: #D9468B;
+        --color-status-success-bg: #EAF6ED;
+        --color-status-success-text: #0CA726;
+        --color-status-progress-bg: #EEF3FF;
+        --color-status-progress-text: #318CE7;
+        --color-theme-menu: #242428;
+        --color-theme-menu-border: #5D5E64;
+
         --success-begin: #50C878;
         --success-end: #8ADAA5;
 
-        /* курсы */
         --cc-begin: #D4D4D8;
-        --cc-end:  #F0F0F0;
+        --cc-end: #F0F0F0;
         --course-grid: #F2F3F4;
         --course-stroke: #B6B6B6;
-
         --segment-begin: #F0F0F0;
         --segment-end: #D4D4D8;
+
+        --gradient-panel: linear-gradient(90deg, #E8E8E8 0%, #E8E8E8 100%);
+        --gradient-card-surface: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);
+        --gradient-card-surface-horizontal: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 100%);
+        --gradient-inner-panel: linear-gradient(90deg, #F7F7F7 0%, #F7F7F7 100%);
+        --gradient-result-header: linear-gradient(90deg, #EBEBEB 0%, #EBEBEB 100%);
+        --gradient-primary: linear-gradient(90deg, #318CE7 0%, #76B2EF 100%);
     }
 
-    /* темная тема в браузере */
-    @media (prefers-color-scheme: dark) {
-        :root {
-            /* основные цвета */
-            --bg-main: #27272A;
-            --bg-header: #F2F3F4;
-            --text-main: #FFFFFF;
-            --text-neg: #000000;
-            --danger: #D64D4D;
+    [data-theme='light'] {
+        --bg-main: #FFFFFF;
+        --bg-header: #27272A;
+        --text-main: #000000;
+        --text-neg: #FFFFFF;
+        --danger: #D64D4D;
 
-            /* кнопки */
-            --success-begin: #50C878;
-            --success-end: #27623B;
+        --color-page: #FFFFFF;
+        --color-header: #27272A;
+        --color-header-text: #FFFFFF;
+        --color-header-link-hover: #FFFFFF;
+        --color-header-link-hover-text: #242428;
+        --color-footer: #FFFFFF;
+        --color-footer-text: #000000;
+        --color-panel: #E8E8E8;
+        --color-panel-strong: #E8E8E8;
+        --color-editor-card: #F7F7F7;
+        --color-result-header: #EBEBEB;
+        --color-card: #FFFFFF;
+        --color-card-muted: #E8E8E8;
+        --color-text: #000000;
+        --color-text-muted: #5F5F5F;
+        --color-border: #AFAFAF;
+        --color-border-soft: #BDBDBD;
+        --color-primary: #318CE7;
+        --color-primary-hover: #247BD0;
+        --color-primary-gradient-start: #318CE7;
+        --color-primary-gradient-end: #76B2EF;
+        --color-success: #34C766;
+        --color-progress-track: #D0D0D0;
+        --color-progress-green: #59C97A;
+        --color-icon-box: #EEF3FF;
+        --color-surface-contrast: #FFFFFF;
+        --color-sql-pink: #D9468B;
+        --color-status-success-bg: #EAF6ED;
+        --color-status-success-text: #0CA726;
+        --color-status-progress-bg: #EEF3FF;
+        --color-status-progress-text: #318CE7;
+        --color-theme-menu: #242428;
+        --color-theme-menu-border: #5D5E64;
 
-            /* курсы */
-            --cc-begin: #424242;
-            --cc-end:  #202124;
-            --course-grid: #16171B;
-            --course-stroke: #828282;
+        --success-begin: #50C878;
+        --success-end: #8ADAA5;
+        --cc-begin: #D4D4D8;
+        --cc-end: #F0F0F0;
+        --course-grid: #F2F3F4;
+        --course-stroke: #B6B6B6;
+        --segment-begin: #F0F0F0;
+        --segment-end: #D4D4D8;
 
-            --segment-begin: #2D2D30;
-            --segment-end:  #34343A;
-        }
+        --gradient-panel: linear-gradient(90deg, #E8E8E8 0%, #E8E8E8 100%);
+        --gradient-card-surface: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);
+        --gradient-card-surface-horizontal: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 100%);
+        --gradient-inner-panel: linear-gradient(90deg, #F7F7F7 0%, #F7F7F7 100%);
+        --gradient-result-header: linear-gradient(90deg, #EBEBEB 0%, #EBEBEB 100%);
+        --gradient-primary: linear-gradient(90deg, #318CE7 0%, #76B2EF 100%);
+    }
+
+    [data-theme='dark'] {
+        --bg-main: #27272A;
+        --bg-header: #F2F3F4;
+        --text-main: #FFFFFF;
+        --text-neg: #000000;
+        --danger: #D64D4D;
+
+        --color-page: #27272A;
+        --color-header: #F2F3F4;
+        --color-header-text: #000000;
+        --color-header-link-hover: #242428;
+        --color-header-link-hover-text: #FFFFFF;
+        --color-footer: #27272A;
+        --color-footer-text: #FFFFFF;
+        --color-panel: #2D2D30;
+        --color-panel-strong: #34343A;
+        --color-editor-card: #16171B;
+        --color-result-header: #16171B;
+        --color-card: #16171B;
+        --color-card-muted: #28292E;
+        --color-text: #FFFFFF;
+        --color-text-muted: #FFFFFF;
+        --color-border: #828282;
+        --color-border-soft: #828282;
+        --color-primary: #318CE7;
+        --color-primary-hover: #247BD0;
+        --color-primary-gradient-start: #318CE7;
+        --color-primary-gradient-end: #1B4E81;
+        --color-success: #34C766;
+        --color-progress-track: #F2F3F4;
+        --color-progress-green: #22C55E;
+        --color-icon-box: #363640;
+        --color-surface-contrast: #363640;
+        --color-sql-pink: #D9468B;
+        --color-status-success-bg: #EAF6ED;
+        --color-status-success-text: #0CA726;
+        --color-status-progress-bg: #EEF3FF;
+        --color-status-progress-text: #318CE7;
+        --color-theme-menu: #242428;
+        --color-theme-menu-border: #5D5E64;
+
+        --success-begin: #50C878;
+        --success-end: #27623B;
+        --cc-begin: #424242;
+        --cc-end: #202124;
+        --course-grid: #16171B;
+        --course-stroke: #828282;
+        --segment-begin: #2D2D30;
+        --segment-end: #34343A;
+
+        --gradient-panel: linear-gradient(90deg, #2D2D30 0%, #34343A 100%);
+        --gradient-card-surface: linear-gradient(180deg, #16171B 0%, #28292E 100%);
+        --gradient-card-surface-horizontal: linear-gradient(90deg, #16171B 0%, #28292E 100%);
+        --gradient-inner-panel: linear-gradient(90deg, #2D2D30 0%, #34343A 100%);
+        --gradient-result-header: linear-gradient(90deg, #16171B 0%, #28292E 100%);
+        --gradient-primary: linear-gradient(90deg, #318CE7 0%, #1B4E81 100%);
     }
 
     html,
