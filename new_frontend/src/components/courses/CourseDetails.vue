@@ -32,6 +32,8 @@ const { currentCourse } = storeToRefs(courseStore)
 const themeStore = useThemeStore()
 const { currentTheme } = storeToRefs(themeStore)
 
+console.log("COURSE DATA:", currentCourse.value)
+
 const stats = ref<StudentInCourseStats[]>([])
 const statPage = ref(1)
 const totalPages = ref(1)

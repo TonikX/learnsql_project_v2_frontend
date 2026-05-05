@@ -1,5 +1,5 @@
 import apiClient from '@/api/client'
-import type { Course, StatsResponse, StudentInCourseStats } from '@/types/courseTypes'
+import type { Course, StatsResponse } from '@/types/courseTypes'
 import { type AxiosInstance } from 'axios'
 
 class CourseService {

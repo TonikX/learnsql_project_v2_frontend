@@ -20,16 +20,19 @@ export const useCoursesStore = defineStore('courses', () => {
 
     const getCourseData = async (courseId: number) => { 
         let courseData = getCached(courseId)
-        if (courseData !== null) 
-            return courseData
         
         // Fallback: load course from backend
-        courseData = await courseService.getCourseById(courseId)
-        if (courseData !== null)
-            courses.value.push(courseData)
+        if (!courseData) {
+            courseData = await courseService.getCourseById(courseId)
+            if (courseData !== null)
+                courses.value.push(courseData)
+        }
 
+        currentCourse.value = courseData
         return courseData
     }
+
+    const clearCurrentCourse = () => { currentCourse.value = null }
 
     const loadAllCourses = async () => {
         const loadedCourses = await courseService.getAllCourses()
@@ -44,7 +47,8 @@ export const useCoursesStore = defineStore('courses', () => {
         courses, 
         currentCourse, 
         previewCourses, 
-        getCourseData, 
+        getCourseData,
+        clearCurrentCourse,
         loadAllCourses,
         loadCourseStats,
     }
