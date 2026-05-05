@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import PublicLayout from '@/components/layout/PublicLayout.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const routes: RouteRecordRaw[] = [
     {
@@ -16,13 +17,13 @@ const routes: RouteRecordRaw[] = [
                 path: 'login',
                 name: 'login',
                 component: () => import('@/views/LoginView.vue'),
-                meta: { hideFooter: true }
+                meta: { hideFooter: true, guestOnly: true }
             },
             {
                 path: 'register',
                 name: 'register',
                 component: () => import('@/views/RegisterView.vue'),
-                meta: { hideFooter: true }
+                meta: { hideFooter: true, guestOnly: true }
             },
             {
                 path: 'courses',
@@ -72,6 +73,14 @@ const router = createRouter({
         if (to.hash) return { el: to.hash, top: 95, behavior: 'smooth' }
         return { top: 0 }
     },
+})
+
+router.beforeEach((to) => {
+    const authStore = useAuthStore()
+
+    if (to.meta.guestOnly === true && authStore.isAuth) {
+        return { path: '/courses' }
+    }
 })
 
 export default router

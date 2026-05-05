@@ -23,5 +23,7 @@ const props = defineProps({
 })
 
 const { negative } = toRefs(props)
-const fillClass = computed(() => { return negative.value ? "fill-text-neg" : "fill-text-main" })
+const fillClass = computed(() => {
+    return negative.value ? 'fill-text-neg text-text-neg' : 'fill-current'
+})
 </script>
