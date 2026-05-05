@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 import AppIcon from '@/components/ui/AppIcon.vue'
 import { useThemeStore } from '@/stores/themeStore'
+import { useAuthStore } from '@/stores/authStore'
 import DatabaseSchemaIllustration from './DatabaseSchemaIllustration.vue'
 import {
     landingFeatures,
@@ -13,6 +15,25 @@ type LearningStep = typeof learningSteps[number]
 
 const themeStore = useThemeStore()
 const { resolvedTheme } = storeToRefs(themeStore)
+
+const authStore = useAuthStore()
+const { isAuth } = storeToRefs(authStore)
+
+const startLearningRoute = computed(() => {
+    return isAuth.value ? '/courses' : '/register'
+})
+
+const startLearningText = computed(() => {
+    return isAuth.value ? 'Продолжить обучение' : 'Начать обучение'
+})
+
+const bottomSecondaryRoute = computed(() => {
+    return isAuth.value ? '/courses' : '/login'
+})
+
+const bottomSecondaryText = computed(() => {
+    return isAuth.value ? 'К курсам' : 'Войти'
+})
 
 function getFeatureIconClass() {
     return resolvedTheme.value === 'dark' ? 'text-white' : 'text-primary-action'
@@ -58,12 +79,13 @@ function getStepIndicatorClass(step: LearningStep) {
 
                             <div class="mt-7 flex flex-wrap gap-3 sm:gap-5 xl:mt-[46px]">
                                 <RouterLink
-                                    to="/register"
+                                    :to="startLearningRoute"
                                     class="inline-flex h-11 w-full items-center justify-center gap-3 rounded-[8px] bg-primary-gradient text-[14px] text-white shadow-sm transition hover:opacity-90 sm:w-[240px] xl:h-[54px] xl:text-[16px]"
                                 >
                                     <AppIcon name="play" :size="20" />
-                                    Начать обучение
+                                    {{ startLearningText }}
                                 </RouterLink>
+
                                 <RouterLink
                                     to="/courses"
                                     class="inline-flex h-11 w-full items-center justify-center gap-3 rounded-[8px] border-2 border-app-border bg-surface-contrast text-[14px] text-app-text transition hover:bg-panel sm:w-[240px] xl:h-[54px] xl:text-[16px]"
@@ -242,18 +264,27 @@ function getStepIndicatorClass(step: LearningStep) {
                         <AppIcon name="spark" :size="20" class="text-app-text" />
                         Присоединяйтесь к LearnSQL
                     </div>
+
                     <h2 class="mt-7 text-[30px] font-medium leading-tight sm:text-[38px] xl:mt-[34px] xl:whitespace-nowrap xl:text-[48px]">Начните изучать SQL уже сегодня</h2>
+
                     <p class="mt-5 text-[15px] leading-[1.35] text-app-muted sm:text-[18px] xl:mt-[28px]">
                         Решайте задачи, проходите курсы, отслеживайте прогресс и становитесь<br class="hidden xl:block" />
                         экспертом SQL на современной платформе обучения
                     </p>
 
                     <div class="mt-8 flex flex-wrap justify-center gap-4 xl:mt-[45px]">
-                        <RouterLink to="/register" class="inline-flex h-12 w-full items-center justify-center rounded-[8px] bg-primary-gradient text-[14px] text-white transition hover:opacity-90 sm:w-[214px] xl:h-[54px] xl:text-[16px]">
-                            Начать обучение
+                        <RouterLink
+                            :to="startLearningRoute"
+                            class="inline-flex h-12 w-full items-center justify-center rounded-[8px] bg-primary-gradient text-[14px] text-white transition hover:opacity-90 sm:w-[214px] xl:h-[54px] xl:text-[16px]"
+                        >
+                            {{ startLearningText }}
                         </RouterLink>
-                        <RouterLink to="/login" class="inline-flex h-12 w-full items-center justify-center rounded-[8px] border border-app-border bg-surface-contrast text-[14px] text-app-text transition hover:bg-panel sm:w-[129px] xl:h-[54px] xl:text-[16px]">
-                            Войти
+
+                        <RouterLink
+                            :to="bottomSecondaryRoute"
+                            class="inline-flex h-12 w-full items-center justify-center rounded-[8px] border border-app-border bg-surface-contrast text-[14px] text-app-text transition hover:bg-panel sm:w-[129px] xl:h-[54px] xl:text-[16px]"
+                        >
+                            {{ bottomSecondaryText }}
                         </RouterLink>
                     </div>
 

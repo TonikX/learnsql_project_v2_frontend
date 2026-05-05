@@ -1,26 +1,74 @@
-export interface CreateUserData {
-    username: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    studyGroup: string,
-    isu: string,
-    password: string,
-    passwordRepeat: string
+export interface TokenPair {
+    access: string
+    refresh: string
 }
 
-export interface LoginData {
+export interface LoginRequest {
     username: string
     password: string
 }
 
+export interface RefreshTokenRequest {
+    refresh: string
+}
+
+export interface AccessTokenResponse {
+    access: string
+}
+
+export interface VerifyTokenRequest {
+    token: string
+}
+
+export interface RegisterRequest {
+    username: string
+    email: string
+    password: string
+    first_name?: string
+    last_name?: string
+    tel?: string
+    role?: string
+    group_number?: number | null
+}
+
+export interface RegisterResponse {
+    id?: number
+    username: string
+    email?: string
+    first_name?: string
+    last_name?: string
+    role?: string
+    tel?: string
+    group_number?: string | number | null
+}
+
 export interface User {
-    id: number,
-    username: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    studyGroup?: string,
-    isu?: string,
-    avatarUrl?: string
+    id?: number
+    username: string
+    email?: string
+    first_name?: string
+    last_name?: string
+    role?: string
+    tel?: string
+    group_number?: string | number | null
+}
+
+export interface StudentGroup {
+    id: number
+    title?: string
+    name?: string
+    period?: string
+    university?: string | number | null
+}
+
+export interface StudentGroupQuery {
+    period?: string
+    university?: string | number
+}
+
+export interface PaginatedResponse<T> {
+    count: number
+    next: string | null
+    previous: string | null
+    results: T[]
 }

@@ -50,6 +50,19 @@
         --color-status-progress-text: #318CE7;
         --color-theme-menu: #242428;
         --color-theme-menu-border: #5D5E64;
+        --color-auth-surface: #F2F3F4;
+        --color-auth-surface-muted: #FCFCFD;
+        --color-auth-table: #F3F4F6;
+        --color-auth-input: #FCFCFD;
+        --color-auth-input-alt: #F3F4F6;
+        --color-auth-border: #B6B6B6;
+        --color-auth-type-muted: #94A3B8;
+        --color-auth-type-muted-register: #9AA9BC;
+        --color-auth-prompt: #1887FF;
+        --color-auth-checkbox: #1887FF;
+        --color-auth-checkbox-bg: #1887FF;
+        --color-auth-checkbox-mark: #FFFFFF;
+        --color-auth-checkbox-border: #1887FF;
 
         --success-begin: #50C878;
         --success-end: #8ADAA5;
@@ -67,6 +80,11 @@
         --gradient-inner-panel: linear-gradient(90deg, #F7F7F7 0%, #F7F7F7 100%);
         --gradient-result-header: linear-gradient(90deg, #EBEBEB 0%, #EBEBEB 100%);
         --gradient-primary: linear-gradient(90deg, #318CE7 0%, #76B2EF 100%);
+        --gradient-auth-surface: linear-gradient(180deg, #F2F3F4 0%, #F2F3F4 100%);
+        --gradient-auth-header: linear-gradient(90deg, #66A9EE 0%, #4E95E0 100%);
+        --gradient-auth-button: linear-gradient(90deg, #66A9EE 0%, #4E95E0 100%);
+        --gradient-auth-info-header: linear-gradient(109deg, #66A9EE 0%, #5197E2 89%, #5197E2 100%);
+        --gradient-auth-info-surface: linear-gradient(180deg, #F2F3F4 0%, #F2F3F4 100%);
     }
 
     [data-theme='light'] {
@@ -109,6 +127,19 @@
         --color-status-progress-text: #318CE7;
         --color-theme-menu: #242428;
         --color-theme-menu-border: #5D5E64;
+        --color-auth-surface: #F2F3F4;
+        --color-auth-surface-muted: #FCFCFD;
+        --color-auth-table: #F3F4F6;
+        --color-auth-input: #FCFCFD;
+        --color-auth-input-alt: #F3F4F6;
+        --color-auth-border: #B6B6B6;
+        --color-auth-type-muted: #94A3B8;
+        --color-auth-type-muted-register: #9AA9BC;
+        --color-auth-prompt: #1887FF;
+        --color-auth-checkbox: #1887FF;
+        --color-auth-checkbox-bg: #1887FF;
+        --color-auth-checkbox-mark: #FFFFFF;
+        --color-auth-checkbox-border: #1887FF;
 
         --success-begin: #50C878;
         --success-end: #8ADAA5;
@@ -125,6 +156,11 @@
         --gradient-inner-panel: linear-gradient(90deg, #F7F7F7 0%, #F7F7F7 100%);
         --gradient-result-header: linear-gradient(90deg, #EBEBEB 0%, #EBEBEB 100%);
         --gradient-primary: linear-gradient(90deg, #318CE7 0%, #76B2EF 100%);
+        --gradient-auth-surface: linear-gradient(180deg, #F2F3F4 0%, #F2F3F4 100%);
+        --gradient-auth-header: linear-gradient(90deg, #66A9EE 0%, #4E95E0 100%);
+        --gradient-auth-button: linear-gradient(90deg, #66A9EE 0%, #4E95E0 100%);
+        --gradient-auth-info-header: linear-gradient(109deg, #66A9EE 0%, #5197E2 89%, #5197E2 100%);
+        --gradient-auth-info-surface: linear-gradient(180deg, #F2F3F4 0%, #F2F3F4 100%);
     }
 
     [data-theme='dark'] {
@@ -167,6 +203,19 @@
         --color-status-progress-text: #318CE7;
         --color-theme-menu: #242428;
         --color-theme-menu-border: #5D5E64;
+        --color-auth-surface: #16171B;
+        --color-auth-surface-muted: #28292E;
+        --color-auth-table: rgba(0, 0, 0, 0.3);
+        --color-auth-input: #28292E;
+        --color-auth-input-alt: #28292E;
+        --color-auth-border: #828282;
+        --color-auth-type-muted: #828282;
+        --color-auth-type-muted-register: #828282;
+        --color-auth-prompt: #FFFFFF;
+        --color-auth-checkbox: #F2F3F4;
+        --color-auth-checkbox-bg: #FFFFFF;
+        --color-auth-checkbox-mark: #000000;
+        --color-auth-checkbox-border: #FFFFFF;
 
         --success-begin: #50C878;
         --success-end: #27623B;
@@ -183,6 +232,11 @@
         --gradient-inner-panel: linear-gradient(90deg, #2D2D30 0%, #34343A 100%);
         --gradient-result-header: linear-gradient(90deg, #16171B 0%, #28292E 100%);
         --gradient-primary: linear-gradient(90deg, #318CE7 0%, #1B4E81 100%);
+        --gradient-auth-surface: linear-gradient(180deg, #16171B 0%, #28292E 100%);
+        --gradient-auth-header: linear-gradient(90deg, #1E2952 0%, #031040 100%);
+        --gradient-auth-button: linear-gradient(90deg, #318CE7 0%, #1B4E81 100%);
+        --gradient-auth-info-header: linear-gradient(90deg, #1E2952 0%, #031040 100%);
+        --gradient-auth-info-surface: linear-gradient(180deg, #16171B 0%, #28292E 100%);
     }
 
     html,
