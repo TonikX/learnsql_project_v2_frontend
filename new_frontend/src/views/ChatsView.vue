@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import ChatPanel from '@/components/chats/ChatPanel.vue'
 import ChatSidebar from '@/components/chats/ChatSidebar.vue'
@@ -15,6 +15,13 @@ const {
     isLoading,
     searchQuery,
 } = storeToRefs(chatStore)
+
+const isMobileChatOpen = ref(false)
+
+function handleSelectChat(chatId: number | string) {
+    chatStore.setActiveChat(chatId)
+    isMobileChatOpen.value = true
+}
 
 onMounted(() => {
     if (!chatStore.chats.length) {
@@ -45,15 +52,21 @@ onMounted(() => {
 
             <div v-else class="grid gap-8 xl:grid-cols-[520px_minmax(0,1fr)]">
                 <ChatSidebar
+                    :class="isMobileChatOpen ? 'hidden xl:block' : 'block'"
                     :active-chat-id="activeChatId"
                     :chats="filteredChats"
                     :filter="filter"
                     :search-query="searchQuery"
-                    @select="chatStore.setActiveChat"
+                    @select="handleSelectChat"
                     @set-filter="chatStore.setFilter"
                     @set-search="chatStore.setSearchQuery"
                 />
-                <ChatPanel :chat="activeChat" @send="chatStore.sendMessage" />
+                <ChatPanel
+                    :class="isMobileChatOpen ? 'block' : 'hidden xl:block'"
+                    :chat="activeChat"
+                    @back="isMobileChatOpen = false"
+                    @send="chatStore.sendMessage"
+                />
             </div>
         </div>
     </div>

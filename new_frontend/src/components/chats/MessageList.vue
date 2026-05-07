@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-    <section class="min-h-[420px] rounded-[10px] border border-chat-border bg-chat-surface p-6">
+    <section class="min-h-[420px] rounded-[10px] border border-chat-border bg-chat-surface p-4 sm:p-6">
         <div class="space-y-3">
             <MessageBubble v-for="message in messages" :key="message.id" :message="message" />
         </div>

@@ -58,55 +58,77 @@ onBeforeUnmount(() => {
 
 <template>
     <header :class="['sticky top-0 z-40 border-b font-mono', headerClass]">
-        <AppContainer class="flex h-[60px] items-center justify-between">
-            <nav class="flex items-center gap-2 text-[20px] font-medium leading-none">
-                <RouterLink to="/" :class="['px-1 transition-colors', linkClass]">[ Learn SQL ]</RouterLink>
-                <RouterLink to="/courses" :class="['px-1 transition-colors', linkClass]">[ Все курсы ]</RouterLink>
-                <RouterLink v-if="isAuth" to="/courses" :class="['px-1 transition-colors', linkClass]">[ Мои курсы ]</RouterLink>
-                <RouterLink v-if="isAuth" to="/chats" :class="['px-1 transition-colors', linkClass]">[ Чаты ]</RouterLink>
+        <div class="mx-auto flex min-h-[48px] w-full items-center justify-between gap-1 px-2 py-0 sm:px-4 lg:max-w-[90%] lg:px-8">
+            <nav class="flex min-w-0 flex-1 flex-nowrap items-center gap-[3px] text-[10px] font-medium leading-none sm:gap-2 sm:text-[16px] lg:text-[20px]">
+                <RouterLink to="/" :class="['shrink-0 transition-colors', linkClass]">
+                    <span class="sm:hidden">[Learn SQL]</span>
+                    <span class="hidden sm:inline">[ Learn SQL ]</span>
+                </RouterLink>
+
+                <RouterLink to="/courses" :class="['shrink-0 transition-colors', linkClass]">
+                    <span class="sm:hidden">[Все курсы]</span>
+                    <span class="hidden sm:inline">[ Все курсы ]</span>
+                </RouterLink>
+
+                <RouterLink v-if="isAuth" to="/courses" :class="['shrink-0 transition-colors', linkClass]">
+                    <span class="sm:hidden">[Мои курсы]</span>
+                    <span class="hidden sm:inline">[ Мои курсы ]</span>
+                </RouterLink>
+
+                <RouterLink v-if="isAuth" to="/chats" :class="['shrink-0 transition-colors', linkClass]">
+                    <span class="sm:hidden">[Чаты]</span>
+                    <span class="hidden sm:inline">[ Чаты ]</span>
+                </RouterLink>
             </nav>
 
-            <nav class="flex items-center gap-2 text-[20px] font-medium leading-none">
+            <nav class="flex shrink-0 flex-nowrap items-center gap-1 text-[12px] font-medium leading-none sm:gap-2 sm:text-[16px] lg:text-[20px]">
                 <div ref="themeMenuRef" class="relative">
                     <button
                         type="button"
-                        class="flex h-10 w-10 items-center justify-center transition-colors"
+                        class="flex h-6 w-6 items-center justify-center transition-colors sm:h-9 sm:w-9 lg:h-10 lg:w-10"
                         :class="linkClass"
                         aria-label="Выбрать тему"
                         :aria-expanded="isThemeMenuOpen"
                         @click.stop="isThemeMenuOpen = !isThemeMenuOpen"
                     >
-                        <AppIcon :name="currentThemeIcon" :size="30" />
+                        <AppIcon :name="currentThemeIcon" :size="20" class="sm:hidden" />
+                        <AppIcon :name="currentThemeIcon" :size="30" class="hidden sm:block" />
                     </button>
 
                     <div
                         v-if="isThemeMenuOpen"
-                        class="absolute right-0 top-[47px] w-[320px] rounded-[5px] border border-[var(--color-theme-menu-border)] bg-[var(--color-theme-menu)] py-3 text-white shadow-card"
+                        class="absolute right-0 top-[32px] w-[220px] rounded-[5px] border border-[var(--color-theme-menu-border)] bg-[var(--color-theme-menu)] py-2 text-white shadow-card sm:top-[44px] sm:w-[320px] sm:py-3 lg:top-[47px]"
                     >
                         <button
                             v-for="option in themeOptions"
                             :key="option.mode"
                             type="button"
-                            class="flex w-full items-center gap-4 px-6 py-3 text-left text-[17px] transition hover:bg-white/10"
+                            class="flex w-full items-center gap-3 px-4 py-2 text-left text-[13px] transition hover:bg-white/10 sm:gap-4 sm:px-6 sm:py-3 sm:text-[17px]"
                             :class="mode === option.mode ? 'text-white' : 'text-[#E2E2E7]'"
                             @click="selectTheme(option.mode)"
                         >
-                            <AppIcon :name="option.icon" :size="34" />
+                            <AppIcon :name="option.icon" :size="22" class="sm:hidden" />
+                            <AppIcon :name="option.icon" :size="34" class="hidden sm:block" />
                             <span>{{ option.label }}</span>
                         </button>
                     </div>
                 </div>
 
-                <RouterLink to="/" :class="['px-1 transition-colors', linkClass]">[ Помощь ]</RouterLink>
-                <RouterLink to="/" :class="['px-1 transition-colors', linkClass]">[ О сайте ]</RouterLink>
+                <RouterLink to="/" :class="['hidden px-1 transition-colors md:inline', linkClass]">[ Помощь ]</RouterLink>
+                <RouterLink to="/" :class="['hidden px-1 transition-colors md:inline', linkClass]">[ О сайте ]</RouterLink>
 
                 <template v-if="isAuth">
-                    <AppIcon name="profile" :size="32" negative />
+                    <AppIcon name="profile" :size="24" negative class="sm:hidden" />
+                    <AppIcon name="profile" :size="32" negative class="hidden sm:block" />
                 </template>
+
                 <template v-else>
-                    <RouterLink to="/login" :class="['px-1 transition-colors', linkClass]">[ Войти --&gt; ]</RouterLink>
+                    <RouterLink to="/login" :class="['shrink-0 transition-colors', linkClass]">
+                        <span class="sm:hidden">[Войти]</span>
+                        <span class="hidden sm:inline">[ Войти --&gt; ]</span>
+                    </RouterLink>
                 </template>
             </nav>
-        </AppContainer>
+        </div>
     </header>
 </template>

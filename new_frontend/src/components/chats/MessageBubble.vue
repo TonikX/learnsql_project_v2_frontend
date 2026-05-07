@@ -32,18 +32,22 @@ const segments = computed<MessageSegment[]>(() => {
 </script>
 
 <template>
-    <div class="flex" :class="message.isOwn ? 'justify-end' : 'justify-start'">
+    <div class="w-full">
         <div
-            class="max-w-[620px] rounded-[8px] border border-chat-border p-4 text-[14px] leading-[1.55] text-chat-text"
-            :class="message.isOwn ? 'bg-chat-own-message' : 'bg-chat-incoming-message'"
+            class="w-fit min-w-[72px] max-w-[86%] overflow-hidden rounded-[8px] border border-chat-border p-4 text-[14px] leading-[1.55] text-chat-text [overflow-wrap:anywhere] sm:max-w-[620px]"
+            :class="message.isOwn ? 'ml-auto bg-chat-own-message' : 'mr-auto bg-chat-incoming-message'"
         >
             <template v-for="(segment, index) in segments" :key="index">
-                <p v-if="segment.type === 'text'" class="whitespace-pre-wrap">
+                <p
+                    v-if="segment.type === 'text'"
+                    class="whitespace-pre-wrap break-words [overflow-wrap:anywhere]"
+                >
                     {{ segment.value }}
                 </p>
+
                 <pre
                     v-else
-                    class="mt-3 overflow-x-auto rounded-[6px] border border-chat-border bg-chat-code-bg p-4 text-[14px] leading-[1.35] text-chat-code-text"
+                    class="mt-3 max-w-full overflow-x-auto rounded-[6px] border border-chat-border bg-chat-code-bg p-4 text-[14px] leading-[1.35] text-chat-code-text"
                 ><code>{{ segment.value }}</code></pre>
             </template>
 
