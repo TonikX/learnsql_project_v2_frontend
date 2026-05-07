@@ -63,6 +63,7 @@ onBeforeUnmount(() => {
                 <RouterLink to="/" :class="['px-1 transition-colors', linkClass]">[ Learn SQL ]</RouterLink>
                 <RouterLink to="/courses" :class="['px-1 transition-colors', linkClass]">[ Все курсы ]</RouterLink>
                 <RouterLink v-if="isAuth" to="/courses" :class="['px-1 transition-colors', linkClass]">[ Мои курсы ]</RouterLink>
+                <RouterLink v-if="isAuth" to="/chats" :class="['px-1 transition-colors', linkClass]">[ Чаты ]</RouterLink>
             </nav>
 
             <nav class="flex items-center gap-2 text-[20px] font-medium leading-none">
