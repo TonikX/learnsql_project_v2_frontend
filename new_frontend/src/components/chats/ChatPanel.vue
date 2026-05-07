@@ -10,12 +10,21 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
+    back: []
     send: [content: string]
 }>()
 </script>
 
 <template>
     <section class="rounded-[10px] border border-chat-border bg-chat-panel p-6">
+        <button
+            type="button"
+            class="mb-4 inline-flex h-10 items-center rounded-[8px] border border-chat-border bg-chat-action-button px-4 text-[14px] text-chat-text transition hover:bg-chat-surface-active xl:hidden"
+            @click="emit('back')"
+        >
+            ← К чатам
+        </button>
+
         <div v-if="chat" class="space-y-4">
             <ChatTeacherCard :chat="chat" />
             <ChatContextCard :chat="chat" />
