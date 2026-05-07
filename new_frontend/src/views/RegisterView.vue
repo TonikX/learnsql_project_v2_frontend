@@ -140,7 +140,7 @@ onMounted(loadGroups)
                         </AuthSelect>
                     </AuthFieldRow>
 
-                    <AuthFieldRow label="Студент" db-type="BOOLEAN" register-type>
+                    <AuthFieldRow label="Роль" db-type="BOOLEAN" register-type>
                         <label class="flex cursor-pointer items-center gap-3 text-[17px] text-app-text">
                             <input v-model="form.isStudent" type="checkbox" class="peer sr-only" />
                             <span class="flex h-5 w-5 items-center justify-center rounded-[4px] border border-auth-border bg-auth-input transition peer-checked:border-auth-checkbox-border peer-checked:bg-auth-checkbox-bg peer-checked:[&_svg]:opacity-100">

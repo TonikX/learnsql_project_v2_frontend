@@ -63,6 +63,30 @@
         --color-auth-checkbox-bg: #1887FF;
         --color-auth-checkbox-mark: #FFFFFF;
         --color-auth-checkbox-border: #1887FF;
+        --color-chat-page: #FFFFFF;
+        --color-chat-panel: #FFFFFF;
+        --color-chat-surface: #F2F3F4;
+        --color-chat-surface-active: #EEF4FF;
+        --color-chat-border: #AFAFAF;
+        --color-chat-border-strong: #BCBEC4;
+        --color-chat-border-active: #3B82F6;
+        --color-chat-text: #000000;
+        --color-chat-muted: #80858F;
+        --color-chat-placeholder: #000000;
+        --color-chat-avatar: #3F8FE8;
+        --color-chat-on-accent: #FFFFFF;
+        --color-chat-filter-active-bg: #FFFFFF;
+        --color-chat-filter-active-text: #000000;
+        --color-chat-action-button: #FFFFFF;
+        --color-chat-online: #59D883;
+        --color-chat-send: #22C55E;
+        --color-chat-warning: #E36C2B;
+        --color-chat-code-bg: #16171B;
+        --color-chat-code-text: #FFFFFF;
+        --color-chat-own-message: #F2F3F4;
+        --color-chat-incoming-message: #FFFFFF;
+        --color-chat-composer-input: #F2F3F4;
+        --color-chat-icon-button: #FFFFFF;
 
         --success-begin: #50C878;
         --success-end: #8ADAA5;
@@ -85,6 +109,7 @@
         --gradient-auth-button: linear-gradient(90deg, #66A9EE 0%, #4E95E0 100%);
         --gradient-auth-info-header: linear-gradient(109deg, #66A9EE 0%, #5197E2 89%, #5197E2 100%);
         --gradient-auth-info-surface: linear-gradient(180deg, #F2F3F4 0%, #F2F3F4 100%);
+        --gradient-chat-header: linear-gradient(90deg, #1F2025 0%, #25272E 100%);
     }
 
     [data-theme='light'] {
@@ -140,6 +165,30 @@
         --color-auth-checkbox-bg: #1887FF;
         --color-auth-checkbox-mark: #FFFFFF;
         --color-auth-checkbox-border: #1887FF;
+        --color-chat-page: #FFFFFF;
+        --color-chat-panel: #FFFFFF;
+        --color-chat-surface: #F2F3F4;
+        --color-chat-surface-active: #EEF4FF;
+        --color-chat-border: #AFAFAF;
+        --color-chat-border-strong: #BCBEC4;
+        --color-chat-border-active: #3B82F6;
+        --color-chat-text: #000000;
+        --color-chat-muted: #80858F;
+        --color-chat-placeholder: #000000;
+        --color-chat-avatar: #3F8FE8;
+        --color-chat-on-accent: #FFFFFF;
+        --color-chat-filter-active-bg: #FFFFFF;
+        --color-chat-filter-active-text: #000000;
+        --color-chat-action-button: #FFFFFF;
+        --color-chat-online: #59D883;
+        --color-chat-send: #22C55E;
+        --color-chat-warning: #E36C2B;
+        --color-chat-code-bg: #16171B;
+        --color-chat-code-text: #FFFFFF;
+        --color-chat-own-message: #F2F3F4;
+        --color-chat-incoming-message: #FFFFFF;
+        --color-chat-composer-input: #F2F3F4;
+        --color-chat-icon-button: #FFFFFF;
 
         --success-begin: #50C878;
         --success-end: #8ADAA5;
@@ -161,6 +210,7 @@
         --gradient-auth-button: linear-gradient(90deg, #66A9EE 0%, #4E95E0 100%);
         --gradient-auth-info-header: linear-gradient(109deg, #66A9EE 0%, #5197E2 89%, #5197E2 100%);
         --gradient-auth-info-surface: linear-gradient(180deg, #F2F3F4 0%, #F2F3F4 100%);
+        --gradient-chat-header: linear-gradient(90deg, #1F2025 0%, #25272E 100%);
     }
 
     [data-theme='dark'] {
@@ -216,6 +266,30 @@
         --color-auth-checkbox-bg: #FFFFFF;
         --color-auth-checkbox-mark: #000000;
         --color-auth-checkbox-border: #FFFFFF;
+        --color-chat-page: #27272A;
+        --color-chat-panel: #2D2D30;
+        --color-chat-surface: #202124;
+        --color-chat-surface-active: #363640;
+        --color-chat-border: #828282;
+        --color-chat-border-strong: #828282;
+        --color-chat-border-active: #3B82F6;
+        --color-chat-text: #FFFFFF;
+        --color-chat-muted: #828282;
+        --color-chat-placeholder: #FFFFFF;
+        --color-chat-avatar: #3F8FE8;
+        --color-chat-on-accent: #FFFFFF;
+        --color-chat-filter-active-bg: #FFFFFF;
+        --color-chat-filter-active-text: #000000;
+        --color-chat-action-button: #363640;
+        --color-chat-online: #22C55E;
+        --color-chat-send: #2C7948;
+        --color-chat-warning: #F31A8A;
+        --color-chat-code-bg: #FFFFFF;
+        --color-chat-code-text: #000000;
+        --color-chat-own-message: #363640;
+        --color-chat-incoming-message: #16171B;
+        --color-chat-composer-input: #2D2D30;
+        --color-chat-icon-button: #28292E;
 
         --success-begin: #50C878;
         --success-end: #27623B;
@@ -237,6 +311,7 @@
         --gradient-auth-button: linear-gradient(90deg, #318CE7 0%, #1B4E81 100%);
         --gradient-auth-info-header: linear-gradient(90deg, #1E2952 0%, #031040 100%);
         --gradient-auth-info-surface: linear-gradient(180deg, #16171B 0%, #28292E 100%);
+        --gradient-chat-header: linear-gradient(90deg, #1F2025 0%, #25272E 100%);
     }
 
     html,
@@ -255,5 +330,10 @@
 @layer components {
     .app-container {
         @apply mx-auto max-w-[90%] px-4 sm:px-6 lg:px-8;
+    }
+
+    .chat-placeholder::placeholder {
+        color: var(--color-chat-placeholder);
+        font-weight: 200;
     }
 }

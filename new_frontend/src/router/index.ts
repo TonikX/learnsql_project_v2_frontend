@@ -31,6 +31,12 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('@/views/CoursesListView.vue')
             },
             {
+                path: 'chats',
+                name: 'chats',
+                component: () => import('@/views/ChatsView.vue'),
+                meta: { requiresAuth: true }
+            },
+            {
                 path: 'courses/:course_id',
                 name: 'course',
                 component: () => import('@/views/CourseView.vue'),
@@ -80,6 +86,10 @@ router.beforeEach((to) => {
 
     if (to.meta.guestOnly === true && authStore.isAuth) {
         return { path: '/courses' }
+    }
+
+    if (to.meta.requiresAuth === true && !authStore.isAuth) {
+        return { path: '/login', query: { redirect: to.fullPath } }
     }
 })
 

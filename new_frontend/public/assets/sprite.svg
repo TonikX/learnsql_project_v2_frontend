@@ -85,4 +85,15 @@
 			fill="none"
 		/>
 	</symbol>
+	<symbol id="search-icon" viewBox="0 0 18 18">
+		<path d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15Z" fill="none" stroke="currentColor" stroke-width="2"/>
+		<path d="M13 13L19 19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+	</symbol>
+	<symbol id="paperclip-icon" viewBox="0 0 24 24">
+		<path d="m21.44 11.05-8.49 8.49a6 6 0 0 1-8.49-8.49l8.49-8.49a4 4 0 0 1 5.66 5.66l-8.49 8.49a2 2 0 1 1-2.83-2.83l7.78-7.78" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+	</symbol>
+	<symbol id="send-icon" viewBox="0 0 24 24">
+		<path d="m22 2-7 20-4-9-9-4 20-7Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+		<path d="M22 2 11 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+	</symbol>
 </svg>
