@@ -4,9 +4,18 @@ import { useRoute, useRouter } from 'vue-router'
 import AuthFieldRow from '@/components/auth/AuthFieldRow.vue'
 import AuthPageShell from '@/components/auth/AuthPageShell.vue'
 import AuthSqlCard from '@/components/auth/AuthSqlCard.vue'
+import AuthSocialLogin from '@/components/auth/AuthSocialLogin.vue'
 import AuthSubmitArea from '@/components/auth/AuthSubmitArea.vue'
 import AuthTextInput from '@/components/auth/AuthTextInput.vue'
+import {
+    getGitHubAccessToken,
+    getGoogleAccessToken,
+    getSocialAuthErrorMessage,
+    saveSocialRedirect,
+    startYandexAccessTokenFlow,
+} from '@/services/socialOAuthService'
 import { useAuthStore } from '@/stores/authStore'
+import type { SocialAuthProvider } from '@/types/userTypes'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -15,9 +24,20 @@ const route = useRoute()
 const login = ref('')
 const password = ref('')
 const formError = ref('')
+const socialError = ref('')
+const socialLoadingProvider = ref<SocialAuthProvider | null>(null)
+
+function getRedirectTo() {
+    const redirectTo = typeof route.query.redirect === 'string' ? route.query.redirect : null
+
+    return redirectTo?.startsWith('/') && !redirectTo.startsWith('//')
+        ? redirectTo
+        : '/'
+}
 
 async function submit() {
     formError.value = ''
+    socialError.value = ''
 
     if (!login.value || !password.value) {
         formError.value = 'Введите логин и пароль'
@@ -30,10 +50,40 @@ async function submit() {
             password: password.value,
         })
 
-        const redirectTo = typeof route.query.redirect === 'string' ? route.query.redirect : '/courses'
-        await router.push(redirectTo)
+        await router.push(getRedirectTo())
     } catch {
         formError.value = authStore.error ?? 'Не удалось войти. Попробуйте ещё раз'
+    }
+}
+
+async function handleSocialLogin(provider: SocialAuthProvider) {
+    socialError.value = ''
+    formError.value = ''
+    socialLoadingProvider.value = provider
+    let isRedirectingToProvider = false
+
+    try {
+        if (provider === 'github') {
+            getGitHubAccessToken()
+            return
+        }
+
+        if (provider === 'yandex') {
+            saveSocialRedirect(getRedirectTo())
+            startYandexAccessTokenFlow()
+            isRedirectingToProvider = true
+            return
+        }
+
+        const providerAccessToken = await getGoogleAccessToken()
+        await authStore.socialLogin(provider, providerAccessToken)
+        await router.push(getRedirectTo())
+    } catch (unknownError) {
+        socialError.value = getSocialAuthErrorMessage(provider, unknownError)
+    } finally {
+        if (!isRedirectingToProvider) {
+            socialLoadingProvider.value = null
+        }
     }
 }
 </script>
@@ -44,8 +94,8 @@ async function submit() {
             <form @submit.prevent="submit">
                 <div class="overflow-hidden rounded-[10px] border border-auth-border bg-auth-table">
                     <div class="grid border-b border-auth-border sm:grid-cols-[260px_minmax(0,1fr)]">
-                        <div class="px-6 py-4 text-[17px] text-app-text sm:border-r sm:border-auth-border">Поле</div>
-                        <div class="px-6 py-4 text-[17px] text-app-text">Значение</div>
+                        <div class="px-4 py-3 text-[15px] text-app-text sm:border-r sm:border-auth-border sm:px-6 sm:py-4 sm:text-[17px]">Поле</div>
+                        <div class="px-4 py-3 text-[15px] text-app-text sm:px-6 sm:py-4 sm:text-[17px]">Значение</div>
                     </div>
 
                     <AuthFieldRow label="Почта" db-type="VARCHAR">
@@ -71,7 +121,13 @@ async function submit() {
                     link-prefix="Нет аккаунта?"
                     link-text="регистрация"
                     link-to="/register"
-                    hint="Войдите, чтобы продолжить обучение и отслеживать прогресс"
+                    hint=""
+                />
+
+                <AuthSocialLogin
+                    :error="socialError"
+                    :loading-provider="socialLoadingProvider"
+                    @select="handleSocialLogin"
                 />
             </form>
         </AuthSqlCard>

@@ -26,6 +26,12 @@ const routes: RouteRecordRaw[] = [
                 meta: { hideFooter: true, guestOnly: true }
             },
             {
+                path: 'auth/callback/:provider',
+                name: 'social-callback',
+                component: () => import('@/views/SocialCallbackView.vue'),
+                meta: { hideFooter: true }
+            },
+            {
                 path: 'courses',
                 name: 'courses',
                 component: () => import('@/views/CoursesListView.vue')

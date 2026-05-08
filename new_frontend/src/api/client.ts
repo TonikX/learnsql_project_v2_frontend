@@ -19,6 +19,7 @@ const publicEndpoints = new Set([
     '/api/token/refresh/',
     '/api/token/verify/',
     '/api/register/',
+    '/api/social_auth_v2/token/',
     '/api/student-groups/',
     '/api/student-groups/get_choise_values/',
 ])

@@ -63,6 +63,10 @@
         --color-auth-checkbox-bg: #1887FF;
         --color-auth-checkbox-mark: #FFFFFF;
         --color-auth-checkbox-border: #1887FF;
+        --color-auth-separator: #B6B6B6;
+        --color-auth-social-button: #FCFCFD;
+        --color-auth-social-button-border: #B6B6B6;
+        --color-auth-social-button-text: #000000;
         --color-chat-page: #FFFFFF;
         --color-chat-panel: #FFFFFF;
         --color-chat-surface: #F2F3F4;
@@ -165,6 +169,10 @@
         --color-auth-checkbox-bg: #1887FF;
         --color-auth-checkbox-mark: #FFFFFF;
         --color-auth-checkbox-border: #1887FF;
+        --color-auth-separator: #B6B6B6;
+        --color-auth-social-button: #FCFCFD;
+        --color-auth-social-button-border: #B6B6B6;
+        --color-auth-social-button-text: #000000;
         --color-chat-page: #FFFFFF;
         --color-chat-panel: #FFFFFF;
         --color-chat-surface: #F2F3F4;
@@ -266,6 +274,10 @@
         --color-auth-checkbox-bg: #FFFFFF;
         --color-auth-checkbox-mark: #000000;
         --color-auth-checkbox-border: #FFFFFF;
+        --color-auth-separator: #828282;
+        --color-auth-social-button: rgba(0, 0, 0, 0.3);
+        --color-auth-social-button-border: #828282;
+        --color-auth-social-button-text: #FFFFFF;
         --color-chat-page: #27272A;
         --color-chat-panel: #2D2D30;
         --color-chat-surface: #202124;

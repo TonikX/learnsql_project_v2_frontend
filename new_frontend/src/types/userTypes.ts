@@ -3,6 +3,8 @@ export interface TokenPair {
     refresh: string
 }
 
+export type SocialAuthProvider = 'github' | 'yandex' | 'google-oauth2'
+
 export interface LoginRequest {
     username: string
     password: string
@@ -18,6 +20,16 @@ export interface AccessTokenResponse {
 
 export interface VerifyTokenRequest {
     token: string
+}
+
+export interface SocialLoginRequest {
+    provider: SocialAuthProvider
+    access_token: string
+}
+
+export interface SocialLoginResponse extends TokenPair {
+    token?: string
+    user?: User
 }
 
 export interface RegisterRequest {

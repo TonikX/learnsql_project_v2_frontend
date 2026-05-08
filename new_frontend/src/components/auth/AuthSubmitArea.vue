@@ -6,7 +6,7 @@ withDefaults(defineProps<{
     linkPrefix: string
     linkText: string
     linkTo: string
-    hint: string
+    hint?: string
     buttonType?: 'button' | 'submit'
 }>(), {
     buttonType: 'button',
@@ -18,15 +18,15 @@ withDefaults(defineProps<{
         <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <button
                 :type="buttonType"
-                class="h-12 min-w-[178px] rounded-[9px] bg-auth-button-gradient px-8 text-[22px] leading-none text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70"
+                class="h-12 w-full rounded-[9px] bg-auth-button-gradient px-8 text-[22px] leading-none text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto sm:min-w-[178px]"
                 :disabled="loading"
             >
                 {{ loading ? '...' : action }}
             </button>
 
-            <p class="text-[18px] leading-none text-app-text">
+            <p class="text-center text-[15px] leading-snug text-app-text sm:text-right sm:text-[18px] sm:leading-none">
                 {{ linkPrefix }}
-                <RouterLink :to="linkTo" class="ml-2 hover:text-primary-action">
+                <RouterLink :to="linkTo" class="ml-2 whitespace-nowrap hover:text-primary-action">
                     [ {{ linkText }} ]
                 </RouterLink>
             </p>
@@ -36,7 +36,7 @@ withDefaults(defineProps<{
             {{ error }}
         </p>
 
-        <p class="mt-14 text-center text-[17px] leading-relaxed text-app-text">
+        <p v-if="hint" class="mx-auto mt-6 max-w-[360px] text-center text-[13px] leading-relaxed text-app-text sm:mt-14 sm:max-w-none sm:text-[17px]">
             {{ hint }}
         </p>
     </div>
