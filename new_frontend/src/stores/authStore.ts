@@ -2,7 +2,7 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import { authService } from '@/services/authService'
 import { useUserStore } from '@/stores/userStore'
-import type { AccessTokenResponse, LoginRequest, RegisterRequest, RegisterResponse, TokenPair } from '@/types/userTypes'
+import type { AccessTokenResponse, LoginRequest, RegisterRequest, RegisterResponse, SocialAuthProvider, TokenPair } from '@/types/userTypes'
 
 const accessStorageKey = 'access_token'
 const refreshStorageKey = 'refresh_token'
@@ -80,6 +80,30 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    async function socialLogin(provider: SocialAuthProvider, providerAccessToken: string) {
+        isLoading.value = true
+        clearError()
+
+        try {
+            const response = await authService.socialLogin({
+                provider,
+                access_token: providerAccessToken,
+            })
+            setTokens(response)
+
+            if (response.user) {
+                useUserStore().setUser(response.user)
+            }
+
+            return response
+        } catch (unknownError) {
+            error.value = 'Не удалось войти через выбранный сервис'
+            throw unknownError
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     async function refreshAccessToken() {
         if (!refreshToken.value) return null
 
@@ -108,6 +132,7 @@ export const useAuthStore = defineStore('auth', () => {
         error,
         login,
         register,
+        socialLogin,
         refreshAccessToken,
         verifyToken,
         logout,

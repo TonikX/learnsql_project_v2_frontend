@@ -27,7 +27,7 @@ defineEmits<{
         :autocomplete="autocomplete"
         :disabled="disabled"
         :readonly="readonly"
-        class="h-10 w-full rounded-[11px] border border-auth-border bg-auth-input px-5 text-[17px] text-app-text outline-none transition placeholder:text-app-muted focus:border-primary-action disabled:cursor-not-allowed disabled:opacity-60"
+        class="h-10 min-w-0 w-full rounded-[11px] border border-auth-border bg-auth-input px-4 text-[15px] text-app-text outline-none transition placeholder:text-app-muted focus:border-primary-action disabled:cursor-not-allowed disabled:opacity-60 sm:px-5 sm:text-[17px]"
         @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
     />
 </template>

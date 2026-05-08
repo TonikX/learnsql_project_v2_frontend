@@ -104,8 +104,8 @@ onMounted(loadGroups)
             <form @submit.prevent="submit">
                 <div class="overflow-hidden rounded-[10px] border border-auth-border bg-auth-table">
                     <div class="grid border-b border-auth-border sm:grid-cols-[260px_minmax(0,1fr)]">
-                        <div class="px-6 py-4 text-[17px] text-app-text sm:border-r sm:border-auth-border">Поле</div>
-                        <div class="px-6 py-4 text-[17px] text-app-text">Значение</div>
+                        <div class="px-4 py-3 text-[15px] text-app-text sm:border-r sm:border-auth-border sm:px-6 sm:py-4 sm:text-[17px]">Поле</div>
+                        <div class="px-4 py-3 text-[15px] text-app-text sm:px-6 sm:py-4 sm:text-[17px]">Значение</div>
                     </div>
 
                     <AuthFieldRow label="Логин" db-type="VARCHAR" register-type>
@@ -141,7 +141,7 @@ onMounted(loadGroups)
                     </AuthFieldRow>
 
                     <AuthFieldRow label="Роль" db-type="BOOLEAN" register-type>
-                        <label class="flex cursor-pointer items-center gap-3 text-[17px] text-app-text">
+                        <label class="flex cursor-pointer items-center gap-3 text-[15px] text-app-text sm:text-[17px]">
                             <input v-model="form.isStudent" type="checkbox" class="peer sr-only" />
                             <span class="flex h-5 w-5 items-center justify-center rounded-[4px] border border-auth-border bg-auth-input transition peer-checked:border-auth-checkbox-border peer-checked:bg-auth-checkbox-bg peer-checked:[&_svg]:opacity-100">
                                 <svg class="h-4 w-4 text-auth-checkbox-mark opacity-0 transition" viewBox="0 0 16 16" aria-hidden="true">
