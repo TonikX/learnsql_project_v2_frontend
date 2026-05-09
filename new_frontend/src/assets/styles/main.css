@@ -67,6 +67,18 @@
         --color-auth-social-button: #FCFCFD;
         --color-auth-social-button-border: #B6B6B6;
         --color-auth-social-button-text: #000000;
+        --color-profile-logout-bg: #FECACA;
+        --color-profile-logout-text: #991B1B;
+        --color-profile-details-surface: #F2F3F4;
+        --color-profile-prompt: #318CE7;
+        --color-profile-stat-blue-bg: #EEF3FF;
+        --color-profile-stat-blue-text: #318CE7;
+        --color-profile-stat-green-bg: #ECFAF3;
+        --color-profile-stat-green-text: #10B981;
+        --color-profile-stat-purple-bg: #F3EFFF;
+        --color-profile-stat-purple-text: #8B5CF6;
+        --color-profile-stat-orange-bg: #EDF9EF;
+        --color-profile-stat-orange-text: #F56F0F;
         --color-chat-page: #FFFFFF;
         --color-chat-panel: #FFFFFF;
         --color-chat-surface: #F2F3F4;
@@ -113,6 +125,8 @@
         --gradient-auth-button: linear-gradient(90deg, #66A9EE 0%, #4E95E0 100%);
         --gradient-auth-info-header: linear-gradient(109deg, #66A9EE 0%, #5197E2 89%, #5197E2 100%);
         --gradient-auth-info-surface: linear-gradient(180deg, #F2F3F4 0%, #F2F3F4 100%);
+        --gradient-profile-card: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);
+        --gradient-profile-avatar: linear-gradient(135deg, #318CE7 0%, #76B2EF 100%);
         --gradient-chat-header: linear-gradient(90deg, #1F2025 0%, #25272E 100%);
     }
 
@@ -173,6 +187,18 @@
         --color-auth-social-button: #FCFCFD;
         --color-auth-social-button-border: #B6B6B6;
         --color-auth-social-button-text: #000000;
+        --color-profile-logout-bg: #FECACA;
+        --color-profile-logout-text: #991B1B;
+        --color-profile-details-surface: #F2F3F4;
+        --color-profile-prompt: #318CE7;
+        --color-profile-stat-blue-bg: #EEF3FF;
+        --color-profile-stat-blue-text: #318CE7;
+        --color-profile-stat-green-bg: #ECFAF3;
+        --color-profile-stat-green-text: #10B981;
+        --color-profile-stat-purple-bg: #F3EFFF;
+        --color-profile-stat-purple-text: #8B5CF6;
+        --color-profile-stat-orange-bg: #EDF9EF;
+        --color-profile-stat-orange-text: #F56F0F;
         --color-chat-page: #FFFFFF;
         --color-chat-panel: #FFFFFF;
         --color-chat-surface: #F2F3F4;
@@ -218,6 +244,8 @@
         --gradient-auth-button: linear-gradient(90deg, #66A9EE 0%, #4E95E0 100%);
         --gradient-auth-info-header: linear-gradient(109deg, #66A9EE 0%, #5197E2 89%, #5197E2 100%);
         --gradient-auth-info-surface: linear-gradient(180deg, #F2F3F4 0%, #F2F3F4 100%);
+        --gradient-profile-card: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);
+        --gradient-profile-avatar: linear-gradient(135deg, #318CE7 0%, #76B2EF 100%);
         --gradient-chat-header: linear-gradient(90deg, #1F2025 0%, #25272E 100%);
     }
 
@@ -278,6 +306,18 @@
         --color-auth-social-button: rgba(0, 0, 0, 0.3);
         --color-auth-social-button-border: #828282;
         --color-auth-social-button-text: #FFFFFF;
+        --color-profile-logout-bg: #5A262C;
+        --color-profile-logout-text: #FF8A8A;
+        --color-profile-details-surface: #28292E;
+        --color-profile-prompt: #FFFFFF;
+        --color-profile-stat-blue-bg: #363640;
+        --color-profile-stat-blue-text: #318CE7;
+        --color-profile-stat-green-bg: #18352B;
+        --color-profile-stat-green-text: #34D399;
+        --color-profile-stat-purple-bg: #332B4B;
+        --color-profile-stat-purple-text: #8B5CF6;
+        --color-profile-stat-orange-bg: #3B2C20;
+        --color-profile-stat-orange-text: #F56F0F;
         --color-chat-page: #27272A;
         --color-chat-panel: #2D2D30;
         --color-chat-surface: #202124;
@@ -323,6 +363,8 @@
         --gradient-auth-button: linear-gradient(90deg, #318CE7 0%, #1B4E81 100%);
         --gradient-auth-info-header: linear-gradient(90deg, #1E2952 0%, #031040 100%);
         --gradient-auth-info-surface: linear-gradient(180deg, #16171B 0%, #28292E 100%);
+        --gradient-profile-card: linear-gradient(180deg, #16171B 0%, #28292E 100%);
+        --gradient-profile-avatar: linear-gradient(135deg, #4E95E0 0%, #214FCC 100%);
         --gradient-chat-header: linear-gradient(90deg, #1F2025 0%, #25272E 100%);
     }
 
