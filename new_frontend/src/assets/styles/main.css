@@ -71,6 +71,7 @@
         --color-profile-logout-text: #991B1B;
         --color-profile-details-surface: #F2F3F4;
         --color-profile-prompt: #318CE7;
+        --color-profile-course-percent: #318CE7;
         --color-profile-stat-blue-bg: #EEF3FF;
         --color-profile-stat-blue-text: #318CE7;
         --color-profile-stat-green-bg: #ECFAF3;
@@ -191,6 +192,7 @@
         --color-profile-logout-text: #991B1B;
         --color-profile-details-surface: #F2F3F4;
         --color-profile-prompt: #318CE7;
+        --color-profile-course-percent: #318CE7;
         --color-profile-stat-blue-bg: #EEF3FF;
         --color-profile-stat-blue-text: #318CE7;
         --color-profile-stat-green-bg: #ECFAF3;
@@ -310,6 +312,7 @@
         --color-profile-logout-text: #FF8A8A;
         --color-profile-details-surface: #28292E;
         --color-profile-prompt: #FFFFFF;
+        --color-profile-course-percent: #FFFFFF;
         --color-profile-stat-blue-bg: #363640;
         --color-profile-stat-blue-text: #318CE7;
         --color-profile-stat-green-bg: #18352B;

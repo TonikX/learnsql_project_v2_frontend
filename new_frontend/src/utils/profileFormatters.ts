@@ -24,6 +24,24 @@ export function formatNumber(value?: number | null, fractionDigits = 0) {
     })
 }
 
+export function formatAttemptsCount(value?: number | null) {
+    const attempts = value ?? 0
+    const mod10 = attempts % 10
+    const mod100 = attempts % 100
+
+    if (mod10 === 1 && mod100 !== 11) return `${attempts} попытка`
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return `${attempts} попытки`
+    return `${attempts} попыток`
+}
+
+export function formatAverageAttempts(value?: number | null) {
+    return formatNumber(value, 1)
+}
+
+export function formatStartedTasksText(solved?: number | null, started?: number | null) {
+    return `Решено ${solved ?? 0} из ${started ?? 0} задач`
+}
+
 export function formatDate(value?: string | null) {
     const date = toDate(value)
     if (!date) return ''
