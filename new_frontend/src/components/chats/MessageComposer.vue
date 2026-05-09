@@ -23,7 +23,7 @@ function insertSqlTemplate() {
 function noopAttachmentClick() {}
 
 function handleKeydown(event: KeyboardEvent) {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
         event.preventDefault()
         submit()
     }

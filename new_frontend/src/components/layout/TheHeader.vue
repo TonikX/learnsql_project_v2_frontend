@@ -118,8 +118,14 @@ onBeforeUnmount(() => {
                 <RouterLink to="/" :class="['hidden px-1 transition-colors md:inline', linkClass]">[ О сайте ]</RouterLink>
 
                 <template v-if="isAuth">
-                    <AppIcon name="profile" :size="24" negative class="sm:hidden" />
-                    <AppIcon name="profile" :size="32" negative class="hidden sm:block" />
+                    <RouterLink
+                        to="/profile"
+                        :class="['flex items-center justify-center transition-colors', linkClass]"
+                        aria-label="Профиль"
+                    >
+                        <AppIcon name="profile" :size="24" class="sm:hidden" />
+                        <AppIcon name="profile" :size="32" class="hidden sm:block" />
+                    </RouterLink>
                 </template>
 
                 <template v-else>
