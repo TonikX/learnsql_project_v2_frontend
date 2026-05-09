@@ -44,8 +44,14 @@ export interface ThemeStatisticsItem {
     mastery_level: number | null
 }
 
+export interface ThemeStatisticsSummary {
+    themes_started: number | null
+    strongest_theme: ThemeStatisticsItem | null
+    weakest_theme: ThemeStatisticsItem | null
+}
+
 export interface ThemesStatistics {
-    summary: unknown | null
+    summary: ThemeStatisticsSummary | null
     items: ThemeStatisticsItem[]
 }
 

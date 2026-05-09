@@ -3,11 +3,13 @@ import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import AppContainer from '@/components/layout/AppContainer.vue'
+import ProfileCoursesProgressPanel from '@/components/profile/ProfileCoursesProgressPanel.vue'
 import ProfileDetailsStats from '@/components/profile/ProfileDetailsStats.vue'
 import ProfileHeaderCard from '@/components/profile/ProfileHeaderCard.vue'
-import ProfileProgressPanel from '@/components/profile/ProfileProgressPanel.vue'
 import ProfileStatCard from '@/components/profile/ProfileStatCard.vue'
+import ProfileThemeResultsPanel from '@/components/profile/ProfileThemeResultsPanel.vue'
 import { useAuthStore } from '@/stores/authStore'
+import { useProfileCourseProgressStore } from '@/stores/profileCourseProgressStore'
 import { useProfileStatisticsStore } from '@/stores/profileStatisticsStore'
 import {
     formatNumber,
@@ -18,10 +20,17 @@ import {
 const router = useRouter()
 const authStore = useAuthStore()
 const profileStore = useProfileStatisticsStore()
+const courseProgressStore = useProfileCourseProgressStore()
 const { profile, isLoading, error } = storeToRefs(profileStore)
+const {
+    courseProgressItems,
+    isCourseProgressLoading,
+    courseProgressError,
+    hasPartialCourseProgressError,
+} = storeToRefs(courseProgressStore)
 
 const personal = computed(() => profile.value?.sections.personal ?? null)
-const themes = computed(() => profile.value?.sections.themes?.items ?? [])
+const themeResults = computed(() => profile.value?.sections.themes ?? null)
 
 const stats = computed(() => [
     {
@@ -75,16 +84,24 @@ async function loadProfile() {
     }
 }
 
+async function loadCourseProgress() {
+    await courseProgressStore.loadCourseProgress()
+}
+
 async function logout() {
     authStore.logout()
     profileStore.clearProfile()
+    courseProgressStore.clearCourseProgress()
     await router.push('/login')
 }
 
 function editProfile() {
 }
 
-onMounted(loadProfile)
+onMounted(() => {
+    loadProfile()
+    loadCourseProgress()
+})
 </script>
 
 <template>
@@ -117,7 +134,7 @@ onMounted(loadProfile)
                         @edit="editProfile"
                     />
 
-                    <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4 xl:gap-10">
+                    <div class="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 xl:gap-10">
                         <ProfileStatCard
                             v-for="stat in stats"
                             :key="stat.label"
@@ -129,7 +146,14 @@ onMounted(loadProfile)
                         />
                     </div>
 
-                    <ProfileProgressPanel :items="themes" />
+                    <ProfileCoursesProgressPanel
+                        :items="courseProgressItems"
+                        :is-loading="isCourseProgressLoading"
+                        :error="courseProgressError"
+                        :has-partial-error="hasPartialCourseProgressError"
+                    />
+
+                    <ProfileThemeResultsPanel :themes="themeResults" />
 
                     <ProfileDetailsStats
                         :left-rows="detailsLeftRows"

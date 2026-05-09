@@ -30,7 +30,7 @@ const groupLabel = computed(() => {
     <section class="rounded-[10px] border border-app-border bg-profile-card-gradient p-5 text-app-text sm:p-7">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div class="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center">
-                <div class="flex h-[86px] w-[86px] shrink-0 items-center justify-center rounded-[18px] bg-profile-avatar-gradient text-[32px] leading-none text-white">
+                <div class="flex h-[86px] w-[86px] shrink-0 items-center justify-center rounded-[18px] bg-primary-gradient text-[32px] leading-none text-white">
                     {{ getInitials(props.student) }}
                 </div>
 
@@ -56,8 +56,8 @@ const groupLabel = computed(() => {
                             {{ props.student.email }}
                         </span>
                         <span v-if="groupLabel" class="inline-flex min-w-0 items-center gap-2 break-words">
-                            <AppIcon name="profile-university" :size="14" class="shrink-0 sm:hidden" />
-                            <AppIcon name="profile-university" :size="16" class="hidden shrink-0 sm:block" />
+                            <AppIcon name="profile-university" :size="18" class="shrink-0 sm:hidden" />
+                            <AppIcon name="profile-university" :size="22" class="hidden shrink-0 sm:block" />
                             {{ groupLabel }}
                         </span>
                     </div>
