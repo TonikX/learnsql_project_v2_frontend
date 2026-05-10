@@ -7,6 +7,7 @@ import type { ChatItem } from '@/types/chatTypes'
 
 defineProps<{
     chat: ChatItem | null
+    isMessagesLoading?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -28,7 +29,7 @@ const emit = defineEmits<{
         <div v-if="chat" class="space-y-4">
             <ChatTeacherCard :chat="chat" />
             <ChatContextCard :chat="chat" />
-            <MessageList :messages="chat.messages" />
+            <MessageList :is-loading="isMessagesLoading" :messages="chat.messages" />
             <MessageComposer :key="chat.id" @send="emit('send', $event)" />
         </div>
 

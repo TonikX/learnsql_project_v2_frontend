@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ChatMessage } from '@/types/chatTypes'
+import { formatChatTime } from '@/utils/chatFormatters'
 
 const props = defineProps<{
     message: ChatMessage
@@ -52,7 +53,7 @@ const segments = computed<MessageSegment[]>(() => {
             </template>
 
             <p class="mt-2 text-[12px] font-extralight text-chat-text">
-                {{ message.timestamp }}
+                {{ formatChatTime(message.timestamp) }}
             </p>
         </div>
     </div>

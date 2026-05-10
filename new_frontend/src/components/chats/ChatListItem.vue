@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import type { ChatItem } from '@/types/chatTypes'
+import { getChatUserInitials } from '@/utils/chatFormatters'
 
 defineProps<{
     chat: ChatItem
     active?: boolean
 }>()
 
-const initials = (chat: ChatItem) => {
-    return `${chat.teacher.firstName[0] ?? ''}${chat.teacher.lastName[0] ?? ''}`.toUpperCase()
-}
+const initials = (chat: ChatItem) => getChatUserInitials(chat.room.teacher)
 </script>
 
 <template>
@@ -33,7 +32,6 @@ const initials = (chat: ChatItem) => {
                         </p>
                     </div>
                     <div class="flex shrink-0 items-center gap-2 text-[12px] font-extralight text-chat-text">
-                        <span v-if="chat.teacher.isOnline" class="h-2 w-2 rounded-full bg-chat-online"></span>
                         <span>{{ chat.lastMessageAt }}</span>
                     </div>
                 </div>
@@ -49,10 +47,6 @@ const initials = (chat: ChatItem) => {
                         {{ chat.unreadCount }}
                     </span>
                 </div>
-
-                <p v-if="chat.isWaiting" class="mt-3 text-[12px] text-chat-warning">
-                    Ожидает ответа
-                </p>
             </div>
         </div>
     </button>

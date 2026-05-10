@@ -35,7 +35,7 @@ const emit = defineEmits<{
             />
 
             <p v-if="!chats.length" class="rounded-[8px] border border-chat-border bg-chat-surface p-4 text-[14px] text-chat-muted">
-                Чаты не найдены
+                Чатов пока нет
             </p>
         </div>
     </aside>

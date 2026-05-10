@@ -1,13 +1,22 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { ChatItem } from '@/types/chatTypes'
+import { getChatUserInitials } from '@/utils/chatFormatters'
 
-defineProps<{
+const props = defineProps<{
     chat: ChatItem
 }>()
 
-const initials = (chat: ChatItem) => {
-    return `${chat.teacher.firstName[0] ?? ''}${chat.teacher.lastName[0] ?? ''}`.toUpperCase()
-}
+const initials = computed(() => getChatUserInitials(props.chat.room.teacher))
+
+const courseRoute = computed(() => {
+    return props.chat.context.courseId ? `/courses/${props.chat.context.courseId}` : '/courses'
+})
+
+const taskRoute = computed(() => {
+    if (!props.chat.context.courseId || !props.chat.context.taskId) return courseRoute.value
+    return `/courses/${props.chat.context.courseId}/problem/${props.chat.context.taskId}`
+})
 </script>
 
 <template>
@@ -15,31 +24,28 @@ const initials = (chat: ChatItem) => {
         <div class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div class="flex items-center gap-5">
                 <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-chat-avatar text-[14px] text-chat-on-accent">
-                    {{ initials(chat) }}
+                    {{ initials }}
                 </div>
                 <div>
                     <h2 class="text-[18px] font-semibold text-chat-text">
                         {{ chat.teacher.firstName }} {{ chat.teacher.lastName }}
                     </h2>
                     <p class="mt-2 text-[12px] text-chat-text">
-                        {{ chat.teacher.position }} • {{ chat.context.courseTitle }}
-                    </p>
-                    <p class="mt-2 flex items-center gap-2 text-[13px] text-chat-text">
-                        <span class="h-2 w-2 rounded-full bg-chat-online"></span>
-                        В сети
+                        {{ chat.teacher.position }}<template v-if="chat.context.courseTitle"> • {{ chat.context.courseTitle }}</template>
                     </p>
                 </div>
             </div>
 
             <div class="flex gap-3">
                 <RouterLink
-                    to="/courses"
+                    v-if="chat.context.taskId"
+                    :to="taskRoute"
                     class="inline-flex h-9 min-w-[118px] items-center justify-center rounded-[7px] border border-chat-border bg-chat-action-button px-4 text-[13px] text-chat-text transition hover:bg-chat-surface-active"
                 >
                     К задаче
                 </RouterLink>
                 <RouterLink
-                    to="/courses"
+                    :to="courseRoute"
                     class="inline-flex h-9 min-w-[118px] items-center justify-center rounded-[7px] border border-chat-border bg-chat-action-button px-4 text-[13px] text-chat-text transition hover:bg-chat-surface-active"
                 >
                     К курсу

@@ -21,5 +21,5 @@ const emit = defineEmits<{
             placeholder="Поиск по чатам..."
             @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)"
         />
-</label>
+    </label>
 </template>

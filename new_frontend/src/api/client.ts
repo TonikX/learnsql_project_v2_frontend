@@ -13,6 +13,12 @@ import {
 } from '@/errors/network'
 
 const apiUrl: string = import.meta.env.VITE_BACKEND_API_URL ?? 'http://localhost:8000'
+const accessStorageKey = 'access_token'
+const refreshStorageKey = 'refresh_token'
+
+type RetriableRequestConfig = InternalAxiosRequestConfig & {
+    _retry?: boolean
+}
 
 const publicEndpoints = new Set([
     '/api/token/',
@@ -42,11 +48,68 @@ const apiClient: AxiosInstance = axios.create({
     baseURL: apiUrl,
 })
 
+const refreshClient: AxiosInstance = axios.create({
+    baseURL: apiUrl,
+})
+
+let refreshPromise: Promise<string> | null = null
+
+function getStoredToken(key: string): string | null {
+    if (typeof window === 'undefined') return null
+    return window.localStorage.getItem(key)
+}
+
+function setStoredAccessToken(token: string) {
+    if (typeof window !== 'undefined') {
+        window.localStorage.setItem(accessStorageKey, token)
+    }
+}
+
+async function syncAuthStoreAccessToken(token: string) {
+    const { useAuthStore } = await import('@/stores/authStore')
+    useAuthStore().setTokens({ access: token })
+}
+
+async function logoutAfterRefreshFailure() {
+    const { useAuthStore } = await import('@/stores/authStore')
+    useAuthStore().logout()
+
+    if (typeof window === 'undefined') return
+
+    const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`
+    const redirect = currentPath && currentPath !== '/login'
+        ? `?redirect=${encodeURIComponent(currentPath)}`
+        : ''
+
+    window.location.assign(`/login${redirect}`)
+}
+
+async function refreshAccessToken(): Promise<string> {
+    if (!refreshPromise) {
+        refreshPromise = (async () => {
+            const refresh = getStoredToken(refreshStorageKey)
+            if (!refresh) {
+                throw new Error('Missing refresh token')
+            }
+
+            const response = await refreshClient.post<{ access: string }>('/api/token/refresh/', {
+                refresh,
+            })
+
+            setStoredAccessToken(response.data.access)
+            await syncAuthStoreAccessToken(response.data.access)
+            return response.data.access
+        })().finally(() => {
+            refreshPromise = null
+        })
+    }
+
+    return refreshPromise
+}
+
 apiClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        const token = typeof window === 'undefined'
-            ? null
-            : window.localStorage.getItem('access_token')
+        const token = getStoredToken(accessStorageKey)
 
         if (token && !isPublicEndpoint(config.url)) {
             config.headers.Authorization = `Bearer ${token}`
@@ -59,7 +122,7 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
     (response: AxiosResponse) => response,
-    (error: AxiosError) => {
+    async (error: AxiosError) => {
         const isNetworkError =
             !error.response ||
             error.code === 'ERR_NETWORK' ||
@@ -69,6 +132,26 @@ apiClient.interceptors.response.use(
             return Promise.reject(
                 new ConnectionError('Не удалось подключиться к серверу. Проверьте соединение.'),
             )
+        }
+
+        const originalRequest = error.config as RetriableRequestConfig | undefined
+        const shouldRefresh =
+            error.response?.status === 401 &&
+            originalRequest &&
+            !originalRequest._retry &&
+            !isPublicEndpoint(originalRequest.url)
+
+        if (shouldRefresh) {
+            originalRequest._retry = true
+
+            try {
+                const access = await refreshAccessToken()
+                originalRequest.headers.Authorization = `Bearer ${access}`
+                return apiClient(originalRequest)
+            } catch (refreshError) {
+                await logoutAfterRefreshFailure()
+                return Promise.reject(refreshError)
+            }
         }
 
         const responseData = error.response?.data
