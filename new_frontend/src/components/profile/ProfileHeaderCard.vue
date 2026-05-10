@@ -29,44 +29,46 @@ const groupLabel = computed(() => {
 <template>
     <section class="rounded-[10px] border border-app-border bg-profile-card-gradient p-5 text-app-text sm:p-7">
         <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div class="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center">
-                <div class="flex h-[86px] w-[86px] shrink-0 items-center justify-center rounded-[18px] bg-primary-gradient text-[32px] leading-none text-white">
-                    {{ getInitials(props.student) }}
-                </div>
-
-                <div class="min-w-0">
-                    <h1 class="break-words text-[26px] leading-tight sm:text-[34px]">
-                        {{ getDisplayName(props.student) }}
-                    </h1>
-
-                    <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-app-text sm:text-[15px]">
-                        <span class="inline-flex items-center gap-2">
-                            <AppIcon name="profile-id" :size="16" class="h-[13px] w-[18px] sm:hidden" />
-                            <AppIcon name="profile-id" :size="20" class="hidden h-[15px] w-[20px] sm:block" />
-                            @{{ props.student.username }}
-                        </span>
-                        <span class="inline-flex items-center gap-2">
-                            <AppIcon name="profile-student" :size="14" class="sm:hidden" />
-                            <AppIcon name="profile-student" :size="16" class="hidden sm:block" />
-                            {{ formatRole(props.student.role) }}
-                        </span>
-                        <span v-if="props.student.email" class="inline-flex min-w-0 items-center gap-2 break-all">
-                            <AppIcon name="profile-mail" :size="14" class="shrink-0 sm:hidden" />
-                            <AppIcon name="profile-mail" :size="16" class="hidden shrink-0 sm:block" />
-                            {{ props.student.email }}
-                        </span>
-                        <span v-if="groupLabel" class="inline-flex min-w-0 items-center gap-2 break-words">
-                            <AppIcon name="profile-university" :size="18" class="shrink-0 sm:hidden" />
-                            <AppIcon name="profile-university" :size="22" class="hidden shrink-0 sm:block" />
-                            {{ groupLabel }}
-                        </span>
+            <div class="min-w-0 flex-1">
+                <div class="flex min-w-0 items-start gap-4 sm:items-center sm:gap-5">
+                    <div class="flex h-[80px] w-[80px] shrink-0 items-center justify-center rounded-[16px] bg-primary-gradient text-[28px] leading-none text-white sm:h-[86px] sm:w-[86px] sm:rounded-[18px] sm:text-[32px]">
+                        {{ getInitials(props.student) }}
                     </div>
 
-                    <p class="mt-4 text-[13px] leading-relaxed text-app-text sm:text-[15px]">
-                        <span class="text-progress-green">●</span>
-                        {{ getProfileStatusLine(props.personal) }}
-                    </p>
+                    <div class="min-w-0 flex-1">
+                        <h1 class="break-words text-[22px] leading-tight sm:text-[34px]">
+                            {{ getDisplayName(props.student) }}
+                        </h1>
+
+                        <div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12px] text-app-text sm:mt-4 sm:gap-x-4 sm:text-[15px]">
+                            <span class="inline-flex items-center gap-2">
+                                <AppIcon name="profile-id" :size="16" class="h-[13px] w-[18px] sm:hidden" />
+                                <AppIcon name="profile-id" :size="20" class="hidden h-[15px] w-[20px] sm:block" />
+                                @{{ props.student.username }}
+                            </span>
+                            <span class="inline-flex items-center gap-2">
+                                <AppIcon name="profile-student" :size="14" class="sm:hidden" />
+                                <AppIcon name="profile-student" :size="16" class="hidden sm:block" />
+                                {{ formatRole(props.student.role) }}
+                            </span>
+                            <span v-if="props.student.email" class="inline-flex min-w-0 items-center gap-2 break-all">
+                                <AppIcon name="profile-mail" :size="14" class="shrink-0 sm:hidden" />
+                                <AppIcon name="profile-mail" :size="16" class="hidden shrink-0 sm:block" />
+                                {{ props.student.email }}
+                            </span>
+                            <span v-if="groupLabel" class="inline-flex min-w-0 items-center gap-2 break-words">
+                                <AppIcon name="profile-university" :size="18" class="shrink-0 sm:hidden" />
+                                <AppIcon name="profile-university" :size="22" class="hidden shrink-0 sm:block" />
+                                {{ groupLabel }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
+
+                <p class="mt-4 text-[13px] leading-relaxed text-app-text sm:text-[15px]">
+                    <span class="text-progress-green">●</span>
+                    {{ getProfileStatusLine(props.personal) }}
+                </p>
             </div>
 
             <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row lg:shrink-0">

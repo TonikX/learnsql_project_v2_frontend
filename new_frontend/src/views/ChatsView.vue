@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRoute, useRouter } from 'vue-router'
 import ChatPanel from '@/components/chats/ChatPanel.vue'
 import ChatSidebar from '@/components/chats/ChatSidebar.vue'
 import { useChatStore } from '@/stores/chatStore'
 
+const route = useRoute()
+const router = useRouter()
 const chatStore = useChatStore()
 const {
     activeChat,
@@ -12,21 +15,94 @@ const {
     error,
     filter,
     filteredChats,
+    isMessagesLoading,
     isLoading,
     searchQuery,
 } = storeToRefs(chatStore)
 
 const isMobileChatOpen = ref(false)
+const isSyncingRoomFromQuery = ref(false)
 
-function handleSelectChat(chatId: number | string) {
-    chatStore.setActiveChat(chatId)
-    isMobileChatOpen.value = true
+const routeRoomId = computed(() => {
+    const value = route.query.room
+    return typeof value === 'string' && value ? value : null
+})
+
+function hasRoom(roomId: string) {
+    return chatStore.rooms.some((room) => String(room.id) === roomId)
 }
 
-onMounted(() => {
-    if (!chatStore.chats.length) {
-        chatStore.loadChats()
+async function syncRoomFromQuery() {
+    if (isSyncingRoomFromQuery.value) return
+
+    const roomId = routeRoomId.value
+
+    if (roomId === null) {
+        chatStore.clearActiveRoom()
+        isMobileChatOpen.value = false
+        return
     }
+
+    if (!hasRoom(roomId)) {
+        chatStore.clearActiveRoom()
+        isMobileChatOpen.value = false
+        return
+    }
+
+    if (activeChatId.value !== null && String(activeChatId.value) === roomId) {
+        isMobileChatOpen.value = true
+        return
+    }
+
+    isSyncingRoomFromQuery.value = true
+    try {
+        await chatStore.selectRoom(roomId)
+        isMobileChatOpen.value = true
+    } finally {
+        isSyncingRoomFromQuery.value = false
+    }
+}
+
+async function setRoomQuery(roomId: number | string | null) {
+    const nextQuery = { ...route.query }
+
+    if (roomId === null) {
+        delete nextQuery.room
+    } else {
+        nextQuery.room = String(roomId)
+    }
+
+    await router.replace({ query: nextQuery })
+}
+
+async function handleSelectChat(chatId: number | string) {
+    await setRoomQuery(chatId)
+}
+
+async function handleBackToList() {
+    isMobileChatOpen.value = false
+    await setRoomQuery(null)
+}
+
+onMounted(async () => {
+    if (!chatStore.rooms.length) {
+        await chatStore.loadRooms()
+    }
+
+    await syncRoomFromQuery()
+})
+
+watch(routeRoomId, async () => {
+    if (isLoading.value) return
+    await syncRoomFromQuery()
+})
+
+watch(() => chatStore.rooms, async () => {
+    await syncRoomFromQuery()
+})
+
+onBeforeUnmount(() => {
+    chatStore.disconnectSocket()
 })
 </script>
 
@@ -64,7 +140,8 @@ onMounted(() => {
                 <ChatPanel
                     :class="isMobileChatOpen ? 'block' : 'hidden xl:block'"
                     :chat="activeChat"
-                    @back="isMobileChatOpen = false"
+                    :is-messages-loading="isMessagesLoading"
+                    @back="handleBackToList"
                     @send="chatStore.sendMessage"
                 />
             </div>

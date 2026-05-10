@@ -218,13 +218,15 @@ function getStepIndicatorClass(step: LearningStep) {
                 </div>
 
                 <div class="relative mt-10 xl:mt-[70px]">
-                    <div class="absolute bottom-[55px] left-[24px] top-[24px] border-l-2 border-app-border sm:bottom-[60px] sm:left-[32px] sm:top-[32px]"></div>
-
                     <div
-                        v-for="step in learningSteps"
+                        v-for="(step, index) in learningSteps"
                         :key="step.title"
                         class="relative grid grid-cols-[48px_1fr] gap-4 pb-[23px] sm:grid-cols-[64px_1fr] sm:gap-[24px]"
                     >
+                        <div
+                            v-if="index < learningSteps.length - 1"
+                            class="absolute left-[24px] top-[24px] border-l-2 border-app-border bottom-[-24px] sm:left-[32px] sm:top-[32px] sm:bottom-[-32px]"
+                        ></div>
                         <div
                             :class="[
                                 'z-10 flex h-12 w-12 items-center justify-center rounded-[12px] text-[18px] sm:h-[64px] sm:w-[64px] sm:text-[24px]',

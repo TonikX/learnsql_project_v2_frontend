@@ -23,11 +23,13 @@ const tabs: Array<{ value: ChatFilter; label: string }> = [
             v-for="tab in tabs"
             :key="tab.value"
             type="button"
-            class="h-[32px] rounded-[6px] text-[11px] transition sm:text-[12px]"
+            class="flex h-[32px] min-w-0 items-center justify-center rounded-[6px] px-0.5 text-center text-[9px] leading-none transition min-[390px]:text-[10px] sm:px-2 sm:text-[12px]"
             :class="modelValue === tab.value ? 'border border-chat-border bg-chat-filter-active-bg text-chat-filter-active-text' : 'text-chat-text hover:bg-chat-panel'"
             @click="emit('update:modelValue', tab.value)"
         >
-            {{ tab.label }}
+            <span class="min-w-0 truncate">
+                {{ tab.label }}
+            </span>
         </button>
     </div>
 </template>
