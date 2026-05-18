@@ -30,7 +30,7 @@ const emit = defineEmits<{
                 v-for="chat in chats"
                 :key="chat.id"
                 :chat="chat"
-                :active="chat.id === activeChatId"
+                :active="activeChatId !== null && String(chat.id) === String(activeChatId)"
                 @click="emit('select', chat.id)"
             />
 

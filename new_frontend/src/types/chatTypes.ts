@@ -1,4 +1,4 @@
-export type ChatFilter = 'all' | 'unread' | 'tasks' | 'courses'
+export type ChatFilter = 'all' | 'unread'
 
 export interface PaginatedResponse<T> {
     count: number
@@ -120,6 +120,5 @@ export interface ChatItem {
     lastMessage: string
     lastMessageAt: string
     unreadCount: number
-    category: 'task' | 'course'
     messages: ChatMessage[]
 }
