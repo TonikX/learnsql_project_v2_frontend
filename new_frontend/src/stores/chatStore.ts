@@ -91,9 +91,16 @@ function mapRoom(room: ChatRoom, messages: ChatMessage[] = []): ChatItem {
         lastMessage: formatChatPreview(room.last_message?.content) || 'Сообщений пока нет',
         lastMessageAt: formatChatTime(room.last_message_at ?? room.last_message?.timestamp),
         unreadCount: room.unread_count,
-        category: room.task_detail ? 'task' : 'course',
         messages,
     }
+}
+
+function getRoomActivityTime(room: ChatRoom): number {
+    const value = room.last_message_at ?? room.last_message?.timestamp ?? room.updated_at ?? room.created_at
+    if (!value) return 0
+
+    const time = new Date(value).getTime()
+    return Number.isNaN(time) ? 0 : time
 }
 
 export const useChatStore = defineStore('chat', () => {
@@ -145,9 +152,7 @@ export const useChatStore = defineStore('chat', () => {
         return chats.value.filter((chat) => {
             const matchesFilter =
                 filter.value === 'all' ||
-                (filter.value === 'unread' && chat.unreadCount > 0) ||
-                (filter.value === 'tasks' && Boolean(chat.room.task_detail)) ||
-                (filter.value === 'courses' && chat.category === 'course')
+                (filter.value === 'unread' && chat.unreadCount > 0)
 
             const context = [
                 getChatUserDisplayName(chat.room.teacher),
@@ -169,7 +174,9 @@ export const useChatStore = defineStore('chat', () => {
 
         try {
             const response = await chatService.getRooms()
-            rooms.value = response.results
+            rooms.value = [...response.results].sort((firstRoom, secondRoom) => (
+                getRoomActivityTime(secondRoom) - getRoomActivityTime(firstRoom)
+            ))
 
         } catch {
             roomsError.value = 'Не удалось загрузить чаты'
@@ -267,10 +274,6 @@ export const useChatStore = defineStore('chat', () => {
         await loadRooms()
     }
 
-    function setActiveChat(chatId: number | string) {
-        void selectRoom(chatId)
-    }
-
     function setFilter(value: ChatFilter) {
         filter.value = value
     }
@@ -318,7 +321,6 @@ export const useChatStore = defineStore('chat', () => {
         connectActiveRoomSocket,
         disconnectSocket,
         clearActiveRoom,
-        setActiveChat,
         setFilter,
         setSearchQuery,
         clearChatState,

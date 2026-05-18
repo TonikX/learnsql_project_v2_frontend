@@ -13,8 +13,8 @@ const initials = (chat: ChatItem) => getChatUserInitials(chat.room.teacher)
 <template>
     <button
         type="button"
-        class="w-full rounded-[8px] border p-4 text-left transition"
-        :class="active ? 'border-chat-border-active bg-chat-surface-active' : 'border-chat-border bg-chat-surface hover:border-chat-border-active'"
+        class="w-full rounded-[10px] border p-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-chat-border-active"
+        :class="active ? 'border-chat-border-active bg-chat-surface-active' : 'border-chat-border bg-chat-surface hover:border-chat-border-active hover:bg-chat-panel'"
     >
         <div class="flex items-start gap-3">
             <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-chat-avatar text-[13px] text-chat-on-accent">
