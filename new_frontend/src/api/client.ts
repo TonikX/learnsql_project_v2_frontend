@@ -2,34 +2,144 @@ import { BadRequestError, NotFoundError, ServerError, ConnectionError } from '@/
 import axios, { AxiosError, type AxiosInstance, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 import router from '@/router'
 
-const apiUrl: string = import.meta.env.BACKEND_API_URL ?? 'http://localhost:8000'
+const apiUrl: string = import.meta.env.VITE_BACKEND_API_URL ?? 'http://localhost:8000'
+const accessStorageKey = 'access_token'
+const refreshStorageKey = 'refresh_token'
+
+type RetriableRequestConfig = InternalAxiosRequestConfig & {
+    _retry?: boolean
+}
+
+const publicEndpoints = new Set([
+    '/api/token/',
+    '/api/token/refresh/',
+    '/api/token/verify/',
+    '/api/register/',
+    '/api/social_auth_v2/token/',
+    '/api/student-groups/',
+    '/api/student-groups/get_choise_values/',
+])
+
+function isPublicEndpoint(url?: string): boolean {
+    if (!url) return false
+
+    try {
+        const path = url.startsWith('http')
+            ? new URL(url).pathname
+            : (url.split('?')[0] ?? '')
+
+        return publicEndpoints.has(path)
+    } catch {
+        return false
+    }
+}
 
 const apiClient: AxiosInstance = axios.create({
-    baseURL: apiUrl
+    baseURL: apiUrl,
 })
 
-// add access token to request
+const refreshClient: AxiosInstance = axios.create({
+    baseURL: apiUrl,
+})
+
+let refreshPromise: Promise<string> | null = null
+
+function getStoredToken(key: string): string | null {
+    if (typeof window === 'undefined') return null
+    return window.localStorage.getItem(key)
+}
+
+function setStoredAccessToken(token: string) {
+    if (typeof window !== 'undefined') {
+        window.localStorage.setItem(accessStorageKey, token)
+    }
+}
+
+async function syncAuthStoreAccessToken(token: string) {
+    const { useAuthStore } = await import('@/stores/authStore')
+    useAuthStore().setTokens({ access: token })
+}
+
+async function logoutAfterRefreshFailure() {
+    const { useAuthStore } = await import('@/stores/authStore')
+    useAuthStore().logout()
+
+    if (typeof window === 'undefined') return
+
+    const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`
+    const redirect = currentPath && currentPath !== '/login'
+        ? `?redirect=${encodeURIComponent(currentPath)}`
+        : ''
+
+    window.location.assign(`/login${redirect}`)
+}
+
+async function refreshAccessToken(): Promise<string> {
+    if (!refreshPromise) {
+        refreshPromise = (async () => {
+            const refresh = getStoredToken(refreshStorageKey)
+            if (!refresh) {
+                throw new Error('Missing refresh token')
+            }
+
+            const response = await refreshClient.post<{ access: string }>('/api/token/refresh/', {
+                refresh,
+            })
+
+            setStoredAccessToken(response.data.access)
+            await syncAuthStoreAccessToken(response.data.access)
+            return response.data.access
+        })().finally(() => {
+            refreshPromise = null
+        })
+    }
+
+    return refreshPromise
+}
+
 apiClient.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        const token = localStorage.getItem('access_token')
-        console.log("SET access token:", token)
+        const token = getStoredToken(accessStorageKey)
 
-        if (token) {
+        if (token && !isPublicEndpoint(config.url)) {
             config.headers.Authorization = `Bearer ${token}`
         }
+
         return config
     },
-    (error: AxiosError) => Promise.reject(error)
+    (error: AxiosError) => Promise.reject(error),
 )
 
-// handle response errors
 apiClient.interceptors.response.use(
-    (response: AxiosResponse) => { return response },
-    (error: AxiosError) => {
-        const isNetworkError = !error.response || error.code === "ERR_NETWORK" || error.message === "Network Error"
+    (response: AxiosResponse) => response,
+    async (error: AxiosError) => {
+        const isNetworkError =
+            !error.response ||
+            error.code === 'ERR_NETWORK' ||
+            error.message === 'Network Error'
 
         if (isNetworkError) 
             return Promise.reject(new ConnectionError(`Connection lost: ${error.request}`))
+
+        const originalRequest = error.config as RetriableRequestConfig | undefined
+        const shouldRefresh =
+            error.response?.status === 401 &&
+            originalRequest &&
+            !originalRequest._retry &&
+            !isPublicEndpoint(originalRequest.url)
+
+        if (shouldRefresh) {
+            originalRequest._retry = true
+
+            try {
+                const access = await refreshAccessToken()
+                originalRequest.headers.Authorization = `Bearer ${access}`
+                return apiClient(originalRequest)
+            } catch (refreshError) {
+                await logoutAfterRefreshFailure()
+                return Promise.reject(refreshError)
+            }
+        }
 
         const response = error.response?.data
 
@@ -43,10 +153,10 @@ apiClient.interceptors.response.use(
             return Promise.reject(new NotFoundError(`Resourse not found: ${response}`))
         case 500:
             return Promise.reject(new ServerError(`Server error: ${response}`))
+        default:
+            return Promise.reject(error)
         }
-
-        return Promise.reject(error)
-    }
+    },
 )
 
 export default apiClient

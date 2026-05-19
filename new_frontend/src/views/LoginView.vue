@@ -1,46 +1,135 @@
 <script setup lang="ts">
-import AppContainer from '@/components/layout/AppContainer.vue'
-import AppCard from '@/components/ui/AppCard.vue'
-import AppInput from '@/components/ui/AppInput.vue'
-import AppButton from '@/components/ui/AppButton.vue'
 import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import AuthFieldRow from '@/components/auth/AuthFieldRow.vue'
+import AuthPageShell from '@/components/auth/AuthPageShell.vue'
+import AuthSqlCard from '@/components/auth/AuthSqlCard.vue'
+import AuthSocialLogin from '@/components/auth/AuthSocialLogin.vue'
+import AuthSubmitArea from '@/components/auth/AuthSubmitArea.vue'
+import AuthTextInput from '@/components/auth/AuthTextInput.vue'
+import {
+    getGitHubAccessToken,
+    getGoogleAccessToken,
+    getSocialAuthErrorMessage,
+    saveSocialRedirect,
+    startYandexAccessTokenFlow,
+} from '@/services/socialOAuthService'
 import { useAuthStore } from '@/stores/authStore'
-import { useUserStore } from '@/stores/userStore'
+import type { SocialAuthProvider } from '@/types/userTypes'
 
-const auth = useAuthStore()
-const userStore = useUserStore()
+const authStore = useAuthStore()
+const router = useRouter()
+const route = useRoute()
 
-const username = ref('')
+const login = ref('')
 const password = ref('')
+const formError = ref('')
+const socialError = ref('')
+const socialLoadingProvider = ref<SocialAuthProvider | null>(null)
 
-function submit() {
-    auth.setToken('mock-token')
-    userStore.setMockUser()
+function getRedirectTo() {
+    const redirectTo = typeof route.query.redirect === 'string' ? route.query.redirect : null
+
+    return redirectTo?.startsWith('/') && !redirectTo.startsWith('//')
+        ? redirectTo
+        : '/'
+}
+
+async function submit() {
+    formError.value = ''
+    socialError.value = ''
+
+    if (!login.value || !password.value) {
+        formError.value = 'Введите логин и пароль'
+        return
+    }
+
+    try {
+        await authStore.login({
+            username: login.value,
+            password: password.value,
+        })
+
+        await router.push(getRedirectTo())
+    } catch {
+        formError.value = authStore.error ?? 'Не удалось войти. Попробуйте ещё раз'
+    }
+}
+
+async function handleSocialLogin(provider: SocialAuthProvider) {
+    socialError.value = ''
+    formError.value = ''
+    socialLoadingProvider.value = provider
+    let isRedirectingToProvider = false
+
+    try {
+        if (provider === 'github') {
+            getGitHubAccessToken()
+            return
+        }
+
+        if (provider === 'yandex') {
+            saveSocialRedirect(getRedirectTo())
+            startYandexAccessTokenFlow()
+            isRedirectingToProvider = true
+            return
+        }
+
+        const providerAccessToken = await getGoogleAccessToken()
+        await authStore.socialLogin(provider, providerAccessToken)
+        await router.push(getRedirectTo())
+    } catch (unknownError) {
+        socialError.value = getSocialAuthErrorMessage(provider, unknownError)
+    } finally {
+        if (!isRedirectingToProvider) {
+            socialLoadingProvider.value = null
+        }
+    }
 }
 </script>
 
 <template>
-    <AppContainer as="section" class="py-16">
-        <div class="mx-auto max-w-md">
-            <AppCard padding="lg">
-                <h1 class="text-2xl font-extrabold text-slate-900">Вход</h1>
-                <p class="mt-2 text-sm font-semibold text-slate-600">
-                    Войдите, чтобы продолжить обучение.
-                </p>
+    <AuthPageShell variant="login">
+        <AuthSqlCard title="Вход в LearnSQL" command="SELECT users FROM learnsql;">
+            <form @submit.prevent="submit">
+                <div class="overflow-hidden rounded-[10px] border border-auth-border bg-auth-table">
+                    <div class="grid border-b border-auth-border sm:grid-cols-[260px_minmax(0,1fr)]">
+                        <div class="px-4 py-3 text-[15px] text-app-text sm:border-r sm:border-auth-border sm:px-6 sm:py-4 sm:text-[17px]">Поле</div>
+                        <div class="px-4 py-3 text-[15px] text-app-text sm:px-6 sm:py-4 sm:text-[17px]">Значение</div>
+                    </div>
 
-                <div class="mt-6 space-y-4">
-                    <AppInput v-model="username" label="Логин или Email" placeholder="user@learnsql.ru" />
-                    <AppInput v-model="password" label="Пароль" type="password" placeholder="••••••••" />
-                    <AppButton class="w-full" @click="submit">Войти</AppButton>
+                    <AuthFieldRow label="Почта" db-type="VARCHAR">
+                        <AuthTextInput v-model="login" autocomplete="username" />
+                    </AuthFieldRow>
+
+                    <AuthFieldRow label="Пароль" db-type="TEXT">
+                        <AuthTextInput v-model="password" type="password" autocomplete="current-password" />
+                    </AuthFieldRow>
+
+                    <AuthFieldRow label="Статус" db-type="TEXT">
+                        <span class="rounded-[11px] border border-auth-border bg-auth-input px-5 py-2 text-[17px] text-app-text">
+                            ready_to_login
+                        </span>
+                    </AuthFieldRow>
                 </div>
 
-                <div class="mt-6 text-sm font-semibold text-slate-600">
-                    Нет аккаунта?
-                    <RouterLink to="/register" class="text-primary-600 hover:underline">
-                        Регистрация
-                    </RouterLink>
-                </div>
-            </AppCard>
-        </div>
-    </AppContainer>
+                <AuthSubmitArea
+                    action="SELECT"
+                    button-type="submit"
+                    :loading="authStore.isLoading"
+                    :error="formError"
+                    link-prefix="Нет аккаунта?"
+                    link-text="регистрация"
+                    link-to="/register"
+                    hint=""
+                />
+
+                <AuthSocialLogin
+                    :error="socialError"
+                    :loading-provider="socialLoadingProvider"
+                    @select="handleSocialLogin"
+                />
+            </form>
+        </AuthSqlCard>
+    </AuthPageShell>
 </template>

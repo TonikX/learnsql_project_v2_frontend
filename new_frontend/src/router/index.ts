@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import PublicLayout from '@/components/layout/PublicLayout.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const routes: RouteRecordRaw[] = [
     {
@@ -16,18 +17,36 @@ const routes: RouteRecordRaw[] = [
                 path: 'login',
                 name: 'login',
                 component: () => import('@/views/LoginView.vue'),
-                meta: { hideFooter: true }
+                meta: { hideFooter: true, guestOnly: true }
             },
             {
                 path: 'register',
                 name: 'register',
                 component: () => import('@/views/RegisterView.vue'),
+                meta: { hideFooter: true, guestOnly: true }
+            },
+            {
+                path: 'auth/callback/:provider',
+                name: 'social-callback',
+                component: () => import('@/views/SocialCallbackView.vue'),
                 meta: { hideFooter: true }
             },
             {
                 path: 'courses',
                 name: 'courses',
                 component: () => import('@/views/CoursesListView.vue')
+            },
+            {
+                path: 'chats',
+                name: 'chats',
+                component: () => import('@/views/ChatsView.vue'),
+                meta: { requiresAuth: true }
+            },
+            {
+                path: 'profile',
+                name: 'profile',
+                component: () => import('@/views/ProfileView.vue'),
+                meta: { requiresAuth: true }
             },
             {
                 path: 'courses/:course_id',
@@ -72,6 +91,18 @@ const router = createRouter({
         if (to.hash) return { el: to.hash, top: 95, behavior: 'smooth' }
         return { top: 0 }
     },
+})
+
+router.beforeEach((to) => {
+    const authStore = useAuthStore()
+
+    if (to.meta.guestOnly === true && authStore.isAuth) {
+        return { path: '/courses' }
+    }
+
+    if (to.meta.requiresAuth === true && !authStore.isAuth) {
+        return { path: '/login', query: { redirect: to.fullPath } }
+    }
 })
 
 export default router

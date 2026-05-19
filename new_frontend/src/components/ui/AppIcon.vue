@@ -24,4 +24,9 @@ const props = defineProps({
         default: "fill-text-main"
     }
 })
+
+// const { negative } = toRefs(props)
+// const fillClass = computed(() => {
+//     return negative.value ? 'fill-text-neg text-text-neg' : 'fill-current'
+// })
 </script>

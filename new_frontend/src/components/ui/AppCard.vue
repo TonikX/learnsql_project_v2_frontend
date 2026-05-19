@@ -12,11 +12,11 @@ const props = withDefaults(defineProps<{
 
 <template>
     <div
-        class="rounded-2xl bg-white"
+        class="rounded-[12px] bg-card text-app-text"
         :class="[
-        bordered ? 'ring-1 ring-slate-200' : '',
-        hoverable ? 'transition hover:-translate-y-0.5 hover:shadow-card' : '',
-        padding === 'none' ? '' : padding === 'sm' ? 'p-4' : padding === 'lg' ? 'p-8' : 'p-6'
+            bordered ? 'border border-app-border' : '',
+            hoverable ? 'transition hover:-translate-y-0.5 hover:shadow-card' : '',
+            padding === 'none' ? '' : padding === 'sm' ? 'p-4' : padding === 'lg' ? 'p-8' : 'p-6'
         ]"
     >
         <slot />

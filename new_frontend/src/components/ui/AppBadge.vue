@@ -13,11 +13,11 @@ const props = withDefaults(defineProps<{
 const classes = () => {
     const base = props.size === 'md' ? 'px-3 py-1 text-sm' : 'px-2.5 py-1 text-xs'
     const color =
-        props.variant === 'info' ? 'bg-primary-50 text-primary-700' :
-        props.variant === 'success' ? 'bg-emerald-50 text-emerald-700' :
-        props.variant === 'warning' ? 'bg-amber-50 text-amber-700' :
-        props.variant === 'danger' ? 'bg-rose-50 text-rose-700' :
-        'bg-slate-100 text-slate-700'
+        props.variant === 'info' ? 'bg-status-progress-bg text-status-progress-text' :
+        props.variant === 'success' ? 'bg-status-success-bg text-status-success-text' :
+        props.variant === 'warning' ? 'bg-panel text-app-text' :
+        props.variant === 'danger' ? 'bg-card-muted text-danger' :
+        'bg-panel text-app-muted'
     return `${base} ${color} inline-flex items-center rounded-full font-semibold`
 }
 </script>

@@ -15,7 +15,7 @@ const emit = defineEmits<{ (e: 'update:modelValue', v: string): void }>()
         v-for="t in tabs"
         :key="t.key"
         class="rounded-full px-4 py-2 text-sm font-bold transition"
-        :class="modelValue === t.key ? 'bg-primary-500 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+        :class="modelValue === t.key ? 'bg-primary-action text-white' : 'border border-app-border bg-card text-app-text hover:bg-panel'"
         @click="emit('update:modelValue', t.key)"
         >
         {{ t.label }}
