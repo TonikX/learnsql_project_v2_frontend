@@ -1,4 +1,5 @@
 export interface TaskExecutionState {
+    routeStepId: number | null
     taskId: number
     status: string
     courseId: number
@@ -10,6 +11,7 @@ interface TaskInSet {
 }
 
 export interface UserTaskResponse {
+    id: number
     status: string
     user_course: number
     task_in_set: TaskInSet
@@ -27,11 +29,28 @@ export interface Task {
 
 export interface TaskContext {
     details: Task
+    status: string
     solution: string
+    routeStepId: number | null
+}
+
+export interface SolutionAttempt {
+    id: number | null // route step id
+    task_id: number
+    status: string
+    solution: string
+}
+
+export interface AttemptResult {
+    status: string
+    message?: string
+    ref_result?: Array<any> | boolean
+    student_result?: Array<any> | string
 }
 
 export function toExecState(response: UserTaskResponse): TaskExecutionState {
     return { 
+        routeStepId: response.id,
         taskId: response.task_in_set.task,
         status: response.status,  
         courseId: response.user_course,

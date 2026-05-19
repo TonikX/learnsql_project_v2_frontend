@@ -1,7 +1,10 @@
 <template>
-    <svg :style="{ width: size, height: size }" :class="fillClass">
+<component class="flex items-center gap-1">
+    <svg :style="{ width: size, height: size }" :class="color">
         <use :href="`/assets/sprite.svg#${name}-icon`"></use>
     </svg>
+    <slot />
+</component>
 </template>
 
 <script setup lang="ts">
@@ -16,12 +19,9 @@ const props = defineProps({
         type: [String, Number],
         default: '24px'
     },
-    negative: {
-        type: Boolean,
-        default: false
+    color: {
+        type: String,
+        default: "fill-text-main"
     }
 })
-
-const { negative } = toRefs(props)
-const fillClass = computed(() => { return negative.value ? "fill-text-neg" : "fill-text-main" })
 </script>

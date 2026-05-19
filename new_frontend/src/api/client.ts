@@ -1,5 +1,6 @@
 import { BadRequestError, NotFoundError, ServerError, ConnectionError } from '@/errors/network'
 import axios, { AxiosError, type AxiosInstance, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
+import router from '@/router'
 
 const apiUrl: string = import.meta.env.BACKEND_API_URL ?? 'http://localhost:8000'
 
@@ -33,6 +34,9 @@ apiClient.interceptors.response.use(
         const response = error.response?.data
 
         switch (error.response?.status) {
+        case 401:
+            router.replace({ name: 'login' })
+            break
         case 400:
             return Promise.reject(new BadRequestError(`Bad request: ${response}`)) 
         case 404:

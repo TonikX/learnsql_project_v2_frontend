@@ -1,6 +1,15 @@
 import { type AxiosInstance } from 'axios'
 import apiClient from '@/api/client'
-import { toExecState, type Task, type TaskExecutionState, type UserTaskResponse } from '@/types/taskTypes'
+import { 
+    toExecState, 
+    type SolutionAttempt, 
+    type Task, 
+    type TaskContext, 
+    type TaskExecutionState, 
+    type UserTaskResponse,
+    type AttemptResult
+} from '@/types/taskTypes'
+
 
 class TaskService {
     constructor(public api: AxiosInstance) {}
@@ -18,6 +27,12 @@ class TaskService {
         }
         
         return []
+    }
+
+    async sendTaskSolution(task: TaskContext): Promise<AttemptResult> {
+        const payload: SolutionAttempt = { id: task.routeStepId, task_id: task.details.id, solution: task.solution, status: task.status }
+        const response = await this.api.put<AttemptResult>("/api/student-course/do-task/", payload)
+        return response.data
     }
 }
 

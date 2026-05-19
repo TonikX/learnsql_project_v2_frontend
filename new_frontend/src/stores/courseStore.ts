@@ -2,11 +2,15 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import type { Course } from '@/types/courseTypes'
 import courseService from '@/services/courseService'
+import { sleep } from "@/utils/Sleep"
+
 
 export const useCoursesStore = defineStore('courses', () => {
     const courses = ref<Course[]>([])
 
     const currentCourse = ref<Course | null>(null)
+
+    const courseLoading = ref(false)
 
     const previewCourses = computed(() => courses.value.slice(0, 3))
 
@@ -43,13 +47,23 @@ export const useCoursesStore = defineStore('courses', () => {
         return courseService.getCourseStats(courseId, page)
     }
 
+    const toggleCourseLoading = async (func: (...params: any) => Promise<any>, ...params: any) => {
+        courseLoading.value = true
+        const res = await func(...params)
+        await sleep(1000)
+        courseLoading.value = false
+        return res
+    }
+
     return { 
         courses, 
         currentCourse, 
+        courseLoading,
         previewCourses, 
         getCourseData,
         clearCurrentCourse,
         loadAllCourses,
         loadCourseStats,
+        toggleCourseLoading
     }
 })

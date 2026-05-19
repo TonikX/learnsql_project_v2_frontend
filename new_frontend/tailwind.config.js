@@ -17,12 +17,30 @@ export default {
           'grid': 'var(--course-grid)',
           'grid-stroke': 'var(--course-stroke)',
         },
+        task: {
+          begin: 'var(--task-begin)',
+          end: 'var(--task-end)',
+          hard: 'var(--hard)',
+          medium: 'var(--medium)',
+          easy: 'var(--easy)',
+          neutral: 'var(--neutral)',
+        },
+        sidebar: {
+          bg: 'var(--sidebar-bg)',
+          elem: 'var(--sidebar-elem)',
+        },
+        editor: {
+          begin: 'var(--editor-begin)',
+          end: 'var(--editor-end)',
+        },
         text: {
           main: 'var(--text-main)',
           neg: 'var(--text-neg)',
         },
         surface2: '#F2F5FF',
         primary: {
+          begin: 'var(--primary-begin)',
+          end: 'var(--primary-end)',
           50: '#EAF0FF',
           100: '#D9E4FF',
           200: '#B7CBFF',
@@ -31,9 +49,11 @@ export default {
           700: '#1437C2',
         },
         success: {
+          base: 'var(--success)',
           begin: 'var(--success-begin)',
           end: 'var(--success-end)',
         },
+        secondary: 'var(--secondary)',
         danger: 'var(--danger)',
       },
       boxShadow: {

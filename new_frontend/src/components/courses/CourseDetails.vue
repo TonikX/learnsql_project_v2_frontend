@@ -32,8 +32,6 @@ const { currentCourse } = storeToRefs(courseStore)
 const themeStore = useThemeStore()
 const { currentTheme } = storeToRefs(themeStore)
 
-console.log("COURSE DATA:", currentCourse.value)
-
 const stats = ref<StudentInCourseStats[]>([])
 const statPage = ref(1)
 const totalPages = ref(1)
@@ -69,7 +67,8 @@ const handleStatLoad = async (page: number) => {
         else 
             statError.value = "Неизвестная ошибка"
 
-        console.error(err)
+        // console.error(err)
+        console.log("ERR=", statError.value)
     } finally {
         statLoading.value = false
     }

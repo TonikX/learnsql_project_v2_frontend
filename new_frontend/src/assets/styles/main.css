@@ -19,10 +19,14 @@
         --text-main: #000000;
         --text-neg: #FFFFFF;
         --danger: #D64D4D;
+        --success: #08A800;
 
         /* кнопки */
         --success-begin: #50C878;
         --success-end: #8ADAA5;
+        --primary-begin: #318CE7;
+        --primary-end: #76B2EF;
+        --secondary: #F5F5F5;
 
         /* курсы */
         --cc-begin: #D4D4D8;
@@ -32,6 +36,18 @@
 
         --segment-begin: #F0F0F0;
         --segment-end: #D4D4D8;
+
+        /* задания */
+        --task-begin: #F5F5F5;
+        --task-end: #EFEFEF;
+        --sidebar-bg: #FFFFFF;
+        --sidebar-elem: #F2F3F4;
+        --editor-begin: #F0F0F0;
+        --editor-end: #E5E4E2;
+        --hard: #D02E30;
+        --medium: #DDC745;
+        --easy: #0CA726;
+        --neutral: #777777;
     }
 
     /* темная тема в браузере */
@@ -43,10 +59,14 @@
             --text-main: #FFFFFF;
             --text-neg: #000000;
             --danger: #D64D4D;
+            --success: #69FF61;
 
             /* кнопки */
             --success-begin: #50C878;
             --success-end: #27623B;
+            --primary-begin: #318CE7;
+            --primary-end: #1B4E81;
+            --secondary: #363640;
 
             /* курсы */
             --cc-begin: #424242;
@@ -56,6 +76,18 @@
 
             --segment-begin: #2D2D30;
             --segment-end:  #34343A;
+
+            /* задания */
+            --task-begin: #424242;
+            --task-end: #494949;
+            --sidebar-bg: #424242;
+            --sidebar-elem: #3F3F3F;
+            --editor-begin: #16171B;
+            --editor-end: #28292E;
+            --hard: #EF5154;
+            --medium: #F0DC68;
+            --easy: #6FF876;
+            --neutral: #FFFFFF;
         }
     }
 
@@ -70,10 +102,22 @@
         margin: 0;
         @apply bg-bg text-text-main antialiased;
     }
+
+    h1 {
+        @apply text-lg font-bold;
+    }
+
+    h2 {
+        @apply text-lg;
+    }
 }
 
 @layer components {
     .app-container {
         @apply mx-auto max-w-[90%] px-4 sm:px-6 lg:px-8;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
     }
 }
