@@ -67,7 +67,8 @@ const handleStatLoad = async (page: number) => {
         else 
             statError.value = "Неизвестная ошибка"
 
-        console.error(err)
+        // console.error(err)
+        console.log("ERR=", statError.value)
     } finally {
         statLoading.value = false
     }

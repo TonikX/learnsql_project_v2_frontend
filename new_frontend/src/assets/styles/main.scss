@@ -1,0 +1,349 @@
+@import 'jointjs/dist/joint.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'JetBrains Mono NL';
+    src: url('../fonts/jetbrains-mono-nl-regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@mixin light-theme-vars {
+    /* базовые цвета */
+    --bg-main: #FFFFFF;
+    --bg-header: #27272A;
+    --text-main: #000000;
+    --text-neg: #FFFFFF;
+    --danger: #D64D4D;
+    --success: #08A800;
+
+    /* кнопки */
+    --success-begin: #50C878;
+    --success-end: #8ADAA5;
+    --primary-begin: #318CE7;
+    --primary-end: #76B2EF;
+    --secondary: #F5F5F5;
+
+    /* курсы */
+    --cc-begin: #D4D4D8;
+    --cc-end: #F0F0F0;
+    --course-grid: #F2F3F4;
+    --course-stroke: #B6B6B6;
+    --segment-begin: #F0F0F0;
+    --segment-end: #D4D4D8;
+
+    /* задания */
+    --task-begin: #F5F5F5;
+    --task-end: #EFEFEF;
+    --sidebar-bg: #FFFFFF;
+    --sidebar-elem: #F2F3F4;
+    --editor-begin: #F0F0F0;
+    --editor-end: #E5E4E2;
+    --hard: #D02E30;
+    --medium: #DDC745;
+    --easy: #0CA726;
+    --neutral: #777777;
+
+    --color-page: #FFFFFF;
+    --color-header: #27272A;
+    --color-header-text: #FFFFFF;
+    --color-header-link-hover: #FFFFFF;
+    --color-header-link-hover-text: #242428;
+    --color-footer: #FFFFFF;
+    --color-footer-text: #000000;
+    --color-panel: #E8E8E8;
+    --color-panel-strong: #E8E8E8;
+    --color-editor-card: #F7F7F7;
+    --color-result-header: #EBEBEB;
+    --color-card: #FFFFFF;
+    --color-card-muted: #E8E8E8;
+    --color-text: #000000;
+    --color-text-muted: #5F5F5F;
+    --color-border: #AFAFAF;
+    --color-border-soft: #BDBDBD;
+    --color-primary: #318CE7;
+    --color-primary-hover: #247BD0;
+    --color-primary-gradient-start: #318CE7;
+    --color-primary-gradient-end: #76B2EF;
+    --color-success: #34C766;
+    --color-progress-track: #D0D0D0;
+    --color-progress-green: #59C97A;
+    --color-icon-box: #EEF3FF;
+    --color-surface-contrast: #FFFFFF;
+    --color-sql-pink: #D9468B;
+    --color-status-success-bg: #EAF6ED;
+    --color-status-success-text: #0CA726;
+    --color-status-progress-bg: #EEF3FF;
+    --color-status-progress-text: #318CE7;
+    --color-theme-menu: #242428;
+    --color-theme-menu-border: #5D5E64;
+    --color-auth-surface: #F2F3F4;
+    --color-auth-surface-muted: #FCFCFD;
+    --color-auth-table: #F3F4F6;
+    --color-auth-input: #FCFCFD;
+    --color-auth-input-alt: #F3F4F6;
+    --color-auth-border: #B6B6B6;
+    --color-auth-type-muted: #94A3B8;
+    --color-auth-type-muted-register: #9AA9BC;
+    --color-auth-prompt: #1887FF;
+    --color-auth-checkbox: #1887FF;
+    --color-auth-checkbox-bg: #1887FF;
+    --color-auth-checkbox-mark: #FFFFFF;
+    --color-auth-checkbox-border: #1887FF;
+    --color-auth-separator: #B6B6B6;
+    --color-auth-social-button: #FCFCFD;
+    --color-auth-social-button-border: #B6B6B6;
+    --color-auth-social-button-text: #000000;
+    --color-profile-logout-bg: #FECACA;
+    --color-profile-logout-text: #991B1B;
+    --color-profile-details-surface: #F2F3F4;
+    --color-profile-prompt: #318CE7;
+    --color-profile-course-percent: #318CE7;
+    --color-profile-stat-blue-bg: #EEF3FF;
+    --color-profile-stat-blue-text: #318CE7;
+    --color-profile-stat-green-bg: #ECFAF3;
+    --color-profile-stat-green-text: #10B981;
+    --color-profile-stat-purple-bg: #F3EFFF;
+    --color-profile-stat-purple-text: #8B5CF6;
+    --color-profile-stat-orange-bg: #EDF9EF;
+    --color-profile-stat-orange-text: #F56F0F;
+    --color-chat-page: #FFFFFF;
+    --color-chat-panel: #FFFFFF;
+    --color-chat-surface: #F2F3F4;
+    --color-chat-surface-active: #EEF4FF;
+    --color-chat-border: #AFAFAF;
+    --color-chat-border-strong: #BCBEC4;
+    --color-chat-border-active: #3B82F6;
+    --color-chat-text: #000000;
+    --color-chat-muted: #80858F;
+    --color-chat-placeholder: #000000;
+    --color-chat-avatar: #3F8FE8;
+    --color-chat-on-accent: #FFFFFF;
+    --color-chat-filter-active-bg: #FFFFFF;
+    --color-chat-filter-active-text: #000000;
+    --color-chat-action-button: #FFFFFF;
+    --color-chat-online: #59D883;
+    --color-chat-send: #22C55E;
+    --color-chat-warning: #E36C2B;
+    --color-chat-code-bg: #16171B;
+    --color-chat-code-text: #FFFFFF;
+    --color-chat-own-message: #F2F3F4;
+    --color-chat-incoming-message: #FFFFFF;
+    --color-chat-composer-input: #F2F3F4;
+    --color-chat-icon-button: #FFFFFF;
+
+    --gradient-panel: linear-gradient(90deg, #E8E8E8 0%, #E8E8E8 100%);
+    --gradient-card-surface: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);
+    --gradient-card-surface-horizontal: linear-gradient(90deg, #FFFFFF 0%, #FFFFFF 100%);
+    --gradient-inner-panel: linear-gradient(90deg, #F7F7F7 0%, #F7F7F7 100%);
+    --gradient-result-header: linear-gradient(90deg, #EBEBEB 0%, #EBEBEB 100%);
+    --gradient-primary: linear-gradient(90deg, #318CE7 0%, #76B2EF 100%);
+    --gradient-auth-surface: linear-gradient(180deg, #F2F3F4 0%, #F2F3F4 100%);
+    --gradient-auth-header: linear-gradient(90deg, #66A9EE 0%, #4E95E0 100%);
+    --gradient-auth-button: linear-gradient(90deg, #66A9EE 0%, #4E95E0 100%);
+    --gradient-auth-info-header: linear-gradient(109deg, #66A9EE 0%, #5197E2 89%, #5197E2 100%);
+    --gradient-auth-info-surface: linear-gradient(180deg, #F2F3F4 0%, #F2F3F4 100%);
+    --gradient-profile-card: linear-gradient(180deg, #FFFFFF 0%, #FFFFFF 100%);
+    --gradient-profile-avatar: linear-gradient(135deg, #318CE7 0%, #76B2EF 100%);
+    --gradient-chat-header: linear-gradient(90deg, #1F2025 0%, #25272E 100%);
+}
+
+@mixin dark-theme-vars {
+    /* основные цвета */
+    --bg-main: #27272A;
+    --bg-header: #F2F3F4;
+    --text-main: #FFFFFF;
+    --text-neg: #000000;
+    --danger: #D64D4D;
+    --success: #69FF61;
+
+    /* кнопки */
+    --success-begin: #50C878;
+    --success-end: #27623B;
+    --primary-begin: #318CE7;
+    --primary-end: #1B4E81;
+    --secondary: #363640;
+
+    /* курсы */
+    --cc-begin: #424242;
+    --cc-end: #202124;
+    --course-grid: #16171B;
+    --course-stroke: #828282;
+    --segment-begin: #2D2D30;
+    --segment-end: #34343A;
+
+    /* задания */
+    --task-begin: #424242;
+    --task-end: #494949;
+    --sidebar-bg: #424242;
+    --sidebar-elem: #3F3F3F;
+    --editor-begin: #16171B;
+    --editor-end: #28292E;
+    --hard: #EF5154;
+    --medium: #F0DC68;
+    --easy: #6FF876;
+    --neutral: #FFFFFF;
+
+    --color-page: #27272A;
+    --color-header: #F2F3F4;
+    --color-header-text: #000000;
+    --color-header-link-hover: #242428;
+    --color-header-link-hover-text: #FFFFFF;
+    --color-footer: #27272A;
+    --color-footer-text: #FFFFFF;
+    --color-panel: #2D2D30;
+    --color-panel-strong: #34343A;
+    --color-editor-card: #16171B;
+    --color-result-header: #16171B;
+    --color-card: #16171B;
+    --color-card-muted: #28292E;
+    --color-text: #FFFFFF;
+    --color-text-muted: #FFFFFF;
+    --color-border: #828282;
+    --color-border-soft: #828282;
+    --color-primary: #318CE7;
+    --color-primary-hover: #247BD0;
+    --color-primary-gradient-start: #318CE7;
+    --color-primary-gradient-end: #1B4E81;
+    --color-success: #34C766;
+    --color-progress-track: #F2F3F4;
+    --color-progress-green: #22C55E;
+    --color-icon-box: #363640;
+    --color-surface-contrast: #363640;
+    --color-sql-pink: #D9468B;
+    --color-status-success-bg: #EAF6ED;
+    --color-status-success-text: #0CA726;
+    --color-status-progress-bg: #EEF3FF;
+    --color-status-progress-text: #318CE7;
+    --color-theme-menu: #242428;
+    --color-theme-menu-border: #5D5E64;
+    --color-auth-surface: #16171B;
+    --color-auth-surface-muted: #28292E;
+    --color-auth-table: rgba(0, 0, 0, 0.3);
+    --color-auth-input: #28292E;
+    --color-auth-input-alt: #28292E;
+    --color-auth-border: #828282;
+    --color-auth-type-muted: #828282;
+    --color-auth-type-muted-register: #828282;
+    --color-auth-prompt: #FFFFFF;
+    --color-auth-checkbox: #F2F3F4;
+    --color-auth-checkbox-bg: #FFFFFF;
+    --color-auth-checkbox-mark: #000000;
+    --color-auth-checkbox-border: #FFFFFF;
+    --color-auth-separator: #828282;
+    --color-auth-social-button: rgba(0, 0, 0, 0.3);
+    --color-auth-social-button-border: #828282;
+    --color-auth-social-button-text: #FFFFFF;
+    --color-profile-logout-bg: #5A262C;
+    --color-profile-logout-text: #FF8A8A;
+    --color-profile-details-surface: #28292E;
+    --color-profile-prompt: #FFFFFF;
+    --color-profile-course-percent: #FFFFFF;
+    --color-profile-stat-blue-bg: #363640;
+    --color-profile-stat-blue-text: #318CE7;
+    --color-profile-stat-green-bg: #18352B;
+    --color-profile-stat-green-text: #34D399;
+    --color-profile-stat-purple-bg: #332B4B;
+    --color-profile-stat-purple-text: #8B5CF6;
+    --color-profile-stat-orange-bg: #3B2C20;
+    --color-profile-stat-orange-text: #F56F0F;
+    --color-chat-page: #27272A;
+    --color-chat-panel: #2D2D30;
+    --color-chat-surface: #202124;
+    --color-chat-surface-active: #363640;
+    --color-chat-border: #828282;
+    --color-chat-border-strong: #828282;
+    --color-chat-border-active: #3B82F6;
+    --color-chat-text: #FFFFFF;
+    --color-chat-muted: #828282;
+    --color-chat-placeholder: #FFFFFF;
+    --color-chat-avatar: #3F8FE8;
+    --color-chat-on-accent: #FFFFFF;
+    --color-chat-filter-active-bg: #FFFFFF;
+    --color-chat-filter-active-text: #000000;
+    --color-chat-action-button: #363640;
+    --color-chat-online: #22C55E;
+    --color-chat-send: #2C7948;
+    --color-chat-warning: #F31A8A;
+    --color-chat-code-bg: #FFFFFF;
+    --color-chat-code-text: #000000;
+    --color-chat-own-message: #363640;
+    --color-chat-incoming-message: #16171B;
+    --color-chat-composer-input: #2D2D30;
+    --color-chat-icon-button: #28292E;
+
+    --gradient-panel: linear-gradient(90deg, #2D2D30 0%, #34343A 100%);
+    --gradient-card-surface: linear-gradient(180deg, #16171B 0%, #28292E 100%);
+    --gradient-card-surface-horizontal: linear-gradient(90deg, #16171B 0%, #28292E 100%);
+    --gradient-inner-panel: linear-gradient(90deg, #2D2D30 0%, #34343A 100%);
+    --gradient-result-header: linear-gradient(90deg, #16171B 0%, #28292E 100%);
+    --gradient-primary: linear-gradient(90deg, #318CE7 0%, #1B4E81 100%);
+    --gradient-auth-surface: linear-gradient(180deg, #16171B 0%, #28292E 100%);
+    --gradient-auth-header: linear-gradient(90deg, #1E2952 0%, #031040 100%);
+    --gradient-auth-button: linear-gradient(90deg, #318CE7 0%, #1B4E81 100%);
+    --gradient-auth-info-header: linear-gradient(90deg, #1E2952 0%, #031040 100%);
+    --gradient-auth-info-surface: linear-gradient(180deg, #16171B 0%, #28292E 100%);
+    --gradient-profile-card: linear-gradient(180deg, #16171B 0%, #28292E 100%);
+    --gradient-profile-avatar: linear-gradient(135deg, #4E95E0 0%, #214FCC 100%);
+    --gradient-chat-header: linear-gradient(90deg, #1F2025 0%, #25272E 100%);
+}
+
+@layer base {
+    :root {
+        @include light-theme-vars()
+    }
+
+    /* темная тема в браузере */
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+            @include dark-theme-vars()
+        }
+    }
+
+    [data-theme='light'] {
+        @include light-theme-vars()
+    }
+
+    [data-theme='dark'] {
+        @include dark-theme-vars()
+    }
+
+    html,
+    body,
+    #app {
+        height: 100%;
+    }
+
+    body {
+        font-family: 'JetBrains Mono NL', monospace;
+        margin: 0;
+        @apply bg-bg text-text-main antialiased;
+    }
+
+    h1 {
+        @apply text-lg font-bold;
+    }
+
+    h2 {
+        @apply text-lg;
+    }
+}
+
+@layer components {
+    .app-container {
+        @apply mx-auto max-w-[90%] px-4 sm:px-6 lg:px-8;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none; 
+    }
+
+    .chat-placeholder::placeholder {
+        color: var(--color-chat-placeholder);
+        font-weight: 200;
+
+    }
+}

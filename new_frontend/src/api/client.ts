@@ -1,16 +1,6 @@
-import axios, {
-    AxiosError,
-    type AxiosInstance,
-    type AxiosResponse,
-    type InternalAxiosRequestConfig,
-} from 'axios'
-
-import {
-    BadRequestError,
-    ConnectionError,
-    NotFoundError,
-    ServerError,
-} from '@/errors/network'
+import { BadRequestError, NotFoundError, ServerError, ConnectionError } from '@/errors/network'
+import axios, { AxiosError, type AxiosInstance, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
+import router from '@/router'
 
 const apiUrl: string = import.meta.env.VITE_BACKEND_API_URL ?? 'http://localhost:8000'
 const accessStorageKey = 'access_token'
@@ -128,11 +118,8 @@ apiClient.interceptors.response.use(
             error.code === 'ERR_NETWORK' ||
             error.message === 'Network Error'
 
-        if (isNetworkError) {
-            return Promise.reject(
-                new ConnectionError('Не удалось подключиться к серверу. Проверьте соединение.'),
-            )
-        }
+        if (isNetworkError) 
+            return Promise.reject(new ConnectionError(`Connection lost: ${error.request}`))
 
         const originalRequest = error.config as RetriableRequestConfig | undefined
         const shouldRefresh =
@@ -154,26 +141,17 @@ apiClient.interceptors.response.use(
             }
         }
 
-        const responseData = error.response?.data
+        const response = error.response?.data
 
         switch (error.response?.status) {
-            case 400:
-                return Promise.reject(
-                    new BadRequestError(`Некорректный запрос: ${JSON.stringify(responseData)}`),
-                )
-
-            case 404:
-                return Promise.reject(
-                    new NotFoundError(`Ресурс не найден: ${JSON.stringify(responseData)}`),
-                )
-
-            case 500:
-                return Promise.reject(
-                    new ServerError('Ошибка сервера. Попробуйте позже.'),
-                )
-
-            default:
-                return Promise.reject(error)
+        case 400:
+            return Promise.reject(new BadRequestError(`Bad request: ${response}`)) 
+        case 404:
+            return Promise.reject(new NotFoundError(`Resourse not found: ${response}`))
+        case 500:
+            return Promise.reject(new ServerError(`Server error: ${response}`))
+        default:
+            return Promise.reject(error)
         }
     },
 )
