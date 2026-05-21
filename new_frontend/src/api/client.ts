@@ -144,9 +144,6 @@ apiClient.interceptors.response.use(
         const response = error.response?.data
 
         switch (error.response?.status) {
-        case 401:
-            router.replace({ name: 'login' })
-            break
         case 400:
             return Promise.reject(new BadRequestError(`Bad request: ${response}`)) 
         case 404:

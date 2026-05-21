@@ -8,8 +8,6 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs, computed } from 'vue';
-
 const props = defineProps({
     name: {
         type: String,
@@ -21,12 +19,7 @@ const props = defineProps({
     },
     color: {
         type: String,
-        default: "fill-text-main"
+        default: "fill-current"
     }
 })
-
-// const { negative } = toRefs(props)
-// const fillClass = computed(() => {
-//     return negative.value ? 'fill-text-neg text-text-neg' : 'fill-current'
-// })
 </script>

@@ -33,8 +33,8 @@ const variants = computed(() => {
     if (props.loading) return ''
 
     switch (props.variant) {
-        case 'secondary':
-            return 'border border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-text)] hover:bg-[var(--color-panel)]'
+        // case 'secondary':
+        //     return 'border border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-text)] hover:bg-[var(--color-panel)]'
         case 'success':
             return 'bg-gradient-to-r from-success-begin to-success-end'
         case 'ghost':

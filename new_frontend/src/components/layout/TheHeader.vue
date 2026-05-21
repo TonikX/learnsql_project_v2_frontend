@@ -91,8 +91,8 @@ onBeforeUnmount(() => {
                         :aria-expanded="isThemeMenuOpen"
                         @click.stop="isThemeMenuOpen = !isThemeMenuOpen"
                     >
-                        <AppIcon :name="currentThemeIcon" :size="20" class="sm:hidden" />
-                        <AppIcon :name="currentThemeIcon" :size="30" class="hidden sm:block" />
+                        <AppIcon :name="currentThemeIcon" :size="20" class="sm:hidden"/>
+                        <AppIcon :name="currentThemeIcon" :size="30" class="hidden sm:block"/>
                     </button>
 
                     <div
@@ -107,8 +107,8 @@ onBeforeUnmount(() => {
                             :class="mode === option.mode ? 'text-white' : 'text-[#E2E2E7]'"
                             @click="selectTheme(option.mode)"
                         >
-                            <AppIcon :name="option.icon" :size="22" class="sm:hidden" />
-                            <AppIcon :name="option.icon" :size="34" class="hidden sm:block" />
+                            <AppIcon :name="option.icon" :size="22" class="sm:hidden"/>
+                            <AppIcon :name="option.icon" :size="34" class="hidden sm:block"/>
                             <span>{{ option.label }}</span>
                         </button>
                     </div>
@@ -123,8 +123,8 @@ onBeforeUnmount(() => {
                         :class="['flex items-center justify-center transition-colors', linkClass]"
                         aria-label="Профиль"
                     >
-                        <AppIcon name="profile" :size="24" class="sm:hidden" />
-                        <AppIcon name="profile" :size="32" class="hidden sm:block" />
+                        <AppIcon name="profile" :size="24" class="sm:hidden"/>
+                        <AppIcon name="profile" :size="32" class="hidden sm:block"/>
                     </RouterLink>
                 </template>
 
