@@ -88,11 +88,9 @@ async function loadCourseProgress() {
     await courseProgressStore.loadCourseProgress()
 }
 
-async function logout() {
+function logout() {
     authStore.logout()
-    profileStore.clearProfile()
-    courseProgressStore.clearCourseProgress()
-    await router.push('/login')
+    window.location.replace('/login')
 }
 
 function editProfile() {

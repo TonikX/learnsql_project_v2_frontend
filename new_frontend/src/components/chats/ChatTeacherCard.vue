@@ -10,7 +10,7 @@ const props = defineProps<{
 const initials = computed(() => getChatUserInitials(props.chat.room.teacher))
 
 const courseRoute = computed(() => {
-    return props.chat.context.courseId ? `/courses/${props.chat.context.courseId}` : '/courses'
+    return props.chat.context.courseId ? `/courses/${props.chat.context.courseId}` : '/courses/all'
 })
 
 const taskRoute = computed(() => {

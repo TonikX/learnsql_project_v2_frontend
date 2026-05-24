@@ -41,6 +41,14 @@ export interface SolutionAttempt {
     solution: string
 }
 
+export interface AsyncStatus {
+    task_id: string
+    status: string
+    ready?: boolean
+    result?: AttemptResult
+    error?: string
+}
+
 export interface AttemptResult {
     status: string
     message?: string

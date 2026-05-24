@@ -1,11 +1,10 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { profileCourseProgressService } from '@/services/profileCourseProgressService'
-import type {
-    CourseProgressCard,
-    CourseProgressResponse,
-    StudentCourse,
-} from '@/types/profileCourseProgressTypes'
+
+import courseService from '@/services/courseService'
+import { type StudentCourse } from '@/types/courseTypes'
+import type { CourseProgressCard, CourseProgressResponse } from '@/types/profileCourseProgressTypes'
+
 
 function toNumber(value?: number | null) {
     return typeof value === 'number' ? value : 0
@@ -43,7 +42,7 @@ export const useProfileCourseProgressStore = defineStore('profileCourseProgress'
         hasPartialCourseProgressError.value = false
 
         try {
-            const studentCourses = await profileCourseProgressService.getStudentCourses()
+            const studentCourses = await courseService.getStudentCourses()
 
             if (!studentCourses.length) {
                 courseProgressItems.value = []
@@ -52,7 +51,7 @@ export const useProfileCourseProgressStore = defineStore('profileCourseProgress'
 
             const results = await Promise.allSettled(
                 studentCourses.map(async (userCourse) => {
-                    const progress = await profileCourseProgressService.getCourseProgress(userCourse.course)
+                    const progress = await courseService.getCourseProgress(userCourse.course)
                     return mapCourseProgress(userCourse, progress)
                 }),
             )

@@ -89,7 +89,7 @@ async function submit() {
             password: form.password,
         })
 
-        await router.push('/courses')
+        await router.push('/courses/all')
     } catch {
         await router.push('/login')
     }

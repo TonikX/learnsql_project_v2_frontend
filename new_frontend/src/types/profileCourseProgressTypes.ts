@@ -1,15 +1,3 @@
-export interface StudentCourse {
-    id: number | string
-    course: number | string
-    course_title?: string | null
-    date_start?: string | null
-    date_finish?: string | null
-}
-
-export interface PaginatedStudentCourses {
-    results: StudentCourse[]
-}
-
 export interface CourseProgressResponse {
     course: {
         id: number | string

@@ -1,15 +1,42 @@
 <script setup lang="ts">
+import { watch, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import AppContainer from '@/components/layout/AppContainer.vue'
 import CourseCard from '@/components/courses/CourseCard.vue'
 import { useCoursesStore } from '@/stores/courseStore'
-import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
+import type { Course } from '@/types/courseTypes'
+
+
+const route = useRoute()
+const props = defineProps({
+    enrolledOnly: {
+        type: Boolean,
+        default: false
+    }
+})
 
 const store = useCoursesStore()
-const { loadAllCourses } = store
 const { courses } = storeToRefs(store)
+const { loadAllCourses, enrollToCourse, loadEnrolledCourses, isEnrolled } = store
+const showCourses = ref<Course[]>([])
 
-onMounted(async () => { await loadAllCourses() })
+const syncCourseListData = async () => {
+    if (courses.value.length == 0) {
+        await loadAllCourses()
+        await loadEnrolledCourses()
+    }
+    
+    console.log("ALL COURSES: ", courses.value)
+    showCourses.value = props.enrolledOnly ? courses.value.filter(c => isEnrolled(c.id)) : Array.from(courses.value)
+}
+
+const handleCourseEnrollmentRequest = async (courseId: number) => {
+    await enrollToCourse(courseId)
+    await syncCourseListData()
+}
+
+watch(() => route.path, async () => await syncCourseListData(), { immediate: true })
 </script>
 
 <template>
@@ -18,12 +45,15 @@ onMounted(async () => { await loadAllCourses() })
             <p>> SELECT * FROM learnsql_courses;</p>
 
             <div class="-mx-8 my-8 border-t-2 border-course-grid-stroke"></div>
-            <p>&emsp;-- Найдено {{ courses.length }} курса(-ов) (100 мс)</p>
+            <p>&emsp;-- Найдено {{ showCourses.length }} курса(-ов) (100 мс)</p>
 
             <div class="mt-8 grid gap-8 lg:grid-cols-2">
             <CourseCard
-                v-for="c in courses"
+                v-for="c in showCourses"
                 :course="c"
+                :key="c.id"
+                :is-enrolled="isEnrolled(c.id)"
+                @enroll-course="handleCourseEnrollmentRequest"
             />
             </div>
         </div>

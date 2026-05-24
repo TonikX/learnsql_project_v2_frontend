@@ -1,18 +1,15 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
-import type { Course } from '@/types/courseTypes'
+import { ref } from 'vue'
+import type { Course, StudentCourse } from '@/types/courseTypes'
 import courseService from '@/services/courseService'
-import { sleep } from "@/utils/Sleep"
+import { sleep } from "@/utils/asyncSleep"
 
 
 export const useCoursesStore = defineStore('courses', () => {
     const courses = ref<Course[]>([])
-
+    const enrolledIds: Set<number> = new Set()
     const currentCourse = ref<Course | null>(null)
-
     const courseLoading = ref(false)
-
-    const previewCourses = computed(() => courses.value.slice(0, 3))
 
     const getCached = (courseId: number) : Course | null => {
         for (let c of courses.value) {
@@ -28,24 +25,41 @@ export const useCoursesStore = defineStore('courses', () => {
         // Fallback: load course from backend
         if (!courseData) {
             courseData = await courseService.getCourseById(courseId)
-            if (courseData !== null)
-                courses.value.push(courseData)
         }
 
-        currentCourse.value = courseData
         return courseData
     }
 
-    const clearCurrentCourse = () => { currentCourse.value = null }
-
+    const loadCurrentCourse = async (courseId: number) => { currentCourse.value = await getCourseData(courseId)}
+    
     const loadAllCourses = async () => {
         const loadedCourses = await courseService.getAllCourses()
-        courses.value = loadedCourses ?? []
+        courses.value = loadedCourses
+        return loadedCourses
+    }
+
+    const loadEnrolledCourses = async () => {
+        const enrollmentList: StudentCourse[] = await courseService.getStudentCourses()
+
+        for (const enrollment of enrollmentList) {
+            enrolledIds.add(enrollment.course)
+        }
     }
 
     const loadCourseStats = async (courseId: number, page: number) => {
         return courseService.getCourseStats(courseId, page)
     }
+
+    const enrollToCourse = async (courseId: number) => {
+        const success = await courseService.sendEnrollmentRequest(courseId)
+        if (success) enrolledIds.add(courseId)
+    }
+
+    const isEnrolled = (courseId: number) => enrolledIds.has(courseId)
+
+    const clearCurrentCourse = () => { currentCourse.value = null }
+    const clearCourseList = () => { courses.value = [] }
+    const clearEnrollmentSet = () => { enrolledIds.clear() }
 
     const toggleCourseLoading = async (func: (...params: any) => Promise<any>, ...params: any) => {
         courseLoading.value = true
@@ -59,11 +73,15 @@ export const useCoursesStore = defineStore('courses', () => {
         courses, 
         currentCourse, 
         courseLoading,
-        previewCourses, 
-        getCourseData,
-        clearCurrentCourse,
-        loadAllCourses,
+        loadCurrentCourse,
         loadCourseStats,
+        loadAllCourses,
+        loadEnrolledCourses,
+        enrollToCourse,
+        isEnrolled,
+        clearCurrentCourse,
+        clearCourseList,
+        clearEnrollmentSet,
         toggleCourseLoading
     }
 })
