@@ -7,7 +7,7 @@ import {
     type TaskContext, 
     type TaskExecutionState, 
     type UserTaskResponse,
-    type AttemptResult
+    type AsyncStatus
 } from '@/types/taskTypes'
 
 
@@ -29,9 +29,14 @@ class TaskService {
         return []
     }
 
-    async sendTaskSolution(task: TaskContext): Promise<AttemptResult> {
+    async sendTaskSolution(task: TaskContext): Promise<AsyncStatus> {
         const payload: SolutionAttempt = { id: task.routeStepId, task_id: task.details.id, solution: task.solution, status: task.status }
-        const response = await this.api.put<AttemptResult>("/api/student-course/do-task/", payload)
+        const response = await this.api.put<AsyncStatus>("/api/student-course/do-task/", payload)
+        return response.data
+    }
+
+    async checkSolutionResult(queueTaskId: string): Promise<AsyncStatus> {
+        const response = await this.api.get<AsyncStatus>(`/api/student-course/task-submissions/${queueTaskId}`)
         return response.data
     }
 }

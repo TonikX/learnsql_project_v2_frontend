@@ -65,12 +65,12 @@ onBeforeUnmount(() => {
                     <span class="hidden sm:inline">[ Learn SQL ]</span>
                 </RouterLink>
 
-                <RouterLink to="/courses" :class="['shrink-0 transition-colors', linkClass]">
+                <RouterLink to="/courses/all" :class="['shrink-0 transition-colors', linkClass]">
                     <span class="sm:hidden">[Все курсы]</span>
                     <span class="hidden sm:inline">[ Все курсы ]</span>
                 </RouterLink>
 
-                <RouterLink v-if="isAuth" to="/courses" :class="['shrink-0 transition-colors', linkClass]">
+                <RouterLink v-if="isAuth" to="/courses/my" :class="['shrink-0 transition-colors', linkClass]">
                     <span class="sm:hidden">[Мои курсы]</span>
                     <span class="hidden sm:inline">[ Мои курсы ]</span>
                 </RouterLink>

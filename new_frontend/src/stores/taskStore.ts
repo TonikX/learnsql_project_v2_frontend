@@ -1,8 +1,8 @@
 import { defineStore } from "pinia"
 import { ref, watch } from "vue"
-import { type TaskContext, type TaskExecutionState, type AttemptResult } from "@/types/taskTypes"
+import { type TaskContext, type TaskExecutionState, type AttemptResult, type AsyncStatus } from "@/types/taskTypes"
 import taskService from "@/services/taskService"
-import { sleep } from "@/utils/Sleep"
+import { doAfterAsync, sleep } from "@/utils/asyncSleep"
 
 
 export const useTaskStore = defineStore("tasks", () => {
@@ -13,7 +13,7 @@ export const useTaskStore = defineStore("tasks", () => {
     const resultLoading = ref(false)
 
     const getCachedTaskId = (courseId: number) => {
-        return Number(localStorage.getItem(courseId.toString()))
+        return Number(localStorage.getItem(courseId.toString()) ?? tasksList.value[0]?.taskId ?? null)
     }
 
     const saveTaskId = (courseId: number, taskId: number) => {
@@ -69,22 +69,6 @@ export const useTaskStore = defineStore("tasks", () => {
         console.log(`COURSE ${courseId} TASKS:`, tasks)
     }
 
-    const getCachedTask = async (courseId: number) => {
-        if (currentTask.value) return
-
-        let taskId = getCachedTaskId(courseId)
-            
-        // fallback: take first task 
-        if (!taskId) {
-            if (tasksList.value.length === 0)
-                return
-
-            taskId = tasksList.value[0]!.taskId
-        }
-
-        await changeTask(courseId, taskId)
-    }
-
     const getNextTaskId = (taskId: number) => {
         for (let i = 0; i < tasksList.value.length - 1; i++) {
             if (tasksList.value[i]?.taskId === taskId) 
@@ -108,7 +92,24 @@ export const useTaskStore = defineStore("tasks", () => {
             return null
 
         clearCurrentResult()
-        currentResult.value = await taskService.sendTaskSolution(currentTask.value)
+        let delay: number // ms
+        let status: AsyncStatus = await taskService.sendTaskSolution(currentTask.value)
+        const taskId = status.task_id
+
+        const MAX_REQUESTS = 5
+        for (let attempt = 1; attempt <= MAX_REQUESTS; attempt++) {
+            console.log("ATTEMPT #", attempt)
+            delay = attempt * 1000
+            status = await doAfterAsync(delay, () => taskService.checkSolutionResult(taskId))
+
+            if (status.ready && status.result) {
+                console.log("RESULT = ", status.result)
+                currentResult.value = status.result
+                return
+            }
+        }
+
+        console.log("Couldn't receive submission result")
     }
 
     watch(() => currentTask.value?.status, (newStatus: string | undefined) => {
@@ -158,7 +159,7 @@ export const useTaskStore = defineStore("tasks", () => {
         resultLoading,
         changeTask,
         getCourseTasks,
-        getCachedTask,
+        getCachedTaskId,
         clearCurrentTask,
         clearTasksList,
         saveSolution,

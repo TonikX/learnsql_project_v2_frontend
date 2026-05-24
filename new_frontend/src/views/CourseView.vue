@@ -13,29 +13,28 @@ import TaskSideBar from '@/components/courses/TaskSideBar.vue'
 
 const route = useRoute()
 const router = useRouter()
+const courseId = Number(route.params.course_id)
 
 const courseStore = useCoursesStore()
 const { courseLoading } = storeToRefs(courseStore)
-const { getCourseData, clearCurrentCourse, toggleCourseLoading } = courseStore
+const { loadCurrentCourse, clearCurrentCourse, toggleCourseLoading } = courseStore
 
 const taskStore = useTaskStore()
 const { currentTask, taskLoading } = storeToRefs(taskStore)
-const { getCourseTasks, getCachedTask, clearCurrentTask, clearTasksList } = taskStore
+const { getCourseTasks, getCachedTaskId, clearCurrentTask, clearTasksList } = taskStore
 
 const sideBarOpen = ref(false)
 const errorMsg = ref('')
-const currentTaskId = computed(() => currentTask.value?.details.id)
-const isNavigationReady = computed(() => !taskLoading.value && !!currentTaskId.value)
+const currentTaskId = computed(() => currentTask.value?.details.id ?? getCachedTaskId(courseId))
+const isNavigationReady = computed(() => !taskLoading.value && currentTaskId.value !== 0)
 
 const toggleSidebar = () => { sideBarOpen.value = !sideBarOpen.value }
 
-const handleLoadCourseData = async (courseId: number) => {
-    let courseLoadedSuccessfully = false
-
+const handleLoadCourse = async (courseId: number) => {
     // load course info itself
     try {
-        await getCourseData(courseId)
-        courseLoadedSuccessfully = true
+        await loadCurrentCourse(courseId)
+        await getCourseTasks(courseId)
     } catch (err) {
         if (err instanceof NotFoundError) 
             router.replace({ name: 'not_found' })
@@ -46,27 +45,9 @@ const handleLoadCourseData = async (courseId: number) => {
 
         console.log(err)
     }
-
-    return courseLoadedSuccessfully
 }
 
-const handleLoadTaskList = async (courseId: number) => {
-    try {
-        await getCourseTasks(courseId)
-    } catch (err) {
-        console.error(err)
-    }
-}
-
-onMounted(async () => {
-    const courseId = Number(route.params.course_id)
-
-    const courseLoaded = await toggleCourseLoading(handleLoadCourseData, courseId) as Boolean
-    if (courseLoaded) {
-        await handleLoadTaskList(courseId)
-        await getCachedTask(courseId)
-    }
-})
+onMounted(async () => await toggleCourseLoading(handleLoadCourse, courseId))
 
 onUnmounted(() => {
     clearCurrentTask()
@@ -90,15 +71,19 @@ onUnmounted(() => {
 <template v-if="!courseLoading && !errorMsg">
     <AppContainer class="py-8 flex items-center justify-between">
         <section class="flex justify-start gap-4">
-            <RouterLink :to="{ name: 'details' }">[ Курс ]</RouterLink>
+            <RouterLink 
+                :to="{ name: 'details' }"
+                :class="isNavigationReady? '' : 'text-gray-500'"
+                >[ Курс ]
+            </RouterLink>
             <RouterLink 
                 :to="isNavigationReady ? { name: 'schema', params: { task_id: currentTaskId } } : ''"
-                :class="isNavigationReady? '' : 'cursor-progress text-gray-500'"
+                :class="isNavigationReady? '' : 'text-gray-500'"
                 >[ Схема ]
             </RouterLink>
             <RouterLink 
                 :to="isNavigationReady ? { name: 'problem', params: { task_id: currentTaskId } } : ''"
-                :class="isNavigationReady? '' : 'cursor-progress text-gray-500'"
+                :class="isNavigationReady? '' : 'text-gray-500'"
                 >[ Решение ]
             </RouterLink>
         </section>
@@ -108,6 +93,6 @@ onUnmounted(() => {
     </AppContainer>
 
     <!-- Page body -->
-    <RouterView />
+    <RouterView class="mb-10"/>
 </template>
 </template>

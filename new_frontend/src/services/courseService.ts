@@ -1,6 +1,16 @@
 import apiClient from '@/api/client'
-import type { Course, StatsResponse } from '@/types/courseTypes'
+
 import { type AxiosInstance } from 'axios'
+
+import type { Course, StatsResponse } from '@/types/courseTypes'
+import type { StudentCourse, PaginatedStudentCourses } from '@/types/courseTypes'
+import type { CourseProgressCard, CourseProgressResponse } from '@/types/profileCourseProgressTypes'
+
+type StudentCoursesResponse = StudentCourse[] | PaginatedStudentCourses
+
+function normalizeStudentCourses(response: StudentCoursesResponse): StudentCourse[] {
+    return Array.isArray(response) ? response : (response.results ?? [])
+}
 
 class CourseService {
     constructor(public api: AxiosInstance) {}
@@ -23,8 +33,23 @@ class CourseService {
         return []
     }
 
+    async sendEnrollmentRequest(courseId: number): Promise<boolean> {
+        const response = await this.api.post(`/api/student-course/`, { course: courseId })
+        return 'course' in response.data
+    }
+
     async getCourseStats(courseId: number, page: number): Promise<StatsResponse> {
         const response = await this.api.get<StatsResponse>(`/api/group/statistic/${courseId}?page=${page}`)
+        return response.data
+    }
+
+    async getStudentCourses(): Promise<StudentCourse[]> {
+        const response = await apiClient.get<StudentCoursesResponse>('/api/student-course/')
+        return normalizeStudentCourses(response.data)
+    }
+
+    async getCourseProgress(courseId: number | string): Promise<CourseProgressResponse> {
+        const response = await apiClient.get<CourseProgressResponse>(`/api/student-profile/course/${courseId}/`)
         return response.data
     }
 }

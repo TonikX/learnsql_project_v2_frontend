@@ -34,7 +34,20 @@ const routes: RouteRecordRaw[] = [
             {
                 path: 'courses',
                 name: 'courses',
-                component: () => import('@/views/CoursesListView.vue')
+                children: [
+                    {
+                        path: 'all',
+                        name: 'all-courses',
+                        component: () => import('@/views/CoursesListView.vue'),
+                        props: { enrolledOnly: false }
+                    },
+                    {
+                        path: 'my',
+                        name: 'my-courses',
+                        component: () => import('@/views/CoursesListView.vue'),
+                        props: { enrolledOnly: true }
+                    },
+                ]
             },
             {
                 path: 'chats',
@@ -73,6 +86,7 @@ const routes: RouteRecordRaw[] = [
                         component: () => import('@/components/courses/Problem.vue')
                     },
                 ],
+                meta: { hideFooter: true }
             },
             {
                 path: '/:pathMatch(.*)*',
@@ -97,7 +111,7 @@ router.beforeEach((to) => {
     const authStore = useAuthStore()
 
     if (to.meta.guestOnly === true && authStore.isAuth) {
-        return { path: '/courses' }
+        return { path: '/courses/all' }
     }
 
     if (to.meta.requiresAuth === true && !authStore.isAuth) {

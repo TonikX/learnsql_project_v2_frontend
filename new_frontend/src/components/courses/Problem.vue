@@ -89,7 +89,8 @@ const handleSolutionAttempt = async () => {
 
 watch(
     () => Number(route.params.task_id),
-    async (taskId: number) => await toggleTaskLoading(handleChangeTask, taskId)
+    async (taskId: number) => await toggleTaskLoading(handleChangeTask, taskId),
+    { immediate: true }
 )
 </script>
 

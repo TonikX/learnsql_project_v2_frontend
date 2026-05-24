@@ -20,7 +20,7 @@ const authStore = useAuthStore()
 const { isAuth } = storeToRefs(authStore)
 
 const startLearningRoute = computed(() => {
-    return isAuth.value ? '/courses' : '/register'
+    return isAuth.value ? '/courses/all' : '/register'
 })
 
 const startLearningText = computed(() => {
@@ -28,7 +28,7 @@ const startLearningText = computed(() => {
 })
 
 const bottomSecondaryRoute = computed(() => {
-    return isAuth.value ? '/courses' : '/login'
+    return isAuth.value ? '/courses/all' : '/login'
 })
 
 const bottomSecondaryText = computed(() => {

@@ -10,6 +10,18 @@ export interface Course {
     status: CourseStatus
 }
 
+export interface StudentCourse {
+    id: number
+    course: number
+    course_title?: string | null
+    date_start?: string | null
+    date_finish?: string | null
+}
+
+export interface PaginatedStudentCourses {
+    results: StudentCourse[]
+}
+
 export interface StudentInCourseStats {
     first_name: string
     last_name: string
