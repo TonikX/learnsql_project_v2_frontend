@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
 import AppContainer from '@/components/layout/AppContainer.vue'
 import ProfileCoursesProgressPanel from '@/components/profile/ProfileCoursesProgressPanel.vue'
 import ProfileDetailsStats from '@/components/profile/ProfileDetailsStats.vue'
@@ -17,7 +16,6 @@ import {
     formatStreakDays,
 } from '@/utils/profileFormatters'
 
-const router = useRouter()
 const authStore = useAuthStore()
 const profileStore = useProfileStatisticsStore()
 const courseProgressStore = useProfileCourseProgressStore()
@@ -31,6 +29,7 @@ const {
 
 const personal = computed(() => profile.value?.sections.personal ?? null)
 const themeResults = computed(() => profile.value?.sections.themes ?? null)
+const isStudentProfile = computed(() => profile.value?.student?.role === 'student')
 
 const stats = computed(() => [
     {
@@ -80,12 +79,26 @@ const detailsRightRows = computed(() => [
 async function loadProfile() {
     try {
         await profileStore.loadCurrentProfile()
+        return true
     } catch {
+        return false
     }
 }
 
-async function loadCourseProgress() {
-    await courseProgressStore.loadCourseProgress()
+async function loadProfilePage() {
+    const isProfileLoaded = await loadProfile()
+
+    if (!isProfileLoaded) {
+        courseProgressStore.clearCourseProgress()
+        return
+    }
+
+    if (isStudentProfile.value) {
+        await courseProgressStore.loadCourseProgress()
+        return
+    }
+
+    courseProgressStore.clearCourseProgress()
 }
 
 function logout() {
@@ -97,8 +110,7 @@ function editProfile() {
 }
 
 onMounted(() => {
-    loadProfile()
-    loadCourseProgress()
+    loadProfilePage()
 })
 </script>
 
@@ -132,31 +144,33 @@ onMounted(() => {
                         @edit="editProfile"
                     />
 
-                    <div class="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 xl:gap-10">
-                        <ProfileStatCard
-                            v-for="stat in stats"
-                            :key="stat.label"
-                            :icon="stat.icon"
-                            :label="stat.label"
-                            :value="stat.value"
-                            :icon-box-class="stat.iconBoxClass"
-                            :icon-class="stat.iconClass"
+                    <template v-if="isStudentProfile">
+                        <div class="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 xl:gap-10">
+                            <ProfileStatCard
+                                v-for="stat in stats"
+                                :key="stat.label"
+                                :icon="stat.icon"
+                                :label="stat.label"
+                                :value="stat.value"
+                                :icon-box-class="stat.iconBoxClass"
+                                :icon-class="stat.iconClass"
+                            />
+                        </div>
+
+                        <ProfileCoursesProgressPanel
+                            :items="courseProgressItems"
+                            :is-loading="isCourseProgressLoading"
+                            :error="courseProgressError"
+                            :has-partial-error="hasPartialCourseProgressError"
                         />
-                    </div>
 
-                    <ProfileCoursesProgressPanel
-                        :items="courseProgressItems"
-                        :is-loading="isCourseProgressLoading"
-                        :error="courseProgressError"
-                        :has-partial-error="hasPartialCourseProgressError"
-                    />
+                        <ProfileThemeResultsPanel :themes="themeResults" />
 
-                    <ProfileThemeResultsPanel :themes="themeResults" />
-
-                    <ProfileDetailsStats
-                        :left-rows="detailsLeftRows"
-                        :right-rows="detailsRightRows"
-                    />
+                        <ProfileDetailsStats
+                            :left-rows="detailsLeftRows"
+                            :right-rows="detailsRightRows"
+                        />
+                    </template>
                 </div>
             </div>
         </AppContainer>

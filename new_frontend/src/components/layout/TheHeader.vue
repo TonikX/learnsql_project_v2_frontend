@@ -1,25 +1,31 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import AppContainer from './AppContainer.vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import AppIcon from '../ui/AppIcon.vue'
 import { useAuthStore } from '@/stores/authStore'
+import { useChatStore } from '@/stores/chatStore'
 import { useThemeStore } from '@/stores/themeStore'
 import type { ThemeMode } from '@/types/theme'
 import { storeToRefs } from 'pinia'
 
 const auth = useAuthStore()
 const { isAuth } = storeToRefs(auth)
+const chatStore = useChatStore()
+const { isRoomsLoading: isChatsLoading, unreadRoomsCount } = storeToRefs(chatStore)
 const themeStore = useThemeStore()
 const { mode } = storeToRefs(themeStore)
 
+const chatBadgePollingInterval = 30000
 const isThemeMenuOpen = ref(false)
 const themeMenuRef = ref<HTMLElement | null>(null)
+let chatBadgeIntervalId: ReturnType<typeof window.setInterval> | null = null
 
 const headerClass = computed(() => {
     return 'border-[var(--color-header)] bg-[var(--color-header)] text-[var(--color-header-text)]'
 })
 
 const linkClass = 'hover:bg-[var(--color-header-link-hover)] hover:text-[var(--color-header-link-hover-text)]'
+const iconActionClass =
+    'rounded-[4px] hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-header-text)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-header)]'
 
 const currentThemeIcon = computed(() => {
     if (mode.value === 'system') return 'system'
@@ -47,12 +53,56 @@ function handleDocumentClick(event: MouseEvent) {
     }
 }
 
+async function loadChatBadge() {
+    if (!isAuth.value || isChatsLoading.value) return
+    await chatStore.loadRooms({ silent: true, silentError: true })
+}
+
+function startChatBadgePolling() {
+    if (chatBadgeIntervalId !== null) return
+
+    void loadChatBadge()
+    chatBadgeIntervalId = window.setInterval(() => {
+        if (document.visibilityState === 'visible') {
+            void loadChatBadge()
+        }
+    }, chatBadgePollingInterval)
+}
+
+function stopChatBadgePolling() {
+    if (chatBadgeIntervalId === null) return
+
+    window.clearInterval(chatBadgeIntervalId)
+    chatBadgeIntervalId = null
+}
+
+function handleVisibilityChange() {
+    if (document.visibilityState === 'visible') {
+        void loadChatBadge()
+    }
+}
+
 onMounted(() => {
     document.addEventListener('click', handleDocumentClick)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    if (isAuth.value) {
+        startChatBadgePolling()
+    }
+})
+
+watch(isAuth, (value) => {
+    if (value) {
+        startChatBadgePolling()
+    } else {
+        stopChatBadgePolling()
+        chatStore.clearChatState()
+    }
 })
 
 onBeforeUnmount(() => {
     document.removeEventListener('click', handleDocumentClick)
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+    stopChatBadgePolling()
 })
 </script>
 
@@ -76,8 +126,14 @@ onBeforeUnmount(() => {
                 </RouterLink>
 
                 <RouterLink v-if="isAuth" to="/chats" :class="['shrink-0 transition-colors', linkClass]">
-                    <span class="sm:hidden">[Чаты]</span>
-                    <span class="hidden sm:inline">[ Чаты ]</span>
+                    <span class="inline-flex items-center gap-1 sm:hidden">
+                        [Чаты<span v-if="unreadRoomsCount > 0" class="rounded-full bg-primary-action px-1.5 py-0.5 text-[9px] leading-none text-white">{{ unreadRoomsCount }}</span>]
+                    </span>
+                    <span class="hidden items-center gap-2 sm:inline-flex">
+                        [ Чаты
+                        <span v-if="unreadRoomsCount > 0" class="rounded-full bg-primary-action px-2 py-0.5 text-[11px] leading-none text-white">{{ unreadRoomsCount }}</span>
+                        ]
+                    </span>
                 </RouterLink>
             </nav>
 
@@ -85,8 +141,8 @@ onBeforeUnmount(() => {
                 <div ref="themeMenuRef" class="relative">
                     <button
                         type="button"
-                        class="flex h-6 w-6 items-center justify-center transition-colors sm:h-9 sm:w-9 lg:h-10 lg:w-10"
-                        :class="linkClass"
+                        class="flex h-6 w-6 items-center justify-center transition-opacity sm:h-9 sm:w-9 lg:h-10 lg:w-10"
+                        :class="iconActionClass"
                         aria-label="Выбрать тему"
                         :aria-expanded="isThemeMenuOpen"
                         @click.stop="isThemeMenuOpen = !isThemeMenuOpen"
@@ -120,7 +176,10 @@ onBeforeUnmount(() => {
                 <template v-if="isAuth">
                     <RouterLink
                         to="/profile"
-                        :class="['flex items-center justify-center transition-colors', linkClass]"
+                        :class="[
+                            'flex h-6 w-6 items-center justify-center transition-opacity sm:h-9 sm:w-9 lg:h-10 lg:w-10',
+                            iconActionClass,
+                        ]"
                         aria-label="Профиль"
                     >
                         <AppIcon name="profile" :size="24" class="sm:hidden"/>

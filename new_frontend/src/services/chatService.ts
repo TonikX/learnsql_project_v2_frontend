@@ -1,12 +1,15 @@
 import apiClient from '@/api/client'
 import type {
+    ChatAdministrator,
     ChatMessage,
     ChatMessageQueryParams,
     ChatReadResponse,
     ChatRoom,
+    ChatRoomsResponse,
     CreateRoomPayload,
     PaginatedResponse,
 } from '@/types/chatTypes'
+import type { User } from '@/types/userTypes'
 
 function buildQueryParams(params?: ChatMessageQueryParams) {
     return {
@@ -16,8 +19,27 @@ function buildQueryParams(params?: ChatMessageQueryParams) {
 }
 
 export const chatService = {
-    async getRooms(): Promise<PaginatedResponse<ChatRoom>> {
-        const response = await apiClient.get<PaginatedResponse<ChatRoom>>('/chat/api/rooms/', {
+    async getCurrentUser(): Promise<User | null> {
+        const response = await apiClient.get<{ student?: User }>('/api/student-profile/', {
+            params: {
+                sections: 'personal',
+            },
+        })
+        return response.data.student ?? null
+    },
+
+    async getRooms(): Promise<ChatRoomsResponse> {
+        const response = await apiClient.get<ChatRoomsResponse>('/chat/api/rooms/', {
+            params: {
+                page_size: 100,
+                page: 1,
+            },
+        })
+        return response.data
+    },
+
+    async getTeacherRooms(): Promise<ChatRoomsResponse> {
+        const response = await apiClient.get<ChatRoomsResponse>('/chat/api/rooms/teacher/', {
             params: {
                 page_size: 100,
                 page: 1,
@@ -39,6 +61,13 @@ export const chatService = {
 
     async markRoomAsRead(roomId: number | string): Promise<ChatReadResponse> {
         const response = await apiClient.post<ChatReadResponse>(`/chat/api/rooms/${roomId}/read/`)
+        return response.data
+    },
+
+    async addModerator(roomId: number | string, userId: number | string): Promise<ChatAdministrator[]> {
+        const response = await apiClient.post<ChatAdministrator[]>(`/chat/api/rooms/${roomId}/moderators/`, {
+            user: userId,
+        })
         return response.data
     },
 

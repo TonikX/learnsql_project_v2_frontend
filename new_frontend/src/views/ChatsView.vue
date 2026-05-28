@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
+import ChatLoadingText from '@/components/chats/ChatLoadingText.vue'
 import ChatPanel from '@/components/chats/ChatPanel.vue'
 import ChatSidebar from '@/components/chats/ChatSidebar.vue'
 import { useChatStore } from '@/stores/chatStore'
@@ -12,16 +13,27 @@ const chatStore = useChatStore()
 const {
     activeChat,
     activeChatId,
+    canUseCourseFilter,
+    courseFilter,
+    courseOptions,
     error,
     filter,
     filteredChats,
+    hasLoadedRooms,
     isMessagesLoading,
+    isSending,
     isLoading,
+    roomsError,
     searchQuery,
 } = storeToRefs(chatStore)
 
 const isMobileChatOpen = ref(false)
 const isSyncingRoomFromQuery = ref(false)
+
+// Tune these grid tracks if the desktop chat/sidebar balance needs adjustment.
+const chatLayoutGridClass = 'lg:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[380px_minmax(0,1fr)] 2xl:grid-cols-[420px_minmax(0,1fr)]'
+const chatSidebarResponsiveClass = 'w-full max-w-[460px] md:max-w-[620px] lg:max-w-none'
+const shouldShowRoomsLoading = computed(() => isLoading.value || (!hasLoadedRooms.value && !roomsError.value))
 
 const routeRoomId = computed(() => {
     const value = route.query.room
@@ -84,8 +96,16 @@ async function handleBackToList() {
     await setRoomQuery(null)
 }
 
+async function handleAddModerator() {
+    const userId = window.prompt('Введите ID пользователя, которого нужно добавить модератором')
+    const normalizedUserId = userId?.trim()
+    if (!normalizedUserId) return
+
+    await chatStore.addModeratorToActiveRoom(normalizedUserId)
+}
+
 onMounted(async () => {
-    if (!chatStore.rooms.length) {
+    if (!chatStore.hasLoadedRooms) {
         await chatStore.loadRooms()
     }
 
@@ -107,41 +127,47 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="min-h-full bg-chat-page py-10 font-mono text-chat-text">
-        <div class="mx-auto w-full max-w-[1780px] px-4 sm:px-8">
-            <header class="mb-8">
+    <div class="min-h-full bg-chat-page py-6 font-mono text-chat-text sm:py-10">
+        <div class="mx-auto w-full max-w-[1880px] px-3 sm:px-8">
+            <header class="mb-6 sm:mb-8">
                 <h1 class="text-[28px] font-semibold leading-tight md:text-[32px]">
-                    Чаты преподавателей
+                    Чаты с преподавателями
                 </h1>
-                <p class="mt-3 text-[15px] text-chat-text">
-                    Активные обсуждения по курсам и задачам
-                </p>
             </header>
 
             <p v-if="error" class="mb-4 rounded-[8px] border border-chat-border bg-chat-surface p-4 text-chat-warning">
                 {{ error }}
             </p>
 
-            <p v-if="isLoading" class="rounded-[8px] border border-chat-border bg-chat-surface p-4 text-chat-muted">
-                Загрузка чатов...
+            <p v-if="shouldShowRoomsLoading" class="py-4 text-[15px] text-chat-text">
+                <ChatLoadingText text="Загрузка чатов" />
             </p>
 
-            <div v-else class="grid gap-8 xl:grid-cols-[520px_minmax(0,1fr)]">
+            <div v-else :class="['grid items-start gap-5 sm:gap-6', chatLayoutGridClass]">
                 <ChatSidebar
-                    :class="isMobileChatOpen ? 'hidden xl:block' : 'block'"
+                    :class="isMobileChatOpen ? `hidden lg:block ${chatSidebarResponsiveClass}` : `block ${chatSidebarResponsiveClass}`"
                     :active-chat-id="activeChatId"
                     :chats="filteredChats"
+                    :course-filter="courseFilter"
+                    :course-options="courseOptions"
                     :filter="filter"
+                    :is-ready="hasLoadedRooms"
                     :search-query="searchQuery"
+                    :show-course-filter="canUseCourseFilter"
                     @select="handleSelectChat"
+                    @set-course-filter="chatStore.setCourseFilter"
                     @set-filter="chatStore.setFilter"
                     @set-search="chatStore.setSearchQuery"
                 />
                 <ChatPanel
-                    :class="isMobileChatOpen ? 'block' : 'hidden xl:block'"
+                    :class="isMobileChatOpen ? 'flex' : 'hidden lg:flex'"
+                    :can-manage-moderators="canUseCourseFilter"
                     :chat="activeChat"
                     :is-messages-loading="isMessagesLoading"
+                    :is-sending="isSending"
+                    @add-moderator="handleAddModerator"
                     @back="handleBackToList"
+                    @retry="chatStore.retryFailedMessage"
                     @send="chatStore.sendMessage"
                 />
             </div>
