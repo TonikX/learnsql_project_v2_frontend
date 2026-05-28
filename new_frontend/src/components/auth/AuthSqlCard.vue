@@ -16,13 +16,13 @@ defineProps<{
                 </span>
                 <h1 class="min-w-0 text-[20px] font-normal leading-tight sm:text-[30px]">{{ title }}</h1>
             </div>
-            <span class="hidden w-fit whitespace-nowrap rounded-[8px] border border-auth-border bg-auth-input px-4 py-1 text-[14px] leading-none text-app-text sm:inline-flex sm:shrink-0">
+            <span class="hidden w-fit whitespace-nowrap rounded-[8px] border border-auth-border bg-auth-input px-4 py-1 text-[14px] leading-none text-app-text min-[1024px]:inline-flex min-[1024px]:shrink-0">
                 [ auth ]
             </span>
         </div>
 
         <div class="px-4 py-8 sm:px-10 sm:py-12">
-            <p class="text-[16px] leading-snug sm:text-[26px] sm:leading-none">
+            <p class="text-[16px] leading-snug sm:text-[22px] sm:leading-none min-[1280px]:text-[26px]">
                 <span class="text-auth-prompt">&gt;_</span>
                 <span class="ml-2 sm:ml-3">{{ command }}</span>
             </p>

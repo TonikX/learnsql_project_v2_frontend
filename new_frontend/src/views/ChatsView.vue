@@ -2,9 +2,9 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
-import ChatLoadingText from '@/components/chats/ChatLoadingText.vue'
 import ChatPanel from '@/components/chats/ChatPanel.vue'
 import ChatSidebar from '@/components/chats/ChatSidebar.vue'
+import AppLoader from '@/components/ui/AppLoader.vue'
 import { useChatStore } from '@/stores/chatStore'
 
 const route = useRoute()
@@ -139,9 +139,9 @@ onBeforeUnmount(() => {
                 {{ error }}
             </p>
 
-            <p v-if="shouldShowRoomsLoading" class="py-4 text-[15px] text-chat-text">
-                <ChatLoadingText text="Загрузка чатов" />
-            </p>
+            <div v-if="shouldShowRoomsLoading" class="flex min-h-[220px] items-center justify-center text-center text-[15px] text-chat-text">
+                <AppLoader text="Загрузка чатов" mode="inline" text-class="text-chat-text" />
+            </div>
 
             <div v-else :class="['grid items-start gap-5 sm:gap-6', chatLayoutGridClass]">
                 <ChatSidebar

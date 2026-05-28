@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref, watch } from 'vue'
-import ChatLoadingText from '@/components/chats/ChatLoadingText.vue'
+import AppLoader from '@/components/ui/AppLoader.vue'
 import MessageBubble from '@/components/chats/MessageBubble.vue'
 import type { ChatMessage } from '@/types/chatTypes'
 
@@ -100,7 +100,7 @@ watch(
 <template>
     <section class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[10px] border border-chat-border bg-chat-surface">
         <div v-if="isLoading" class="flex min-h-0 flex-1 items-center justify-center p-3 text-[15px] text-chat-text sm:p-5">
-            <ChatLoadingText text="Загружаем сообщения" />
+            <AppLoader text="Загружаем сообщения" mode="inline" text-class="text-chat-text" />
         </div>
 
         <div v-else-if="!messages.length" class="flex min-h-0 flex-1 items-center justify-center px-4 text-center text-[15px] text-chat-text">

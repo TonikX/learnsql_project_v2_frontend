@@ -20,7 +20,7 @@ const authStore = useAuthStore()
 const { isAuth } = storeToRefs(authStore)
 
 const startLearningRoute = computed(() => {
-    return isAuth.value ? '/courses/all' : '/register'
+    return isAuth.value ? '/courses/my' : '/register'
 })
 
 const startLearningText = computed(() => {
@@ -87,7 +87,7 @@ function getStepIndicatorClass(step: LearningStep) {
                                 </RouterLink>
 
                                 <RouterLink
-                                    to="/courses"
+                                    to="/courses/all"
                                     class="inline-flex h-11 w-full items-center justify-center gap-3 rounded-[8px] border-2 border-app-border bg-surface-contrast text-[14px] text-app-text transition hover:bg-panel sm:w-[240px] xl:h-[54px] xl:text-[16px]"
                                 >
                                     <AppIcon name="book" :size="24" />

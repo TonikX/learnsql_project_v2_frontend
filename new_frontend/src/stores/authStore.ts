@@ -1,15 +1,121 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { BadRequestError, ConnectionError, ServerError, extractApiErrorMessage, getApiErrorStatus } from '@/errors/network'
 import { authService } from '@/services/authService'
 import { useUserStore } from '@/stores/userStore'
 import type { AccessTokenResponse, LoginRequest, RegisterRequest, RegisterResponse, SocialAuthProvider, TokenPair } from '@/types/userTypes'
 
 const accessStorageKey = 'access_token'
 const refreshStorageKey = 'refresh_token'
+type LoginErrorStatus = 'auth' | 'validation' | 'connection' | 'server' | 'unknown'
 
 function getStoredToken(key: string): string | null {
     if (typeof window === 'undefined') return null
     return window.localStorage.getItem(key)
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null
+}
+
+function isNetworkAuthError(error: unknown): boolean {
+    if (!isRecord(error)) return false
+    if ('response' in error && error.response) return false
+
+    const code = typeof error.code === 'string' ? error.code : ''
+    const message = error instanceof Error
+        ? error.message
+        : typeof error.message === 'string'
+            ? error.message
+            : ''
+
+    return code === 'ERR_NETWORK' ||
+        code === 'ECONNABORTED' ||
+        message === 'Network Error' ||
+        message.toLowerCase().includes('timeout') ||
+        Boolean(error.request)
+}
+
+function getLoginErrorDetails(error: unknown): { status: LoginErrorStatus; message: string } {
+    if (error instanceof ConnectionError || isNetworkAuthError(error)) {
+        return { status: 'connection', message: 'Сервис временно недоступен. Попробуйте позже' }
+    }
+
+    if (error instanceof ServerError) {
+        return { status: 'server', message: 'Ошибка сервера, попробуйте позже' }
+    }
+
+    if (error instanceof BadRequestError) {
+        return { status: 'validation', message: 'Заполните логин и пароль' }
+    }
+
+    const status = getApiErrorStatus(error)
+
+    if (status === 401) {
+        return { status: 'auth', message: 'Неверный логин или пароль' }
+    }
+
+    if (status === 400) {
+        return { status: 'validation', message: 'Заполните логин и пароль' }
+    }
+
+    if (typeof status === 'number' && status >= 500) {
+        return { status: 'server', message: 'Ошибка сервера, попробуйте позже' }
+    }
+
+    return { status: 'unknown', message: 'Произошла ошибка авторизации' }
+}
+
+function getRegisterValidationMessage(error: unknown): string {
+    const message = extractApiErrorMessage(error, 'Проверьте данные регистрации')
+    const normalizedMessage = message.toLowerCase()
+
+    if (normalizedMessage.includes('username') && (normalizedMessage.includes('already exists') || normalizedMessage.includes('unique'))) {
+        return 'Пользователь с таким логином уже существует'
+    }
+
+    if (normalizedMessage.includes('email') && normalizedMessage.includes('valid')) {
+        return 'Введите корректную почту'
+    }
+
+    if (normalizedMessage.includes('group_number') || normalizedMessage.includes('invalid pk')) {
+        return 'Выберите корректную группу'
+    }
+
+    return message
+        .replace(/^username:/i, 'Логин:')
+        .replace(/^email:/i, 'Почта:')
+        .replace(/^password:/i, 'Пароль:')
+        .replace(/^group_number:/i, 'Группа:')
+        .replace(/^tel:/i, 'Телефон:')
+        .replace(/^first_name:/i, 'Имя:')
+        .replace(/^last_name:/i, 'Фамилия:')
+}
+
+function getRegisterErrorMessage(error: unknown): string {
+    if (error instanceof ConnectionError || isNetworkAuthError(error)) {
+        return 'Сервис временно недоступен. Попробуйте позже'
+    }
+
+    if (error instanceof ServerError) {
+        return 'Ошибка сервера, попробуйте позже'
+    }
+
+    if (error instanceof BadRequestError) {
+        return getRegisterValidationMessage(error)
+    }
+
+    const status = getApiErrorStatus(error)
+
+    if (status === 400) {
+        return getRegisterValidationMessage(error)
+    }
+
+    if (typeof status === 'number' && status >= 500) {
+        return 'Ошибка сервера, попробуйте позже'
+    }
+
+    return 'Не удалось зарегистрироваться'
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -17,6 +123,7 @@ export const useAuthStore = defineStore('auth', () => {
     const refreshToken = ref<string | null>(getStoredToken(refreshStorageKey))
     const isLoading = ref(false)
     const error = ref<string | null>(null)
+    const loginErrorStatus = ref<LoginErrorStatus | null>(null)
 
     const isAuth = computed(() => !!accessToken.value)
 
@@ -48,6 +155,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     function clearError() {
         error.value = null
+        loginErrorStatus.value = null
     }
 
     async function login(payload: LoginRequest) {
@@ -59,7 +167,9 @@ export const useAuthStore = defineStore('auth', () => {
             setTokens(tokens)
             return tokens
         } catch (unknownError) {
-            error.value = 'Неверный логин или пароль'
+            const loginError = getLoginErrorDetails(unknownError)
+            error.value = loginError.message
+            loginErrorStatus.value = loginError.status
             throw unknownError
         } finally {
             isLoading.value = false
@@ -73,7 +183,7 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             return await authService.register(payload)
         } catch (unknownError) {
-            error.value = 'Не удалось зарегистрироваться. Проверьте данные и попробуйте ещё раз'
+            error.value = getRegisterErrorMessage(unknownError)
             throw unknownError
         } finally {
             isLoading.value = false
@@ -130,6 +240,7 @@ export const useAuthStore = defineStore('auth', () => {
         isAuth,
         isLoading,
         error,
+        loginErrorStatus,
         login,
         register,
         socialLogin,
