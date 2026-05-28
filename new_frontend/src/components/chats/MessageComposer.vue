@@ -2,6 +2,10 @@
 import { ref } from 'vue'
 import AppIcon from '@/components/ui/AppIcon.vue'
 
+const props = defineProps<{
+    disabled?: boolean
+}>()
+
 const emit = defineEmits<{
     send: [content: string]
 }>()
@@ -9,6 +13,7 @@ const emit = defineEmits<{
 const message = ref('')
 
 function submit() {
+    if (props.disabled) return
     const content = message.value.trim()
     if (!content) return
     emit('send', content)
@@ -31,21 +36,22 @@ function handleKeydown(event: KeyboardEvent) {
 </script>
 
 <template>
-    <section>
-        <div class="rounded-[10px] border border-chat-border-strong bg-chat-surface p-4 sm:p-5">
-            <div class="flex items-stretch gap-3 sm:gap-5">
+    <section class="shrink-0">
+        <div class="rounded-[10px] border border-chat-border-strong bg-chat-surface p-3 sm:p-4">
+            <div class="flex items-stretch gap-2 sm:gap-3">
                 <textarea
                     v-model="message"
-                    class="chat-placeholder min-h-[108px] min-w-0 flex-1 resize-none rounded-[8px] border border-chat-border bg-chat-composer-input p-4 text-[14px] text-chat-text outline-none placeholder:text-chat-placeholder focus:border-chat-border-active"
+                    :disabled="disabled"
+                    class="chat-placeholder min-h-[88px] min-w-0 flex-1 resize-none rounded-[8px] border border-chat-border bg-chat-composer-input p-3 text-[14px] text-chat-text outline-none ring-0 placeholder:text-chat-placeholder disabled:opacity-70 focus:border-chat-border focus:outline-none focus:ring-0 focus-visible:outline-none sm:min-h-[96px] sm:p-4"
                     placeholder="Напишите вопрос преподавателю..."
                     @keydown="handleKeydown"
                 ></textarea>
 
-                <div class="flex shrink-0 gap-3">
-                    <div class="flex flex-col gap-3">
+                <div class="flex shrink-0 gap-2 sm:gap-3">
+                    <div class="flex flex-col gap-2">
                         <button
                             type="button"
-                            class="flex h-12 w-12 items-center justify-center rounded-[8px] border border-chat-border bg-chat-icon-button text-chat-text transition hover:border-chat-border-active"
+                            class="flex h-10 w-10 items-center justify-center rounded-[8px] border border-chat-border bg-chat-icon-button text-chat-text transition hover:border-chat-border-active sm:h-11 sm:w-11"
                             aria-label="Прикрепить файл"
                             title="Загрузка файлов будет добавлена позже"
                             @click.prevent="noopAttachmentClick"
@@ -55,7 +61,7 @@ function handleKeydown(event: KeyboardEvent) {
 
                         <button
                             type="button"
-                            class="flex h-12 w-12 items-center justify-center rounded-[8px] border border-chat-border bg-chat-icon-button text-chat-text transition hover:border-chat-border-active"
+                            class="flex h-10 w-10 items-center justify-center rounded-[8px] border border-chat-border bg-chat-icon-button text-chat-text transition hover:border-chat-border-active sm:h-11 sm:w-11"
                             aria-label="Вставить SQL"
                             @click="insertSqlTemplate"
                         >
@@ -65,7 +71,8 @@ function handleKeydown(event: KeyboardEvent) {
 
                     <button
                         type="button"
-                        class="flex h-[108px] w-[54px] items-center justify-center rounded-[8px] bg-chat-send text-chat-on-accent transition hover:opacity-90"
+                        :disabled="disabled"
+                        class="flex h-[88px] w-11 items-center justify-center rounded-[8px] bg-chat-send text-chat-on-accent transition hover:opacity-90 disabled:cursor-wait disabled:opacity-70 sm:h-[96px] sm:w-12"
                         aria-label="Отправить"
                         @click="submit"
                     >

@@ -24,6 +24,7 @@ const groupLabel = computed(() => {
         .filter(Boolean)
         .join(' • ')
 })
+const showStudentStatusLine = computed(() => props.student.role === 'student' && Boolean(props.personal))
 </script>
 
 <template>
@@ -65,7 +66,10 @@ const groupLabel = computed(() => {
                     </div>
                 </div>
 
-                <p class="mt-4 text-[13px] leading-relaxed text-app-text sm:text-[15px]">
+                <p
+                    v-if="showStudentStatusLine"
+                    class="mt-4 text-[13px] leading-relaxed text-app-text sm:text-[15px]"
+                >
                     <span class="text-progress-green">●</span>
                     {{ getProfileStatusLine(props.personal) }}
                 </p>
