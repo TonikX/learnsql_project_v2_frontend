@@ -39,7 +39,6 @@ export interface RegisterRequest {
     first_name?: string
     last_name?: string
     tel?: string
-    role?: string
     group_number?: number | null
 }
 
@@ -77,6 +76,13 @@ export interface StudentGroupQuery {
     period?: string
     university?: string | number
 }
+
+export interface ChoiceValue {
+    id: number
+    name: string
+}
+
+export type UniversityChoice = ChoiceValue
 
 export interface PaginatedResponse<T> {
     count: number

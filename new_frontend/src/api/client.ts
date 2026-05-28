@@ -119,7 +119,7 @@ apiClient.interceptors.response.use(
             error.message === 'Network Error'
 
         if (isNetworkError) {
-            return Promise.reject(new ConnectionError('Не удалось подключиться к серверу'))
+            return Promise.reject(new ConnectionError('Сервис временно недоступен. Попробуйте позже'))
         }
 
         const originalRequest = error.config as RetriableRequestConfig | undefined

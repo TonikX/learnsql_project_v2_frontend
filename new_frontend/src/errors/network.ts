@@ -64,7 +64,7 @@ function extractFromResponseData(data: unknown): string | null {
 }
 
 export function extractApiErrorMessage(error: unknown, fallbackMessage: string): string {
-    if (error instanceof ConnectionError) return 'Не удалось подключиться к серверу. Проверьте интернет и попробуйте позже'
+    if (error instanceof ConnectionError) return 'Сервис временно недоступен. Попробуйте позже'
 
     if (isRecord(error)) {
         const response = error.response

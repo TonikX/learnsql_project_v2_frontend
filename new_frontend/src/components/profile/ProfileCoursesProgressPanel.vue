@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { CourseProgressCard } from '@/types/profileCourseProgressTypes'
 import { RouterLink } from 'vue-router'
+import AppLoader from '@/components/ui/AppLoader.vue'
+import type { CourseProgressCard } from '@/types/profileCourseProgressTypes'
 
 const props = defineProps<{
     items: CourseProgressCard[]
@@ -35,8 +36,8 @@ const itemsWithRoute = computed(() => props.items.map((item) => ({
             Курсы_и_прогресс
         </h2>
 
-        <p v-if="isLoading" class="mt-6 text-[15px] text-app-text">
-            Загружаем прогресс курсов...
+        <p v-if="isLoading" class="mt-6 text-[15px]">
+            <AppLoader text="Загрузка прогресса" mode="inline" />
         </p>
 
         <p v-else-if="error" class="mt-6 text-[15px] text-danger">

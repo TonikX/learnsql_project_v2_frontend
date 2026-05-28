@@ -2,6 +2,7 @@
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import AppContainer from '@/components/layout/AppContainer.vue'
+import AppLoader from '@/components/ui/AppLoader.vue'
 import ProfileCoursesProgressPanel from '@/components/profile/ProfileCoursesProgressPanel.vue'
 import ProfileDetailsStats from '@/components/profile/ProfileDetailsStats.vue'
 import ProfileHeaderCard from '@/components/profile/ProfileHeaderCard.vue'
@@ -128,8 +129,8 @@ onMounted(() => {
                     </span>
                 </div>
 
-                <div v-if="isLoading" class="rounded-[10px] border border-app-border bg-profile-card-gradient px-6 py-12 text-center text-app-muted">
-                    Загружаем профиль...
+                <div v-if="isLoading" class="rounded-[10px] border border-app-border bg-profile-card-gradient px-6 py-12 text-center">
+                    <AppLoader text="Загрузка профиля" mode="inline" />
                 </div>
 
                 <div v-else-if="error" class="rounded-[10px] border border-app-border bg-profile-card-gradient px-6 py-12 text-center text-danger">
