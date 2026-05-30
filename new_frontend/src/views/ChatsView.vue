@@ -30,10 +30,10 @@ const {
 const isMobileChatOpen = ref(false)
 const isSyncingRoomFromQuery = ref(false)
 
-// Tune these grid tracks if the desktop chat/sidebar balance needs adjustment.
 const chatLayoutGridClass = 'lg:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[380px_minmax(0,1fr)] 2xl:grid-cols-[420px_minmax(0,1fr)]'
 const chatSidebarResponsiveClass = 'w-full max-w-[460px] md:max-w-[620px] lg:max-w-none'
 const shouldShowRoomsLoading = computed(() => isLoading.value || (!hasLoadedRooms.value && !roomsError.value))
+const chatPageTitle = computed(() => canUseCourseFilter.value ? 'Чаты со студентами' : 'Чаты с преподавателями')
 
 const routeRoomId = computed(() => {
     const value = route.query.room
@@ -127,11 +127,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="min-h-full bg-chat-page py-6 font-mono text-chat-text sm:py-10">
+    <div :class="['min-h-full bg-chat-page font-mono text-chat-text', isMobileChatOpen ? 'py-1 sm:py-2 lg:py-3 xl:py-6' : 'py-6 sm:py-10']">
         <div class="mx-auto w-full max-w-[1880px] px-3 sm:px-8">
-            <header class="mb-6 sm:mb-8">
+            <header :class="isMobileChatOpen ? 'hidden xl:block xl:mb-6' : 'mb-6 sm:mb-8'">
                 <h1 class="text-[28px] font-semibold leading-tight md:text-[32px]">
-                    Чаты с преподавателями
+                    {{ chatPageTitle }}
                 </h1>
             </header>
 
@@ -163,6 +163,7 @@ onBeforeUnmount(() => {
                     :class="isMobileChatOpen ? 'flex' : 'hidden lg:flex'"
                     :can-manage-moderators="canUseCourseFilter"
                     :chat="activeChat"
+                    :has-chats="chatStore.rooms.length > 0"
                     :is-messages-loading="isMessagesLoading"
                     :is-sending="isSending"
                     @add-moderator="handleAddModerator"

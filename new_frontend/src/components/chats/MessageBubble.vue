@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { ChatMessage } from '@/types/chatTypes'
-import { formatChatTime, getChatUserDisplayName } from '@/utils/chatFormatters'
+import { formatChatMessageTime, getChatUserDisplayName } from '@/utils/chatFormatters'
 
 const props = defineProps<{
     message: ChatMessage
@@ -64,7 +64,7 @@ const segments = computed<MessageSegment[]>(() => {
             </template>
 
             <p class="mt-1.5 text-[11px] font-extralight text-chat-text sm:mt-2 sm:text-[12px]">
-                {{ formatChatTime(message.timestamp) }}
+                {{ formatChatMessageTime(message.createdAt ?? message.timestamp) }}
             </p>
 
             <div v-if="message.deliveryStatus === 'failed'" class="mt-3 flex flex-wrap items-center gap-3 text-[12px] text-chat-warning">

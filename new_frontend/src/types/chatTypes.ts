@@ -77,6 +77,7 @@ export interface ChatRoom {
     course: ChatCourse | null
     teacher: ChatUser | null
     student?: ChatUser | null
+    creator?: number | string | ChatUser | null
     moderators?: ChatUser[] | null
     administrators?: ChatAdministrator[] | null
     subscribers: ChatUser[]

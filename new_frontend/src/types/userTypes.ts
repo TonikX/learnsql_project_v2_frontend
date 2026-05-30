@@ -34,7 +34,7 @@ export interface SocialLoginResponse extends TokenPair {
 
 export interface RegisterRequest {
     username: string
-    email: string
+    email?: string
     password: string
     first_name?: string
     last_name?: string

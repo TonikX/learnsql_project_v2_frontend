@@ -96,11 +96,14 @@ async function loadGroups(universityId: string) {
 function buildPayload(): RegisterRequest {
     const payload: RegisterRequest = {
         username: form.username.trim(),
-        email: form.email.trim(),
         password: form.password,
         first_name: form.first_name.trim() || undefined,
         last_name: form.last_name.trim() || undefined,
         tel: form.tel.trim() || undefined,
+    }
+
+    if (form.email.trim()) {
+        payload.email = form.email.trim()
     }
 
     if (form.group_number) {
@@ -113,12 +116,12 @@ function buildPayload(): RegisterRequest {
 async function submit() {
     formError.value = ''
 
-    if (!form.username.trim() || !form.email.trim() || !form.password) {
-        formError.value = 'Введите логин, почту и пароль'
+    if (!form.username.trim() || !form.password) {
+        formError.value = 'Введите логин и пароль'
         return
     }
 
-    if (!isEmailValid(form.email)) {
+    if (form.email.trim() && !isEmailValid(form.email)) {
         formError.value = 'Введите корректную почту'
         return
     }

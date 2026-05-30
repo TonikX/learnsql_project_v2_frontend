@@ -20,17 +20,17 @@ const participants = computed(() => props.chat.participants)
 </script>
 
 <template>
-    <section class="shrink-0 rounded-[8px] border border-chat-border bg-chat-surface p-4 sm:p-5">
-        <div class="grid gap-3 sm:gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-            <h2 class="min-w-0 break-words text-[18px] font-medium leading-snug text-chat-text md:col-start-1">
+    <section class="shrink-0 rounded-[8px] border border-chat-border bg-chat-surface p-2.5 sm:p-4 xl:p-5">
+        <div class="grid gap-2 sm:gap-3 xl:gap-4 min-[1280px]:grid-cols-[minmax(0,1fr)_auto] min-[1280px]:items-center">
+            <h2 class="min-w-0 break-words text-[16px] font-medium leading-snug text-chat-text sm:text-[17px] xl:text-[18px] min-[1280px]:col-start-1">
                 {{ chat.title }}
             </h2>
 
-            <div class="flex shrink-0 flex-wrap items-center justify-start gap-2 md:col-start-2 md:row-span-2 md:row-start-1 md:justify-end md:self-center">
+            <div class="flex min-w-0 shrink-0 flex-wrap items-center justify-start gap-2 min-[1280px]:col-start-2 min-[1280px]:row-span-2 min-[1280px]:row-start-1 min-[1280px]:justify-end min-[1280px]:self-center">
                 <RouterLink
                     v-if="courseRoute"
                     :to="courseRoute"
-                    class="inline-flex h-9 min-w-[104px] items-center justify-center rounded-[7px] border border-chat-border bg-chat-action-button px-3 text-[13px] leading-none text-chat-text transition hover:bg-chat-surface-active sm:min-w-[118px] sm:px-4"
+                    class="inline-flex h-8 min-w-[88px] items-center justify-center rounded-[7px] border border-chat-border bg-chat-action-button px-3 text-[12px] leading-none text-chat-text transition hover:bg-chat-surface-active sm:h-9 sm:min-w-[118px] sm:px-4 sm:text-[13px]"
                 >
                     К курсу
                 </RouterLink>
@@ -38,21 +38,21 @@ const participants = computed(() => props.chat.participants)
                 <button
                     v-if="canManageModerators"
                     type="button"
-                    class="inline-flex h-9 items-center justify-center rounded-[7px] border border-chat-border bg-chat-action-button px-3 text-[13px] leading-none text-chat-text transition hover:bg-chat-surface-active sm:px-4"
+                    class="inline-flex h-8 max-w-full items-center justify-center rounded-[7px] border border-chat-border bg-chat-action-button px-3 text-[12px] leading-none text-chat-text transition hover:bg-chat-surface-active sm:h-9 sm:px-4 sm:text-[13px]"
                     @click="emit('addModerator')"
                 >
                     Добавить модератора
                 </button>
             </div>
 
-            <div class="min-w-0 md:col-start-1">
-                <div v-if="participants.length" class="flex flex-wrap items-center gap-2">
+            <div class="min-w-0 min-[1280px]:col-start-1">
+                <div v-if="participants.length" class="flex max-h-[74px] flex-wrap items-center gap-1.5 overflow-y-auto pr-1 sm:max-h-[88px] sm:gap-2 lg:max-h-[76px] xl:max-h-none xl:overflow-visible xl:pr-0">
                     <span
                         v-for="participant in participants"
                         :key="participant.id"
-                        class="inline-flex min-w-0 max-w-full items-center gap-2 rounded-[7px] border border-chat-border bg-chat-panel px-2.5 py-1 text-[11px] text-chat-text sm:max-w-[260px] sm:px-3 sm:py-1.5 sm:text-[12px]"
+                        class="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-[7px] border border-chat-border bg-chat-panel px-2 py-1 text-[11px] text-chat-text min-[520px]:max-w-[220px] sm:max-w-[240px] sm:gap-2 sm:px-3 sm:py-1.5 sm:text-[12px] min-[1280px]:max-w-[260px]"
                     >
-                        <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-chat-avatar text-[10px] text-chat-on-accent sm:h-7 sm:w-7">
+                        <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-chat-avatar text-[9px] text-chat-on-accent sm:h-7 sm:w-7 sm:text-[10px]">
                             {{ getChatUserInitials(participant) }}
                         </span>
                         <span class="min-w-0 text-chat-text">

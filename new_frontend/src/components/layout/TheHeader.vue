@@ -108,8 +108,8 @@ onBeforeUnmount(() => {
 
 <template>
     <header :class="['sticky top-0 z-40 border-b font-mono', headerClass]">
-        <div class="mx-auto flex h-14 w-full items-center justify-between gap-1 px-2 py-0 sm:px-4 lg:max-w-[90%] lg:px-8">
-            <nav class="flex min-w-0 flex-1 flex-nowrap items-center gap-[3px] text-[10px] font-medium leading-none sm:gap-2 sm:text-[16px] lg:text-[20px]">
+        <div class="mx-auto flex h-14 w-full items-center justify-between gap-1 px-2 py-0 sm:px-4 lg:px-6 min-[1280px]:max-w-[90%] min-[1280px]:px-8">
+            <nav class="flex min-w-0 flex-1 flex-nowrap items-center gap-[3px] text-[9px] font-medium leading-none min-[360px]:text-[10px] sm:gap-2 sm:text-[14px] md:text-[15px] min-[1280px]:text-[20px]">
                 <RouterLink to="/" :class="['shrink-0 transition-colors', linkClass]">
                     <span class="sm:hidden">[Learn SQL]</span>
                     <span class="hidden sm:inline">[ Learn SQL ]</span>
@@ -137,11 +137,11 @@ onBeforeUnmount(() => {
                 </RouterLink>
             </nav>
 
-            <nav class="flex shrink-0 flex-nowrap items-center gap-1 text-[12px] font-medium leading-none sm:gap-2 sm:text-[16px] lg:text-[20px]">
+            <nav class="flex shrink-0 flex-nowrap items-center gap-1 text-[11px] font-medium leading-none min-[360px]:text-[12px] sm:gap-2 sm:text-[14px] md:text-[15px] min-[1280px]:text-[20px]">
                 <div ref="themeMenuRef" class="relative">
                     <button
                         type="button"
-                        class="flex h-6 w-6 items-center justify-center transition-opacity sm:h-9 sm:w-9 lg:h-10 lg:w-10"
+                        class="flex h-6 w-6 items-center justify-center transition-opacity sm:h-8 sm:w-8 min-[1280px]:h-10 min-[1280px]:w-10"
                         :class="iconActionClass"
                         aria-label="Выбрать тему"
                         :aria-expanded="isThemeMenuOpen"
@@ -170,14 +170,14 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
 
-                <RouterLink to="/" :class="['hidden px-1 transition-colors md:inline', linkClass]">[ Помощь ]</RouterLink>
-                <RouterLink to="/" :class="['hidden px-1 transition-colors md:inline', linkClass]">[ О сайте ]</RouterLink>
+                <RouterLink to="/" :class="['hidden px-1 transition-colors min-[1280px]:inline', linkClass]">[ Помощь ]</RouterLink>
+                <RouterLink to="/" :class="['hidden px-1 transition-colors min-[1280px]:inline', linkClass]">[ О сайте ]</RouterLink>
 
                 <template v-if="isAuth">
                     <RouterLink
                         to="/profile"
                         :class="[
-                            'flex h-6 w-6 items-center justify-center transition-opacity sm:h-9 sm:w-9 lg:h-10 lg:w-10',
+                            'flex h-6 w-6 items-center justify-center transition-opacity sm:h-8 sm:w-8 min-[1280px]:h-10 min-[1280px]:w-10',
                             iconActionClass,
                         ]"
                         aria-label="Профиль"

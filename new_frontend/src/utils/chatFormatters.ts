@@ -66,6 +66,30 @@ export function formatChatTime(value: string | null | undefined): string {
     }).format(date)
 }
 
+export function formatChatMessageTime(value: string | null | undefined): string {
+    if (!value) return ''
+
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return value
+
+    const now = new Date()
+    const sameDay = date.toDateString() === now.toDateString()
+    const time = new Intl.DateTimeFormat('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+    }).format(date)
+
+    if (sameDay) return time
+
+    const day = new Intl.DateTimeFormat('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit',
+    }).format(date)
+
+    return `${day}, ${time}`
+}
+
 export function formatChatPreview(content?: string | null): string {
     if (!content) return ''
 
