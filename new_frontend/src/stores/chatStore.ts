@@ -238,6 +238,7 @@ function buildRoomUserLookup(room: ChatRoom, messages: ChatMessage[] = []) {
     const users = [
         room.teacher,
         room.student,
+        getRoomCreatorUser(room),
         ...room.subscribers,
         ...(room.moderators ?? []),
         ...(room.administrators ?? []).map((admin) => admin.user),
@@ -276,9 +277,42 @@ function getRoomModerators(room: ChatRoom, lookup: Map<string, ChatUser>) {
         .filter((user): user is ChatUser => Boolean(user))
 }
 
-function getRoomStudent(room: ChatRoom, lookup: Map<string, ChatUser>) {
-    const student = room.student ?? room.subscribers.find((user) => user.role === 'student') ?? null
-    return enrichRoomUser(student, lookup)
+function isStudentUser(user: ChatUser | null | undefined): user is ChatUser {
+    return user?.role === 'student'
+}
+
+function getRoomCreatorUser(room: ChatRoom): ChatUser | null {
+    return typeof room.creator === 'object' && room.creator !== null ? room.creator : null
+}
+
+function getRoomCreatorId(room: ChatRoom): number | string | null {
+    if (typeof room.creator === 'number' || typeof room.creator === 'string') return room.creator
+    return room.creator?.id ?? null
+}
+
+function getLookupUserById(lookup: Map<string, ChatUser>, id: number | string | null) {
+    if (id === null) return null
+    return lookup.get(String(id)) ?? null
+}
+
+function getFirstStudentMessageAuthor(messages: ChatMessage[], lookup: Map<string, ChatUser>) {
+    return messages
+        .map((message) => enrichRoomUser(message.author, lookup))
+        .find(isStudentUser) ?? null
+}
+
+function getRoomStudent(room: ChatRoom, lookup: Map<string, ChatUser>, messages: ChatMessage[] = []) {
+    const explicitStudent = enrichRoomUser(room.student, lookup)
+    if (isStudentUser(explicitStudent)) return explicitStudent
+
+    const creatorStudent = enrichRoomUser(getLookupUserById(lookup, getRoomCreatorId(room)), lookup)
+    if (isStudentUser(creatorStudent)) return creatorStudent
+
+    const messageStudent = getFirstStudentMessageAuthor(messages, lookup)
+    if (messageStudent) return messageStudent
+
+    const subscriberStudent = room.subscribers.find((user) => user.role === 'student') ?? null
+    return enrichRoomUser(subscriberStudent, lookup)
 }
 
 function getRoomParticipants(room: ChatRoom, isTeacherView: boolean, messages: ChatMessage[] = []) {
@@ -289,7 +323,7 @@ function getRoomParticipants(room: ChatRoom, isTeacherView: boolean, messages: C
         return dedupeUsers([enrichRoomUser(room.teacher, lookup), ...moderators])
     }
 
-    return dedupeUsers([getRoomStudent(room, lookup), ...moderators])
+    return dedupeUsers([getRoomStudent(room, lookup, messages), ...moderators])
 }
 
 function mapRoom(room: ChatRoom, messages: ChatMessage[] = [], isTeacherView = false): ChatItem {
@@ -491,13 +525,46 @@ export const useChatStore = defineStore('chat', () => {
         activeRoomId.value = roomId
         disconnectSocket()
 
-        await loadMessages(roomId)
+        const canUseCache = canUseMessagesCache(roomId)
+        if (canUseCache) {
+            messagesError.value = null
+        }
+
+        const didLoadMessages = canUseCache ? true : await loadMessages(roomId)
         if (!isActiveRoom(roomId)) return
 
-        await markRoomAsRead(roomId)
-        if (!isActiveRoom(roomId)) return
+        if (didLoadMessages) {
+            markRoomAsReadLocally(roomId)
+        }
 
         await connectActiveRoomSocket(roomId)
+    }
+
+    function hasCachedMessages(roomId: number | string) {
+        return Object.prototype.hasOwnProperty.call(messagesByRoom.value, roomKey(roomId))
+    }
+
+    function getRoomById(roomId: number | string) {
+        return rooms.value.find((room) => roomKey(room.id) === roomKey(roomId)) ?? null
+    }
+
+    function roomHasUnreadMessages(roomId: number | string) {
+        return (getRoomById(roomId)?.unread_count ?? 0) > 0
+    }
+
+    function cachedMessagesContainLastMessage(roomId: number | string) {
+        const room = getRoomById(roomId)
+        const lastMessageId = room?.last_message?.id
+        if (lastMessageId === null || lastMessageId === undefined) return true
+
+        return (messagesByRoom.value[roomKey(roomId)] ?? [])
+            .some((message) => String(message.id) === String(lastMessageId))
+    }
+
+    function canUseMessagesCache(roomId: number | string) {
+        return hasCachedMessages(roomId) &&
+            !roomHasUnreadMessages(roomId) &&
+            cachedMessagesContainLastMessage(roomId)
     }
 
     async function loadMessages(roomId: number | string) {
@@ -510,26 +577,49 @@ export const useChatStore = defineStore('chat', () => {
                 page_size: 50,
             })
 
+            const key = roomKey(roomId)
+            const failedMessages = (messagesByRoom.value[key] ?? [])
+                .filter((message) => message.deliveryStatus === 'failed')
+            const backendMessages = [...response.results].reverse().map(mapMessage)
+
             messagesByRoom.value = {
                 ...messagesByRoom.value,
-                [roomKey(roomId)]: [...response.results].reverse().map(mapMessage),
+                [key]: mergeMessagesWithFailed(backendMessages, failedMessages),
             }
+            return true
         } catch (error) {
             messagesError.value = getChatRequestErrorMessage(error, 'Не удалось загрузить сообщения')
+            return false
         } finally {
             isMessagesLoading.value = false
+        }
+    }
+
+    function mergeMessagesWithFailed(messages: ChatMessage[], failedMessages: ChatMessage[]) {
+        const messageIds = new Set(messages.map((message) => String(message.id)))
+        const nextFailedMessages = failedMessages.filter((message) => !messageIds.has(String(message.id)))
+
+        return [...messages, ...nextFailedMessages]
+    }
+
+    function markRoomAsReadLocally(roomId: number | string) {
+        const currentRoom = getRoomById(roomId)
+        const hadUnread = (currentRoom?.unread_count ?? 0) > 0
+
+        rooms.value = rooms.value.map((room) => (
+            roomKey(room.id) === roomKey(roomId)
+                ? { ...room, unread_count: 0 }
+                : room
+        ))
+        if (hadUnread) {
+            unreadRoomsCount.value = Math.max(0, unreadRoomsCount.value - 1)
         }
     }
 
     async function markRoomAsRead(roomId: number | string) {
         try {
             await chatService.markRoomAsRead(roomId)
-            rooms.value = rooms.value.map((room) => (
-                roomKey(room.id) === roomKey(roomId)
-                    ? { ...room, unread_count: 0 }
-                    : room
-            ))
-            unreadRoomsCount.value = rooms.value.filter((room) => room.unread_count > 0).length
+            markRoomAsReadLocally(roomId)
         } catch {
         }
     }

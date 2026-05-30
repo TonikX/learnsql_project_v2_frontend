@@ -110,16 +110,20 @@ watch(
         <div
             v-else
             ref="scrollContainer"
-            class="min-h-0 flex-1 space-y-2 overflow-y-auto px-2 pb-3 pt-2 sm:space-y-3 sm:px-5 sm:pb-4 sm:pt-5"
+            class="min-h-0 flex-1 overflow-y-auto px-2 pb-3 pt-2 sm:px-5 sm:pb-4 sm:pt-5"
         >
-            <MessageBubble
-                v-for="message in messages"
-                :key="message.id"
-                :message="message"
-                @retry="(messageId, content) => emit('retry', messageId, content)"
-            />
+            <div class="flex min-h-full flex-col gap-2 sm:gap-3">
+                <div class="mt-auto" aria-hidden="true"></div>
 
-            <div class="h-3 sm:h-4" aria-hidden="true"></div>
+                <MessageBubble
+                    v-for="message in messages"
+                    :key="message.id"
+                    :message="message"
+                    @retry="(messageId, content) => emit('retry', messageId, content)"
+                />
+
+                <div class="h-3 shrink-0 sm:h-4" aria-hidden="true"></div>
+            </div>
         </div>
     </section>
 </template>

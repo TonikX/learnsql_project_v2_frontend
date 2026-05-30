@@ -187,7 +187,7 @@ onBeforeUnmount(() => {
                     </div>
 
                     <AuthFieldRow label="Логин" db-type="VARCHAR">
-                        <AuthTextInput v-model="login" name="username" autocomplete="username" placeholder="Введите логин" />
+                        <AuthTextInput v-model="login" name="username" autocomplete="username" />
                     </AuthFieldRow>
 
                     <AuthFieldRow label="Пароль" db-type="TEXT">

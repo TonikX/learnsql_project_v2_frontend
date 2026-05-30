@@ -66,15 +66,36 @@ function getLoginErrorDetails(error: unknown): { status: LoginErrorStatus; messa
     return { status: 'unknown', message: 'Произошла ошибка авторизации' }
 }
 
+function stripRegisterFieldPrefix(message: string): string {
+    const firstMessage = message.split(';')[0] ?? ''
+    return firstMessage.replace(/^(username|email|password|group_number|tel|first_name|last_name):\s*/i, '').trim()
+}
+
 function getRegisterValidationMessage(error: unknown): string {
     const message = extractApiErrorMessage(error, 'Проверьте данные регистрации')
     const normalizedMessage = message.toLowerCase()
+    const messageWithoutField = stripRegisterFieldPrefix(message)
 
-    if (normalizedMessage.includes('username') && (normalizedMessage.includes('already exists') || normalizedMessage.includes('unique'))) {
+    if (normalizedMessage.includes('username') && (
+        normalizedMessage.includes('already exists') ||
+        normalizedMessage.includes('unique') ||
+        normalizedMessage.includes('уже существует')
+    )) {
         return 'Пользователь с таким логином уже существует'
     }
 
-    if (normalizedMessage.includes('email') && normalizedMessage.includes('valid')) {
+    if (normalizedMessage.includes('email') && (
+        normalizedMessage.includes('already exists') ||
+        normalizedMessage.includes('unique') ||
+        normalizedMessage.includes('уже существует')
+    )) {
+        return 'Пользователь с такой почтой уже существует'
+    }
+
+    if (normalizedMessage.includes('email') && (
+        normalizedMessage.includes('valid') ||
+        normalizedMessage.includes('коррект')
+    )) {
         return 'Введите корректную почту'
     }
 
@@ -82,14 +103,27 @@ function getRegisterValidationMessage(error: unknown): string {
         return 'Выберите корректную группу'
     }
 
+    if (normalizedMessage.startsWith('username:')) {
+        return messageWithoutField || 'Проверьте логин'
+    }
+
+    if (normalizedMessage.startsWith('email:')) {
+        return messageWithoutField || 'Проверьте почту'
+    }
+
+    if (normalizedMessage.startsWith('password:')) {
+        return messageWithoutField || 'Проверьте пароль'
+    }
+
+    if (normalizedMessage.startsWith('group_number:')) {
+        return messageWithoutField || 'Выберите корректную группу'
+    }
+
+    if (/^(tel|first_name|last_name):/i.test(message)) {
+        return messageWithoutField || 'Проверьте данные регистрации'
+    }
+
     return message
-        .replace(/^username:/i, 'Логин:')
-        .replace(/^email:/i, 'Почта:')
-        .replace(/^password:/i, 'Пароль:')
-        .replace(/^group_number:/i, 'Группа:')
-        .replace(/^tel:/i, 'Телефон:')
-        .replace(/^first_name:/i, 'Имя:')
-        .replace(/^last_name:/i, 'Фамилия:')
 }
 
 function getRegisterErrorMessage(error: unknown): string {
