@@ -11,7 +11,10 @@ defineProps<{
     searchQuery: string
     courseFilter?: string
     courseOptions?: Array<{ value: string; label: string }>
+    universityFilter?: string
+    universityOptions?: Array<{ value: string; label: string }>
     showCourseFilter?: boolean
+    showUniversityFilter?: boolean
     isReady?: boolean
 }>()
 
@@ -20,6 +23,7 @@ const emit = defineEmits<{
     setFilter: [filter: ChatFilter]
     setSearch: [query: string]
     setCourseFilter: [value: string]
+    setUniversityFilter: [value: string]
 }>()
 </script>
 
@@ -43,6 +47,35 @@ const emit = defineEmits<{
                 <option class="bg-chat-panel text-chat-text" value="all">Все курсы</option>
                 <option
                     v-for="option in courseOptions"
+                    :key="option.value"
+                    class="bg-chat-panel text-chat-text"
+                    :value="option.value"
+                >
+                    {{ option.label }}
+                </option>
+                </select>
+                <span class="pointer-events-none absolute right-4 top-1/2 flex -translate-y-1/2 text-chat-text">
+                    <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20" aria-hidden="true">
+                        <path d="M5.25 7.5 10 12.25 14.75 7.5h-9.5Z" />
+                    </svg>
+                </span>
+            </span>
+        </label>
+
+        <label
+            v-if="showUniversityFilter && universityOptions?.length"
+            class="mt-4 block rounded-[8px] border border-chat-border bg-chat-surface px-4 py-3 text-[12px] text-chat-text"
+        >
+            <span class="mb-2 block text-chat-text">Университет</span>
+            <span class="relative block">
+                <select
+                    :value="universityFilter ?? 'all'"
+                    class="w-full appearance-none rounded-[6px] border border-chat-border bg-chat-panel py-2 pl-3 pr-12 text-[14px] text-chat-text outline-none focus:border-chat-border focus:ring-0"
+                    @change="emit('setUniversityFilter', ($event.target as HTMLSelectElement).value)"
+                >
+                <option class="bg-chat-panel text-chat-text" value="all">Все университеты</option>
+                <option
+                    v-for="option in universityOptions"
                     :key="option.value"
                     class="bg-chat-panel text-chat-text"
                     :value="option.value"

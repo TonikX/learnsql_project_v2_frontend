@@ -3,7 +3,9 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
     consumeSocialRedirect,
+    getGitHubRedirectUri,
     getSocialAuthErrorMessage,
+    parseGitHubCodeCallback,
     parseYandexAccessToken,
 } from '@/services/socialOAuthService'
 import { useAuthStore } from '@/stores/authStore'
@@ -15,7 +17,19 @@ const authStore = useAuthStore()
 const error = ref('')
 
 onMounted(async () => {
+    const provider = route.params.provider === 'github' ? 'github' : 'yandex'
+
     try {
+        if (route.params.provider === 'github') {
+            const callbackSearch = window.location.search
+            window.history.replaceState(null, document.title, window.location.pathname)
+
+            const code = parseGitHubCodeCallback(callbackSearch)
+            await authStore.socialCodeLogin('github', code, getGitHubRedirectUri())
+            await router.replace(consumeSocialRedirect())
+            return
+        }
+
         if (route.params.provider !== 'yandex') {
             throw new Error('Сервис входа временно недоступен')
         }
@@ -31,7 +45,7 @@ onMounted(async () => {
         await authStore.socialLogin('yandex', providerAccessToken)
         await router.replace(consumeSocialRedirect())
     } catch (unknownError) {
-        error.value = getSocialAuthErrorMessage('yandex', unknownError)
+        error.value = getSocialAuthErrorMessage(provider, unknownError)
     }
 })
 </script>

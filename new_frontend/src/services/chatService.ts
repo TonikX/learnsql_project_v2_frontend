@@ -6,6 +6,7 @@ import type {
     ChatReadResponse,
     ChatRoom,
     ChatRoomsResponse,
+    ChatUser,
     CreateRoomPayload,
     PaginatedResponse,
 } from '@/types/chatTypes'
@@ -67,6 +68,14 @@ export const chatService = {
     async addModerator(roomId: number | string, userId: number | string): Promise<ChatAdministrator[]> {
         const response = await apiClient.post<ChatAdministrator[]>(`/chat/api/rooms/${roomId}/moderators/`, {
             user: userId,
+        })
+        return response.data
+    },
+
+    async getAvailableModerators(roomId: number | string, search = ''): Promise<ChatUser[]> {
+        const normalizedSearch = search.trim()
+        const response = await apiClient.get<ChatUser[]>(`/chat/api/rooms/${roomId}/available-moderators/`, {
+            params: normalizedSearch ? { search: normalizedSearch } : undefined,
         })
         return response.data
     },

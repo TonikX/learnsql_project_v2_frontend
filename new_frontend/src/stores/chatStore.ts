@@ -10,7 +10,7 @@ import {
     formatChatTime,
     getChatUserDisplayName,
 } from '@/utils/chatFormatters'
-import type { ChatFilter, ChatItem, ChatMessage, ChatRoom, ChatUser } from '@/types/chatTypes'
+import type { ChatFilter, ChatItem, ChatMessage, ChatRoom, ChatUniversity, ChatUser } from '@/types/chatTypes'
 
 const accessStorageKey = 'access_token'
 type ChatEndpointMode = 'student' | 'teacher' | 'unknown'
@@ -23,6 +23,10 @@ type PendingOutgoingMessage = {
     roomId: number | string
     content: string
     createdAt: string
+}
+type ChatSelectOption = {
+    value: string
+    label: string
 }
 const outgoingEchoMatchWindowMs = 20_000
 let roomsLoadPromise: Promise<void> | null = null
@@ -149,7 +153,7 @@ function getModeratorErrorMessage(error: unknown) {
 
 async function ensureCurrentUserForChats() {
     const userStore = useUserStore()
-    if (userStore.user?.role) return
+    if (getCurrentUserRole()) return
 
     try {
         const user = await chatService.getCurrentUser()
@@ -265,7 +269,7 @@ function enrichRoomUser(user: ChatUser | null | undefined, lookup: Map<string, C
 }
 
 function getRoomModerators(room: ChatRoom, lookup: Map<string, ChatUser>) {
-    const moderators = room.moderators?.length
+    const moderators = Array.isArray(room.moderators)
         ? room.moderators
         : (room.administrators ?? [])
         .filter((admin) => admin.main_admin === false)
@@ -275,6 +279,7 @@ function getRoomModerators(room: ChatRoom, lookup: Map<string, ChatUser>) {
     return moderators
         .map((user) => enrichRoomUser(user, lookup))
         .filter((user): user is ChatUser => Boolean(user))
+        .map((user) => ({ ...user, role: 'moderator' }))
 }
 
 function isStudentUser(user: ChatUser | null | undefined): user is ChatUser {
@@ -303,7 +308,7 @@ function getFirstStudentMessageAuthor(messages: ChatMessage[], lookup: Map<strin
 
 function getRoomStudent(room: ChatRoom, lookup: Map<string, ChatUser>, messages: ChatMessage[] = []) {
     const explicitStudent = enrichRoomUser(room.student, lookup)
-    if (isStudentUser(explicitStudent)) return explicitStudent
+    if (explicitStudent) return explicitStudent
 
     const creatorStudent = enrichRoomUser(getLookupUserById(lookup, getRoomCreatorId(room)), lookup)
     if (isStudentUser(creatorStudent)) return creatorStudent
@@ -365,12 +370,31 @@ function sortRoomsByActivity(roomList: ChatRoom[]) {
     ))
 }
 
+function getUniversityOption(university: ChatUniversity | null | undefined): ChatSelectOption | null {
+    if (university === null || university === undefined) return null
+
+    if (typeof university === 'string' || typeof university === 'number') {
+        const label = String(university).trim()
+        return label ? { value: label, label } : null
+    }
+
+    const id = university.id
+    const label = university.name?.trim() || String(id)
+
+    return { value: String(id), label }
+}
+
+function getUniversityFilterValue(university: ChatUniversity | null | undefined) {
+    return getUniversityOption(university)?.value ?? null
+}
+
 export const useChatStore = defineStore('chat', () => {
     const rooms = ref<ChatRoom[]>([])
     const activeRoomId = ref<number | string | null>(null)
     const messagesByRoom = ref<Record<string, ChatMessage[]>>({})
     const filter = ref<ChatFilter>('all')
     const courseFilter = ref('all')
+    const universityFilter = ref('all')
     const searchQuery = ref('')
     const unreadRoomsCount = ref(0)
     const isRoomsLoading = ref(false)
@@ -433,6 +457,19 @@ export const useChatStore = defineStore('chat', () => {
             .sort((first, second) => first.label.localeCompare(second.label, 'ru'))
     })
 
+    const universityOptions = computed(() => {
+        const options = new Map<string, string>()
+
+        chats.value.forEach((chat) => {
+            const option = getUniversityOption(chat.room.student?.group?.university)
+            if (!option) return
+            options.set(option.value, option.label)
+        })
+
+        return Array.from(options, ([value, label]) => ({ value, label }))
+            .sort((first, second) => first.label.localeCompare(second.label, 'ru'))
+    })
+
     const filteredChats = computed(() => {
         const query = searchQuery.value.trim().toLowerCase()
 
@@ -446,6 +483,12 @@ export const useChatStore = defineStore('chat', () => {
                 courseFilter.value === 'all' ||
                 String(chat.context.courseId) === courseFilter.value
 
+            const chatUniversityValue = getUniversityFilterValue(chat.room.student?.group?.university)
+            const matchesUniversity =
+                !canUseCourseFilter.value ||
+                universityFilter.value === 'all' ||
+                chatUniversityValue === universityFilter.value
+
             const context = [
                 getChatUserDisplayName(chat.room.teacher),
                 getChatUserDisplayName(chat.room.student),
@@ -456,7 +499,7 @@ export const useChatStore = defineStore('chat', () => {
                 chat.lastMessage,
             ].filter(Boolean).join(' ').toLowerCase()
 
-            return matchesFilter && matchesCourse && (!query || context.includes(query))
+            return matchesFilter && matchesCourse && matchesUniversity && (!query || context.includes(query))
         })
     })
 
@@ -707,7 +750,9 @@ export const useChatStore = defineStore('chat', () => {
             ))
             socketError.value = null
         } catch (error) {
-            socketError.value = getModeratorErrorMessage(error)
+            const message = getModeratorErrorMessage(error)
+            socketError.value = message
+            throw new Error(message)
         }
     }
 
@@ -888,6 +933,10 @@ export const useChatStore = defineStore('chat', () => {
         courseFilter.value = value
     }
 
+    function setUniversityFilter(value: string) {
+        universityFilter.value = value
+    }
+
     function setSearchQuery(value: string) {
         searchQuery.value = value
     }
@@ -898,6 +947,7 @@ export const useChatStore = defineStore('chat', () => {
         messagesByRoom.value = {}
         filter.value = 'all'
         courseFilter.value = 'all'
+        universityFilter.value = 'all'
         searchQuery.value = ''
         unreadRoomsCount.value = 0
         hasLoadedRooms.value = false
@@ -921,6 +971,8 @@ export const useChatStore = defineStore('chat', () => {
         filter,
         courseFilter,
         courseOptions,
+        universityFilter,
+        universityOptions,
         canUseCourseFilter,
         searchQuery,
         unreadRoomsCount,
@@ -947,6 +999,7 @@ export const useChatStore = defineStore('chat', () => {
         clearActiveRoom,
         setFilter,
         setCourseFilter,
+        setUniversityFilter,
         setSearchQuery,
         clearChatState,
     }

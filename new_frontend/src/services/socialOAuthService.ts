@@ -1,7 +1,9 @@
 import type { SocialAuthProvider } from '@/types/userTypes'
 
 const googleScriptSrc = 'https://accounts.google.com/gsi/client'
+const githubAuthorizeUrl = 'https://github.com/login/oauth/authorize'
 const yandexAuthorizeUrl = 'https://oauth.yandex.ru/authorize'
+const githubStateKey = 'learnsql_github_oauth_state'
 const yandexStateKey = 'learnsql_yandex_oauth_state'
 const socialRedirectKey = 'learnsql_social_auth_redirect'
 
@@ -12,11 +14,11 @@ const providerErrors: Record<SocialAuthProvider, string> = {
 }
 
 const knownOAuthErrors = new Set([
+    'Не удалось получить код авторизации GitHub',
     'Сервис входа временно недоступен',
     'Не удалось получить токен провайдера',
     'Backend ожидает access_token провайдера, но текущий OAuth-flow вернул code',
     'Не удалось подтвердить OAuth-сессию',
-    'Вход через GitHub пока недоступен',
 ])
 
 function isSafeLocalPath(path: string | null): path is string {
@@ -142,6 +144,29 @@ export function startYandexAccessTokenFlow() {
     window.location.href = `${yandexAuthorizeUrl}?${params.toString()}`
 }
 
+export function getGitHubRedirectUri() {
+    return `${window.location.origin}/auth/callback/github`
+}
+
+export function startGitHubCodeFlow() {
+    const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID
+    if (!clientId) {
+        throw new Error('Сервис входа временно недоступен')
+    }
+
+    const state = randomState()
+    window.sessionStorage.setItem(githubStateKey, state)
+
+    const params = new URLSearchParams({
+        client_id: clientId,
+        redirect_uri: getGitHubRedirectUri(),
+        scope: 'read:user user:email',
+        state,
+    })
+
+    window.location.href = `${githubAuthorizeUrl}?${params.toString()}`
+}
+
 export function parseYandexAccessToken(hash: string) {
     const params = new URLSearchParams(hash.replace(/^#/, ''))
     const accessToken = params.get('access_token')
@@ -165,6 +190,21 @@ export function parseYandexAccessToken(hash: string) {
     return accessToken
 }
 
-export function getGitHubAccessToken() {
-    throw new Error('Вход через GitHub пока недоступен')
+export function parseGitHubCodeCallback(search: string) {
+    const params = new URLSearchParams(search)
+    const code = params.get('code')
+    const error = params.get('error')
+    const state = params.get('state')
+    const expectedState = window.sessionStorage.getItem(githubStateKey)
+    window.sessionStorage.removeItem(githubStateKey)
+
+    if (error || !code) {
+        throw new Error('Не удалось получить код авторизации GitHub')
+    }
+
+    if (!state || state !== expectedState) {
+        throw new Error('Не удалось подтвердить OAuth-сессию')
+    }
+
+    return code
 }

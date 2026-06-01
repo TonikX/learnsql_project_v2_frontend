@@ -2,10 +2,12 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
+import ChatAddModeratorModal from '@/components/chats/ChatAddModeratorModal.vue'
 import ChatPanel from '@/components/chats/ChatPanel.vue'
 import ChatSidebar from '@/components/chats/ChatSidebar.vue'
 import AppLoader from '@/components/ui/AppLoader.vue'
 import { useChatStore } from '@/stores/chatStore'
+import type { ChatUser } from '@/types/chatTypes'
 
 const route = useRoute()
 const router = useRouter()
@@ -25,10 +27,15 @@ const {
     isLoading,
     roomsError,
     searchQuery,
+    universityFilter,
+    universityOptions,
 } = storeToRefs(chatStore)
 
 const isMobileChatOpen = ref(false)
 const isSyncingRoomFromQuery = ref(false)
+const isAddModeratorModalOpen = ref(false)
+const isAddingModerator = ref(false)
+const addModeratorError = ref('')
 
 const chatLayoutGridClass = 'lg:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[380px_minmax(0,1fr)] 2xl:grid-cols-[420px_minmax(0,1fr)]'
 const chatSidebarResponsiveClass = 'w-full max-w-[460px] md:max-w-[620px] lg:max-w-none'
@@ -96,12 +103,34 @@ async function handleBackToList() {
     await setRoomQuery(null)
 }
 
-async function handleAddModerator() {
-    const userId = window.prompt('Введите ID пользователя, которого нужно добавить модератором')
-    const normalizedUserId = userId?.trim()
-    if (!normalizedUserId) return
+function handleAddModerator() {
+    addModeratorError.value = ''
+    isAddModeratorModalOpen.value = true
+}
 
-    await chatStore.addModeratorToActiveRoom(normalizedUserId)
+function closeAddModeratorModal() {
+    if (isAddingModerator.value) return
+    isAddModeratorModalOpen.value = false
+    addModeratorError.value = ''
+}
+
+async function handleSelectModerator(user: ChatUser) {
+    if (isAddingModerator.value) return
+
+    isAddingModerator.value = true
+    addModeratorError.value = ''
+
+    try {
+        await chatStore.addModeratorToActiveRoom(user.id)
+        await chatStore.loadRooms({ silent: true, silentError: true })
+        isAddModeratorModalOpen.value = false
+    } catch (unknownError) {
+        addModeratorError.value = error.value ||
+            (unknownError instanceof Error ? unknownError.message : '') ||
+            'Не удалось добавить модератора'
+    } finally {
+        isAddingModerator.value = false
+    }
 }
 
 onMounted(async () => {
@@ -154,10 +183,14 @@ onBeforeUnmount(() => {
                     :is-ready="hasLoadedRooms"
                     :search-query="searchQuery"
                     :show-course-filter="canUseCourseFilter"
+                    :show-university-filter="canUseCourseFilter"
+                    :university-filter="universityFilter"
+                    :university-options="universityOptions"
                     @select="handleSelectChat"
                     @set-course-filter="chatStore.setCourseFilter"
                     @set-filter="chatStore.setFilter"
                     @set-search="chatStore.setSearchQuery"
+                    @set-university-filter="chatStore.setUniversityFilter"
                 />
                 <ChatPanel
                     :class="isMobileChatOpen ? 'flex' : 'hidden lg:flex'"
@@ -172,6 +205,15 @@ onBeforeUnmount(() => {
                     @send="chatStore.sendMessage"
                 />
             </div>
+
+            <ChatAddModeratorModal
+                v-if="isAddModeratorModalOpen && activeChat"
+                :add-error="addModeratorError"
+                :is-adding="isAddingModerator"
+                :room-id="activeChat.id"
+                @close="closeAddModeratorModal"
+                @select="handleSelectModerator"
+            />
         </div>
     </div>
 </template>

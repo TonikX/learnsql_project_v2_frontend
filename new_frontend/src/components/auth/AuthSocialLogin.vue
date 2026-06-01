@@ -23,7 +23,6 @@ const providers: Array<{
         ariaLabel: 'Войти через GitHub',
         icon: 'github',
         value: 'github',
-        title: 'Вход через GitHub пока недоступен',
     },
     {
         label: '[Яндекс]',

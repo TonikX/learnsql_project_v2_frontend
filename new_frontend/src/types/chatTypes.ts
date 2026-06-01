@@ -11,6 +11,11 @@ export interface ChatRoomsResponse extends PaginatedResponse<ChatRoom> {
     unread_rooms_count?: number
 }
 
+export type ChatUniversity = {
+    id: number | string
+    name: string
+} | string | number
+
 export interface ChatUser {
     id: number | string
     username: string
@@ -24,8 +29,9 @@ export interface ChatUser {
     role?: string | null
     group?: {
         id?: number | string
+        name?: string | null
         title?: string | null
-        university?: string | number | null
+        university?: ChatUniversity | null
     } | null
     main_admin?: boolean | null
 }
