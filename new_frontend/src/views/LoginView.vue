@@ -8,10 +8,10 @@ import AuthSocialLogin from '@/components/auth/AuthSocialLogin.vue'
 import AuthSubmitArea from '@/components/auth/AuthSubmitArea.vue'
 import AuthTextInput from '@/components/auth/AuthTextInput.vue'
 import {
-    getGitHubAccessToken,
     getGoogleAccessToken,
     getSocialAuthErrorMessage,
     saveSocialRedirect,
+    startGitHubCodeFlow,
     startYandexAccessTokenFlow,
 } from '@/services/socialOAuthService'
 import { useAuthStore } from '@/stores/authStore'
@@ -132,7 +132,9 @@ async function handleSocialLogin(provider: SocialAuthProvider) {
 
     try {
         if (provider === 'github') {
-            getGitHubAccessToken()
+            saveSocialRedirect(getRedirectTo())
+            startGitHubCodeFlow()
+            isRedirectingToProvider = true
             return
         }
 

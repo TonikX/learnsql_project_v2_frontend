@@ -27,6 +27,12 @@ export interface SocialLoginRequest {
     access_token: string
 }
 
+export interface SocialCodeLoginRequest {
+    provider: 'github'
+    code: string
+    redirect_uri: string
+}
+
 export interface SocialLoginResponse extends TokenPair {
     token?: string
     user?: User

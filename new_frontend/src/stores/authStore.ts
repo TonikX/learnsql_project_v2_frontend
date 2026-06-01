@@ -248,6 +248,31 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    async function socialCodeLogin(provider: 'github', code: string, redirectUri: string) {
+        isLoading.value = true
+        clearError()
+
+        try {
+            const response = await authService.socialCodeLogin({
+                provider,
+                code,
+                redirect_uri: redirectUri,
+            })
+            setTokens(response)
+
+            if (response.user) {
+                useUserStore().setUser(response.user)
+            }
+
+            return response
+        } catch (unknownError) {
+            error.value = 'Не удалось войти через GitHub'
+            throw unknownError
+        } finally {
+            isLoading.value = false
+        }
+    }
+
     async function refreshAccessToken() {
         if (!refreshToken.value) return null
 
@@ -278,6 +303,7 @@ export const useAuthStore = defineStore('auth', () => {
         login,
         register,
         socialLogin,
+        socialCodeLogin,
         refreshAccessToken,
         verifyToken,
         logout,
