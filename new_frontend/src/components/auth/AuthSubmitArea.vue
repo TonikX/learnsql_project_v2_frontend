@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import AppLoader from '@/components/ui/AppLoader.vue'
+
 withDefaults(defineProps<{
     action: string
     loading?: boolean
+    loadingText?: string
     error?: string
     linkPrefix: string
     linkText: string
@@ -10,6 +13,7 @@ withDefaults(defineProps<{
     buttonType?: 'button' | 'submit'
 }>(), {
     buttonType: 'button',
+    loadingText: 'Загрузка',
 })
 </script>
 
@@ -21,7 +25,8 @@ withDefaults(defineProps<{
                 class="h-12 w-full rounded-[9px] bg-auth-button-gradient px-8 text-[22px] leading-none text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto sm:min-w-[178px]"
                 :disabled="loading"
             >
-                {{ loading ? '...' : action }}
+                <AppLoader v-if="loading" :text="loadingText" mode="inline" text-class="text-white" />
+                <span v-else>{{ action }}</span>
             </button>
 
             <p class="text-center text-[15px] leading-snug text-app-text sm:text-right sm:text-[18px] sm:leading-none">

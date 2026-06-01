@@ -207,6 +207,7 @@ onBeforeUnmount(() => {
                     action="SELECT"
                     button-type="submit"
                     :loading="authStore.isLoading"
+                    loading-text="Входим"
                     :error="formError"
                     link-prefix="Нет аккаунта?"
                     link-text="регистрация"

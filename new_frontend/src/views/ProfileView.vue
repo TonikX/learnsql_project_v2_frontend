@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import AppContainer from '@/components/layout/AppContainer.vue'
 import AppLoader from '@/components/ui/AppLoader.vue'
@@ -18,6 +19,7 @@ import {
 } from '@/utils/profileFormatters'
 
 const authStore = useAuthStore()
+const router = useRouter()
 const profileStore = useProfileStatisticsStore()
 const courseProgressStore = useProfileCourseProgressStore()
 const { profile, isLoading, error } = storeToRefs(profileStore)
@@ -108,6 +110,7 @@ function logout() {
 }
 
 function editProfile() {
+    router.push('/profile/edit')
 }
 
 onMounted(() => {
@@ -129,7 +132,7 @@ onMounted(() => {
                     </span>
                 </div>
 
-                <div v-if="isLoading" class="rounded-[10px] border border-app-border bg-profile-card-gradient px-6 py-12 text-center">
+                <div v-if="isLoading" class="flex min-h-[320px] items-center justify-center text-center">
                     <AppLoader text="Загрузка профиля" mode="inline" />
                 </div>
 

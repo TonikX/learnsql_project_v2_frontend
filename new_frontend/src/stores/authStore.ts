@@ -4,6 +4,7 @@ import { BadRequestError, ConnectionError, ServerError, extractApiErrorMessage, 
 import { authService } from '@/services/authService'
 import { useUserStore } from '@/stores/userStore'
 import type { AccessTokenResponse, LoginRequest, RegisterRequest, RegisterResponse, SocialAuthProvider, TokenPair } from '@/types/userTypes'
+import { isPhoneBackendErrorMessage, phoneValidationErrorMessage } from '@/utils/phoneValidation'
 
 const accessStorageKey = 'access_token'
 const refreshStorageKey = 'refresh_token'
@@ -75,6 +76,10 @@ function getRegisterValidationMessage(error: unknown): string {
     const message = extractApiErrorMessage(error, 'Проверьте данные регистрации')
     const normalizedMessage = message.toLowerCase()
     const messageWithoutField = stripRegisterFieldPrefix(message)
+
+    if (isPhoneBackendErrorMessage(message)) {
+        return phoneValidationErrorMessage
+    }
 
     if (normalizedMessage.includes('username') && (
         normalizedMessage.includes('already exists') ||
