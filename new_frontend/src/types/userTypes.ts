@@ -60,7 +60,7 @@ export interface RegisterResponse {
 }
 
 export interface User {
-    id?: number
+    id?: number | string
     username: string
     email?: string
     first_name?: string
@@ -68,6 +68,32 @@ export interface User {
     role?: string
     tel?: string
     group_number?: string | number | null
+}
+
+export interface CurrentUserProfile {
+    id: number | string
+    username: string
+    first_name?: string | null
+    last_name?: string | null
+    email?: string | null
+    tel?: string | null
+    role?: string | null
+    group_number?: number | string | null
+    group_number_title?: string | null
+}
+
+export interface UpdateCurrentUserProfilePayload {
+    username?: string
+    first_name?: string
+    last_name?: string
+    email?: string
+    tel?: string
+    group_number?: number | string | null
+}
+
+export interface ChangePasswordPayload {
+    current_password: string
+    new_password: string
 }
 
 export interface StudentGroup {

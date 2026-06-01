@@ -11,6 +11,7 @@ import AppLoader from '@/components/ui/AppLoader.vue'
 import { studentGroupService } from '@/services/studentGroupService'
 import { useAuthStore } from '@/stores/authStore'
 import type { RegisterRequest, StudentGroup, UniversityChoice } from '@/types/userTypes'
+import { isOptionalPhoneValid, phoneValidationErrorMessage } from '@/utils/phoneValidation'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -123,6 +124,11 @@ async function submit() {
 
     if (form.email.trim() && !isEmailValid(form.email)) {
         formError.value = 'Введите корректную почту'
+        return
+    }
+
+    if (!isOptionalPhoneValid(form.tel)) {
+        formError.value = phoneValidationErrorMessage
         return
     }
 
@@ -246,6 +252,7 @@ onMounted(loadUniversities)
                     action="INSERT"
                     button-type="submit"
                     :loading="authStore.isLoading"
+                    loading-text="Создаем аккаунт"
                     :error="formError"
                     link-prefix="Есть аккаунт?"
                     link-text="вход"
