@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { ChatItem } from '@/types/chatTypes'
+import type { ChatItem, ChatUser } from '@/types/chatTypes'
 import { formatChatRole, getChatUserDisplayName, getChatUserInitials } from '@/utils/chatFormatters'
 
 const props = defineProps<{
@@ -10,6 +10,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
     addModerator: []
+    removeModerator: [user: ChatUser]
 }>()
 
 const courseRoute = computed(() => {
@@ -17,6 +18,10 @@ const courseRoute = computed(() => {
 })
 
 const participants = computed(() => props.chat.participants)
+
+function canRemoveParticipant(user: ChatUser) {
+    return props.canManageModerators === true && user.role === 'moderator'
+}
 </script>
 
 <template>
@@ -50,7 +55,7 @@ const participants = computed(() => props.chat.participants)
                     <span
                         v-for="participant in participants"
                         :key="participant.id"
-                        class="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-[7px] border border-chat-border bg-chat-panel px-2 py-1 text-[11px] text-chat-text min-[520px]:max-w-[220px] sm:max-w-[240px] sm:gap-2 sm:px-3 sm:py-1.5 sm:text-[12px] min-[1280px]:max-w-[260px]"
+                        class="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-[7px] border border-chat-border bg-chat-panel px-2 py-1 text-[11px] text-chat-text min-[520px]:max-w-[240px] sm:max-w-[270px] sm:gap-2 sm:px-3 sm:py-1.5 sm:text-[12px] min-[1280px]:max-w-[300px]"
                     >
                         <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-chat-avatar text-[9px] text-chat-on-accent sm:h-7 sm:w-7 sm:text-[10px]">
                             {{ getChatUserInitials(participant) }}
@@ -59,6 +64,16 @@ const participants = computed(() => props.chat.participants)
                             <span class="block truncate">{{ getChatUserDisplayName(participant) }}</span>
                             <span class="block truncate">{{ formatChatRole(participant.role) }}</span>
                         </span>
+                        <button
+                            v-if="canRemoveParticipant(participant)"
+                            type="button"
+                            class="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-[4px] border border-chat-border text-[14px] leading-none text-chat-text transition hover:bg-chat-surface-active disabled:cursor-not-allowed disabled:opacity-60 sm:h-6 sm:w-6"
+                            :aria-label="`Удалить ${getChatUserDisplayName(participant)} из модераторов`"
+                            title="Удалить модератора"
+                            @click.stop="emit('removeModerator', participant)"
+                        >
+                            ×
+                        </button>
                     </span>
                 </div>
 

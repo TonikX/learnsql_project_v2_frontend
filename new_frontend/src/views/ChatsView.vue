@@ -4,6 +4,7 @@ import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import ChatAddModeratorModal from '@/components/chats/ChatAddModeratorModal.vue'
 import ChatPanel from '@/components/chats/ChatPanel.vue'
+import ChatRemoveModeratorModal from '@/components/chats/ChatRemoveModeratorModal.vue'
 import ChatSidebar from '@/components/chats/ChatSidebar.vue'
 import AppLoader from '@/components/ui/AppLoader.vue'
 import { useChatStore } from '@/stores/chatStore'
@@ -36,6 +37,9 @@ const isSyncingRoomFromQuery = ref(false)
 const isAddModeratorModalOpen = ref(false)
 const isAddingModerator = ref(false)
 const addModeratorError = ref('')
+const moderatorToRemove = ref<ChatUser | null>(null)
+const isRemovingModerator = ref(false)
+const removeModeratorError = ref('')
 
 const chatLayoutGridClass = 'lg:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[380px_minmax(0,1fr)] 2xl:grid-cols-[420px_minmax(0,1fr)]'
 const chatSidebarResponsiveClass = 'w-full max-w-[460px] md:max-w-[620px] lg:max-w-none'
@@ -133,6 +137,36 @@ async function handleSelectModerator(user: ChatUser) {
     }
 }
 
+function handleRemoveModerator(user: ChatUser) {
+    if (!canUseCourseFilter.value) return
+    moderatorToRemove.value = user
+    removeModeratorError.value = ''
+}
+
+function closeRemoveModeratorModal() {
+    if (isRemovingModerator.value) return
+    moderatorToRemove.value = null
+    removeModeratorError.value = ''
+}
+
+async function confirmRemoveModerator() {
+    if (!moderatorToRemove.value || isRemovingModerator.value) return
+
+    isRemovingModerator.value = true
+    removeModeratorError.value = ''
+
+    try {
+        await chatStore.removeModeratorFromActiveRoom(moderatorToRemove.value.id)
+        moderatorToRemove.value = null
+    } catch (unknownError) {
+        removeModeratorError.value = error.value ||
+            (unknownError instanceof Error ? unknownError.message : '') ||
+            'Не удалось удалить модератора'
+    } finally {
+        isRemovingModerator.value = false
+    }
+}
+
 onMounted(async () => {
     if (!chatStore.hasLoadedRooms) {
         await chatStore.loadRooms()
@@ -201,6 +235,7 @@ onBeforeUnmount(() => {
                     :is-sending="isSending"
                     @add-moderator="handleAddModerator"
                     @back="handleBackToList"
+                    @remove-moderator="handleRemoveModerator"
                     @retry="chatStore.retryFailedMessage"
                     @send="chatStore.sendMessage"
                 />
@@ -213,6 +248,15 @@ onBeforeUnmount(() => {
                 :room-id="activeChat.id"
                 @close="closeAddModeratorModal"
                 @select="handleSelectModerator"
+            />
+
+            <ChatRemoveModeratorModal
+                v-if="moderatorToRemove"
+                :error="removeModeratorError"
+                :is-removing="isRemovingModerator"
+                :moderator="moderatorToRemove"
+                @close="closeRemoveModeratorModal"
+                @confirm="confirmRemoveModerator"
             />
         </div>
     </div>

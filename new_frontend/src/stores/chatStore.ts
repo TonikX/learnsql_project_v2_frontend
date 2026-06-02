@@ -151,6 +151,34 @@ function getModeratorErrorMessage(error: unknown) {
     return getChatRequestErrorMessage(error, 'Не удалось добавить модератора')
 }
 
+function getRemoveModeratorErrorMessage(error: unknown) {
+    const status = getApiErrorStatus(error)
+    const message = extractApiErrorMessage(error, 'Не удалось удалить модератора')
+    const normalized = message.toLowerCase()
+
+    if (
+        normalized.includes('main admin') ||
+        normalized.includes('main administrator') ||
+        normalized.includes('main_admin') ||
+        normalized.includes('главн')
+    ) {
+        return 'Главного администратора нельзя удалить из модераторов'
+    }
+    if (
+        status === 403 ||
+        normalized.includes('permission to manage moderators') ||
+        normalized.includes('forbidden') ||
+        normalized.includes('not allowed')
+    ) {
+        return 'Нет прав на удаление модератора'
+    }
+    if (status === 404 || normalized.includes('not found')) {
+        return 'Чат или модератор не найден'
+    }
+
+    return 'Не удалось удалить модератора'
+}
+
 async function ensureCurrentUserForChats() {
     const userStore = useUserStore()
     if (getCurrentUserRole()) return
@@ -756,6 +784,23 @@ export const useChatStore = defineStore('chat', () => {
         }
     }
 
+    async function removeModeratorFromActiveRoom(userId: number | string) {
+        const roomId = activeRoomId.value
+        if (roomId === null) {
+            throw new Error('Чат не выбран')
+        }
+
+        try {
+            await chatService.deleteModerator(roomId, userId)
+            socketError.value = null
+            await loadRooms({ silent: true, silentError: true })
+        } catch (error) {
+            const message = getRemoveModeratorErrorMessage(error)
+            socketError.value = message
+            throw new Error(message)
+        }
+    }
+
     async function connectActiveRoomSocket(roomId: number | string | null = activeRoomId.value) {
         if (!isActiveRoom(roomId)) return
         await socket.connect(roomId)
@@ -994,6 +1039,7 @@ export const useChatStore = defineStore('chat', () => {
         sendMessage,
         retryFailedMessage,
         addModeratorToActiveRoom,
+        removeModeratorFromActiveRoom,
         connectActiveRoomSocket,
         disconnectSocket,
         clearActiveRoom,
