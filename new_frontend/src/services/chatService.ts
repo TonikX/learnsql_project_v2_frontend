@@ -72,6 +72,13 @@ export const chatService = {
         return response.data
     },
 
+    async deleteModerator(roomId: number | string, userId: number | string): Promise<ChatAdministrator[]> {
+        const response = await apiClient.delete<ChatAdministrator[]>(
+            `/chat/api/rooms/${roomId}/moderators/${userId}/`,
+        )
+        return response.data
+    },
+
     async getAvailableModerators(roomId: number | string, search = ''): Promise<ChatUser[]> {
         const normalizedSearch = search.trim()
         const response = await apiClient.get<ChatUser[]>(`/chat/api/rooms/${roomId}/available-moderators/`, {

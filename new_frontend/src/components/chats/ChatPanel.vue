@@ -2,7 +2,7 @@
 import ChatCourseHeader from '@/components/chats/ChatCourseHeader.vue'
 import MessageComposer from '@/components/chats/MessageComposer.vue'
 import MessageList from '@/components/chats/MessageList.vue'
-import type { ChatItem } from '@/types/chatTypes'
+import type { ChatItem, ChatUser } from '@/types/chatTypes'
 
 const chatPanelHeightClass = 'h-[calc(100dvh-3.75rem)] min-h-[460px] sm:h-[calc(100dvh-4.5rem)] sm:min-h-[520px] lg:h-[calc(100vh-5rem)] lg:min-h-[480px] lg:max-h-none xl:h-[calc(100vh-10rem)] xl:min-h-[560px] 2xl:min-h-[640px] 2xl:max-h-[900px]'
 
@@ -19,6 +19,7 @@ const emit = defineEmits<{
     send: [content: string]
     retry: [messageId: number | string, content: string]
     addModerator: []
+    removeModerator: [user: ChatUser]
 }>()
 </script>
 
@@ -42,6 +43,7 @@ const emit = defineEmits<{
                 :can-manage-moderators="canManageModerators"
                 :chat="chat"
                 @add-moderator="emit('addModerator')"
+                @remove-moderator="emit('removeModerator', $event)"
             />
             <MessageList
                 :chat-id="chat.id"
