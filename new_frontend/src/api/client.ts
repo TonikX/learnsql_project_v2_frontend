@@ -1,4 +1,4 @@
-import { BadRequestError, NotFoundError, ServerError, ConnectionError } from '@/errors/network'
+import { BadRequestError, ConnectionError, NotFoundError, ServerError, extractApiErrorMessage } from '@/errors/network'
 import axios, { AxiosError, type AxiosInstance, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
 import router from '@/router'
 
@@ -16,6 +16,7 @@ const publicEndpoints = new Set([
     '/api/token/verify/',
     '/api/register/',
     '/api/social_auth_v2/token/',
+    '/api/social_auth_v2/code/',
     '/api/student-groups/',
     '/api/student-groups/get_choise_values/',
 ])
@@ -118,8 +119,9 @@ apiClient.interceptors.response.use(
             error.code === 'ERR_NETWORK' ||
             error.message === 'Network Error'
 
-        if (isNetworkError) 
-            return Promise.reject(new ConnectionError(`Connection lost: ${error.request}`))
+        if (isNetworkError) {
+            return Promise.reject(new ConnectionError('Сервис временно недоступен. Попробуйте позже'))
+        }
 
         const originalRequest = error.config as RetriableRequestConfig | undefined
         const shouldRefresh =
@@ -141,15 +143,15 @@ apiClient.interceptors.response.use(
             }
         }
 
-        const response = error.response?.data
+        const responseMessage = extractApiErrorMessage(error, 'Не удалось выполнить запрос')
 
         switch (error.response?.status) {
         case 400:
-            return Promise.reject(new BadRequestError(`Bad request: ${response}`)) 
+            return Promise.reject(new BadRequestError(responseMessage))
         case 404:
-            return Promise.reject(new NotFoundError(`Resourse not found: ${response}`))
+            return Promise.reject(new NotFoundError(responseMessage))
         case 500:
-            return Promise.reject(new ServerError(`Server error: ${response}`))
+            return Promise.reject(new ServerError(responseMessage))
         default:
             return Promise.reject(error)
         }

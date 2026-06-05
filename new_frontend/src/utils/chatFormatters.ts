@@ -1,27 +1,46 @@
-import type { ChatRoom, ChatTaskDetail, ChatUser } from '@/types/chatTypes'
+import type { ChatRoom, ChatUser } from '@/types/chatTypes'
 
 export function getChatUserDisplayName(user: ChatUser | null | undefined): string {
-    if (!user) return 'Преподаватель'
+    if (!user) return 'Участник'
 
-    const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim()
-    return fullName || user.username
+    const directFullName = (user.full_name ?? user.fullName ?? user.name)?.trim()
+    if (directFullName) return directFullName
+
+    const fullName = [user.first_name ?? user.firstName, user.last_name ?? user.lastName]
+        .map((namePart) => namePart?.trim())
+        .filter(Boolean)
+        .join(' ')
+
+    return fullName || user.username.trim() || 'Участник'
 }
 
 export function getChatUserInitials(user: ChatUser | null | undefined): string {
     if (!user) return '??'
 
-    const firstNameInitial = user.first_name?.[0] ?? ''
-    const lastNameInitial = user.last_name?.[0] ?? ''
+    const displayName = getChatUserDisplayName(user)
+    if (displayName && displayName !== user.username) {
+        return displayName
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0])
+            .join('')
+            .toUpperCase()
+    }
+
+    const firstNameInitial = (user.first_name ?? user.firstName)?.[0] ?? ''
+    const lastNameInitial = (user.last_name ?? user.lastName)?.[0] ?? ''
     const initials = `${firstNameInitial}${lastNameInitial}`.trim()
 
     return (initials || user.username.slice(0, 2) || '??').toUpperCase()
 }
 
-export function formatChatRole(role?: string): string {
+export function formatChatRole(role?: string | null): string {
     if (role === 'teacher') return 'Преподаватель'
     if (role === 'student') return 'Студент'
+    if (role === 'moderator') return 'Модератор'
     if (role === 'admin' || role === 'staff') return 'Администратор'
-    return role || 'Преподаватель'
+    return role || 'Участник'
 }
 
 export function formatChatTime(value: string | null | undefined): string {
@@ -47,6 +66,30 @@ export function formatChatTime(value: string | null | undefined): string {
     }).format(date)
 }
 
+export function formatChatMessageTime(value: string | null | undefined): string {
+    if (!value) return ''
+
+    const date = new Date(value)
+    if (Number.isNaN(date.getTime())) return value
+
+    const now = new Date()
+    const sameDay = date.toDateString() === now.toDateString()
+    const time = new Intl.DateTimeFormat('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+    }).format(date)
+
+    if (sameDay) return time
+
+    const day = new Intl.DateTimeFormat('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit',
+    }).format(date)
+
+    return `${day}, ${time}`
+}
+
 export function formatChatPreview(content?: string | null): string {
     if (!content) return ''
 
@@ -57,17 +100,6 @@ export function formatChatPreview(content?: string | null): string {
         .trim()
 }
 
-export function formatTaskTitle(task: ChatTaskDetail | null): string {
-    if (!task) return 'Обсуждение курса'
-    if (task.number) return `Задача #${task.number}`
-    return task.title || `Задача #${task.id}`
-}
-
 export function buildChatTitle(room: ChatRoom): string {
-    const courseTitle = room.course?.title
-    const taskTitle = formatTaskTitle(room.task_detail)
-
-    if (courseTitle && room.task_detail) return `${courseTitle} / ${taskTitle}`
-    if (courseTitle) return courseTitle
-    return room.name
+    return room.course?.title || room.name
 }

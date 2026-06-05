@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import AppLoader from '@/components/ui/AppLoader.vue'
 import type { CourseProgressCard } from '@/types/profileCourseProgressTypes'
 
-defineProps<{
+const props = defineProps<{
     items: CourseProgressCard[]
     isLoading: boolean
     error: string | null
@@ -11,6 +14,19 @@ defineProps<{
 function getProgressWidth(item: CourseProgressCard) {
     return `${Math.max(0, Math.min(100, item.completionPercent))}%`
 }
+
+function getCourseRoute(item: CourseProgressCard) {
+    if (item.courseId === null || item.courseId === undefined || String(item.courseId) === '') {
+        return null
+    }
+
+    return `/courses/${String(item.courseId)}/`
+}
+
+const itemsWithRoute = computed(() => props.items.map((item) => ({
+    ...item,
+    route: getCourseRoute(item),
+})))
 </script>
 
 <template>
@@ -20,8 +36,8 @@ function getProgressWidth(item: CourseProgressCard) {
             Курсы_и_прогресс
         </h2>
 
-        <p v-if="isLoading" class="mt-6 text-[15px] text-app-text">
-            Загружаем прогресс курсов...
+        <p v-if="isLoading" class="mt-6 text-[15px]">
+            <AppLoader text="Загрузка прогресса" mode="inline" />
         </p>
 
         <p v-else-if="error" class="mt-6 text-[15px] text-danger">
@@ -33,11 +49,16 @@ function getProgressWidth(item: CourseProgressCard) {
                 Не удалось загрузить прогресс по части курсов.
             </p>
 
-            <div v-if="items.length" class="space-y-5">
-                <article
-                    v-for="item in items"
+            <div v-if="itemsWithRoute.length" class="space-y-5">
+                <component
+                    :is="item.route ? RouterLink : 'article'"
+                    v-for="item in itemsWithRoute"
                     :key="item.courseId"
-                    class="border-t border-app-border bg-transparent py-4"
+                    :to="item.route ?? undefined"
+                    class="block border-t border-app-border bg-transparent py-4"
+                    :class="item.route
+                        ? 'transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-action focus-visible:ring-offset-2 focus-visible:ring-offset-bg'
+                        : ''"
                 >
                     <div class="flex items-start justify-between gap-4 text-[14px] sm:text-[16px]">
                         <h3 class="min-w-0 break-words text-app-text">
@@ -63,7 +84,7 @@ function getProgressWidth(item: CourseProgressCard) {
                             :style="{ width: getProgressWidth(item) }"
                         />
                     </div>
-                </article>
+                </component>
             </div>
 
             <p v-else class="text-[15px] text-app-text">

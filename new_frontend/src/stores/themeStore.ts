@@ -3,7 +3,6 @@ import { defineStore } from 'pinia'
 import { isTheme, type ResolvedTheme, type ThemeMode } from '@/types/theme'
 
 const storageKey = 'learnsqlThemeMode'
-const legacyStorageKey = 'THEME'
 
 export const useThemeStore = defineStore('theme', () => {
     const mode = ref<ThemeMode>('system')
@@ -24,13 +23,6 @@ export const useThemeStore = defineStore('theme', () => {
         const savedMode = window.localStorage.getItem(storageKey)
         if (isTheme(savedMode)) return savedMode
 
-        const legacyMode = window.localStorage.getItem(legacyStorageKey)
-        if (isTheme(legacyMode)) {
-            window.localStorage.setItem(storageKey, legacyMode)
-            window.localStorage.removeItem(legacyStorageKey)
-            return legacyMode
-        }
-
         return 'system'
     }
 
@@ -38,7 +30,6 @@ export const useThemeStore = defineStore('theme', () => {
         if (typeof window === 'undefined') return
 
         window.localStorage.setItem(storageKey, value)
-        window.localStorage.removeItem(legacyStorageKey)
     }
 
     function applyTheme() {

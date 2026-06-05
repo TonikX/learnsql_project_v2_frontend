@@ -20,7 +20,7 @@ const authStore = useAuthStore()
 const { isAuth } = storeToRefs(authStore)
 
 const startLearningRoute = computed(() => {
-    return isAuth.value ? '/courses/all' : '/register'
+    return isAuth.value ? '/courses/my' : '/register'
 })
 
 const startLearningText = computed(() => {
@@ -62,22 +62,22 @@ function getStepIndicatorClass(step: LearningStep) {
     <div class="min-h-screen bg-page font-mono text-app-text transition-colors duration-200">
         <main>
             <section class="mx-auto w-full max-w-[1635px] px-4 pt-8 sm:px-5 sm:pt-[46px]">
-                <div class="overflow-hidden rounded-[9px] border-2 border-app-border bg-panel-gradient xl:min-h-[847px]">
-                    <div class="border-b-2 border-app-border bg-panel-gradient px-4 py-4 text-[18px] leading-tight text-app-text sm:px-5 sm:py-[22px] sm:text-[32px]">
+                <div class="overflow-hidden rounded-[9px] border-2 border-app-border bg-panel-gradient xl:min-h-[640px]">
+                    <div class="border-b-2 border-app-border bg-panel-gradient px-4 py-3 text-[16px] leading-tight text-app-text sm:px-5 sm:py-4 sm:text-[24px] xl:text-[26px]">
                         &gt; SELECT * FROM learnsql_courses;
                     </div>
 
-                    <div class="grid gap-10 px-4 py-8 md:px-8 lg:grid-cols-2 xl:grid-cols-[780px_1fr] xl:gap-[120px] xl:px-[38px] xl:pb-[73px] xl:pt-[79px]">
-                        <div class="flex flex-col justify-center">
+                    <div class="grid items-start gap-10 px-4 py-8 md:px-8 xl:grid-cols-[minmax(0,650px)_minmax(620px,1fr)] xl:gap-[56px] xl:px-[38px] xl:py-9">
+                        <div class="flex flex-col justify-start xl:self-stretch">
                             <h1 class="max-w-[680px] text-[34px] font-medium leading-[1.18] text-app-text sm:text-[42px] xl:text-[52px]">
                                 Изучайте SQL через<br />практику
                             </h1>
 
-                            <p class="mt-8 max-w-[660px] text-[16px] leading-[1.25] text-app-text sm:text-[18px] xl:mt-[67px] xl:text-[21px] xl:leading-[1.2]">
+                            <p class="mt-8 max-w-[640px] text-[16px] leading-[1.25] text-app-text sm:text-[18px] xl:mt-8 xl:text-[20px] xl:leading-[1.25]">
                                 Решайте реальные задачи, получайте обратную связь и отслеживайте свой прогресс на онлайн платформе по изучению SQL от преподавателей ИТМО
                             </p>
 
-                            <div class="mt-7 flex flex-wrap gap-3 sm:gap-5 xl:mt-[46px]">
+                            <div class="mt-7 flex flex-wrap gap-3 sm:gap-5 xl:mt-8">
                                 <RouterLink
                                     :to="startLearningRoute"
                                     class="inline-flex h-11 w-full items-center justify-center gap-3 rounded-[8px] bg-primary-gradient text-[14px] text-white shadow-sm transition hover:opacity-90 sm:w-[240px] xl:h-[54px] xl:text-[16px]"
@@ -87,7 +87,7 @@ function getStepIndicatorClass(step: LearningStep) {
                                 </RouterLink>
 
                                 <RouterLink
-                                    to="/courses"
+                                    to="/courses/all"
                                     class="inline-flex h-11 w-full items-center justify-center gap-3 rounded-[8px] border-2 border-app-border bg-surface-contrast text-[14px] text-app-text transition hover:bg-panel sm:w-[240px] xl:h-[54px] xl:text-[16px]"
                                 >
                                     <AppIcon name="book" :size="24" />
@@ -95,17 +95,19 @@ function getStepIndicatorClass(step: LearningStep) {
                                 </RouterLink>
                             </div>
 
-                            <div class="mt-10 grid max-w-[805px] grid-cols-2 items-center gap-y-6 rounded-[19px] border-2 border-app-border bg-card-surface-gradient px-5 py-7 sm:grid-cols-4 xl:mt-[77px] xl:h-[150px] xl:px-[48px] xl:py-0">
-                                <div
-                                    v-for="(stat, index) in landingStats"
-                                    :key="stat.label"
-                                    :class="[
-                                        'px-4 text-center xl:px-9',
-                                        index !== landingStats.length - 1 ? 'sm:border-r-2 sm:border-app-border' : '',
+                            <div class="mt-8 w-full xl:mt-0 xl:flex xl:flex-1 xl:items-center">
+                                <div class="grid w-full max-w-[650px] grid-cols-2 items-center gap-y-6 rounded-[19px] border-2 border-app-border bg-card-surface-gradient px-5 py-7 sm:grid-cols-4 xl:grid-cols-2 xl:gap-y-7 xl:px-7 xl:py-8 2xl:grid-cols-4 2xl:px-8 2xl:py-9">
+                                    <div
+                                        v-for="(stat, index) in landingStats"
+                                        :key="stat.label"
+                                        :class="[
+                                        'flex min-h-[68px] flex-col items-center justify-start px-3 text-center sm:px-4 xl:px-6 2xl:px-6',
+                                        index !== landingStats.length - 1 ? 'sm:border-r-2 sm:border-app-border xl:border-r-0 2xl:border-r-2' : '',
                                     ]"
                                 >
-                                    <div class="text-[24px] font-bold leading-none text-app-text">{{ stat.value }}</div>
-                                    <div class="mt-2 text-[12px] leading-none text-app-text">{{ stat.label }}</div>
+                                        <div class="flex h-[32px] items-center justify-center text-[26px] font-medium leading-none text-app-text xl:text-[28px] 2xl:text-[30px]">{{ stat.value }}</div>
+                                        <div class="mt-2.5 flex min-h-[28px] items-start justify-center text-[12px] leading-tight text-app-text xl:text-[12px] 2xl:text-[13px]">{{ stat.label }}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -116,10 +118,10 @@ function getStepIndicatorClass(step: LearningStep) {
                                 <span>[ v1 ]</span>
                             </div>
 
-                            <div class="grid gap-4 p-4 sm:grid-cols-[minmax(0,356px)_minmax(150px,178px)] sm:justify-between xl:gap-[20px] xl:p-[24px]">
+                            <div class="grid gap-4 p-4 md:grid-cols-[minmax(0,1.65fr)_minmax(170px,0.85fr)] xl:gap-[20px] xl:p-[24px]">
                                 <div class="rounded-[13px] border-2 border-app-border bg-inner-panel-gradient">
-                                    <div class="border-b-2 border-app-border px-[24px] py-[17px] text-[12px] text-app-text">query.sql</div>
-                                    <div class="space-y-4 px-5 py-6 text-[15px] leading-none sm:text-[17px] xl:space-y-[22px] xl:px-[38px] xl:py-[32px] xl:text-[20px]">
+                                    <div class="border-b-2 border-app-border px-4 py-3 text-[12px] text-app-text sm:px-6 sm:py-4">query.sql</div>
+                                    <div class="space-y-4 px-4 py-5 text-[14px] leading-none sm:px-6 sm:text-[17px] xl:space-y-5 xl:px-8 xl:py-7 xl:text-[19px]">
                                         <p><span class="text-app-text">1</span>&nbsp;&nbsp;SELECT <span class="text-sql-pink">u.name</span>,</p>
                                         <p><span class="text-app-text">2</span>&nbsp;&nbsp;<span class="text-primary-action">COUNT(*)</span> AS orders</p>
                                         <p><span class="text-app-text">3</span>&nbsp;&nbsp;FROM users u</p>
@@ -129,8 +131,8 @@ function getStepIndicatorClass(step: LearningStep) {
                                 </div>
 
                                 <div class="rounded-[13px] border-2 border-app-border bg-inner-panel-gradient">
-                                    <div class="border-b-2 border-app-border px-[24px] py-[17px] text-[12px] text-app-text">result</div>
-                                    <div class="space-y-[14px] p-[24px] text-[12px]">
+                                    <div class="border-b-2 border-app-border px-4 py-3 text-[12px] text-app-text sm:px-6 sm:py-4">result</div>
+                                    <div class="space-y-3 p-4 text-[12px] sm:space-y-[14px] sm:p-6 xl:p-5">
                                         <div class="grid h-[47px] grid-cols-[1fr_auto] items-center rounded-[9px] border border-app-border bg-result-header px-[16px]">
                                             <span>name</span>
                                             <span class="justify-self-end text-right">orders</span>
@@ -151,18 +153,18 @@ function getStepIndicatorClass(step: LearningStep) {
                                 </div>
                             </div>
 
-                            <div class="grid gap-4 px-4 pb-4 sm:grid-cols-[minmax(0,252px)_minmax(0,276px)] sm:justify-between xl:gap-[20px] xl:px-[24px] xl:pb-[24px]">
-                                <div class="rounded-[13px] border-2 border-app-border bg-inner-panel-gradient px-[34px] py-[25px]">
+                            <div class="grid gap-4 px-4 pb-4 md:grid-cols-2 xl:gap-[20px] xl:px-[24px] xl:pb-[24px]">
+                                <div class="rounded-[13px] border-2 border-app-border bg-inner-panel-gradient px-4 py-5 sm:px-6 xl:px-[34px] xl:py-[25px]">
                                     <div class="text-[12px] text-app-text">Схема</div>
-                                    <div class="mx-auto mt-[43px] w-[164px]">
+                                    <div class="mx-auto mt-6 w-[150px] sm:mt-8 sm:w-[164px] xl:mt-8">
                                         <DatabaseSchemaIllustration />
                                     </div>
                                     <p class="mt-[23px] text-center text-[12px] text-app-text">таблицы, поля и связи</p>
                                 </div>
 
-                                <div class="rounded-[13px] border-2 border-app-border bg-inner-panel-gradient px-[35px] py-[25px]">
+                                <div class="rounded-[13px] border-2 border-app-border bg-inner-panel-gradient px-4 py-5 sm:px-6 xl:px-[35px] xl:py-[25px]">
                                     <div class="text-[12px] text-app-text">Прогресс</div>
-                                    <div class="mt-[31px] space-y-[29px] text-[14px]">
+                                    <div class="mt-6 space-y-6 text-[14px] xl:mt-[31px] xl:space-y-[29px]">
                                         <div>
                                             <div class="flex justify-between"><span>SELECT</span><span>65%</span></div>
                                             <div class="mt-[14px] h-[11px] rounded-full bg-progress-track">
@@ -204,8 +206,8 @@ function getStepIndicatorClass(step: LearningStep) {
                             >
                                 <AppIcon :name="feature.icon" :size="23" />
                             </div>
-                            <h3 class="mt-6 text-[16px] font-normal leading-tight text-app-text xl:mt-[34px]">{{ feature.title }}</h3>
-                            <p class="mt-[18px] text-[12px] leading-[1.35] text-app-muted">{{ feature.text }}</p>
+                            <h3 class="mt-6 text-[16px] font-normal leading-tight text-app-text xl:mt-[34px] xl:text-[18px]">{{ feature.title }}</h3>
+                            <p class="mt-[18px] text-[13px] leading-[1.45] text-app-muted xl:text-[14px] xl:leading-[1.5]">{{ feature.text }}</p>
                         </article>
                     </div>
                 </div>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
-import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import AppContainer from '@/components/layout/AppContainer.vue'
+import AppLoader from '@/components/ui/AppLoader.vue'
 import ProfileCoursesProgressPanel from '@/components/profile/ProfileCoursesProgressPanel.vue'
 import ProfileDetailsStats from '@/components/profile/ProfileDetailsStats.vue'
 import ProfileHeaderCard from '@/components/profile/ProfileHeaderCard.vue'
@@ -17,8 +18,8 @@ import {
     formatStreakDays,
 } from '@/utils/profileFormatters'
 
-const router = useRouter()
 const authStore = useAuthStore()
+const router = useRouter()
 const profileStore = useProfileStatisticsStore()
 const courseProgressStore = useProfileCourseProgressStore()
 const { profile, isLoading, error } = storeToRefs(profileStore)
@@ -31,6 +32,7 @@ const {
 
 const personal = computed(() => profile.value?.sections.personal ?? null)
 const themeResults = computed(() => profile.value?.sections.themes ?? null)
+const isStudentProfile = computed(() => profile.value?.student?.role === 'student')
 
 const stats = computed(() => [
     {
@@ -80,12 +82,26 @@ const detailsRightRows = computed(() => [
 async function loadProfile() {
     try {
         await profileStore.loadCurrentProfile()
+        return true
     } catch {
+        return false
     }
 }
 
-async function loadCourseProgress() {
-    await courseProgressStore.loadCourseProgress()
+async function loadProfilePage() {
+    const isProfileLoaded = await loadProfile()
+
+    if (!isProfileLoaded) {
+        courseProgressStore.clearCourseProgress()
+        return
+    }
+
+    if (isStudentProfile.value) {
+        await courseProgressStore.loadCourseProgress()
+        return
+    }
+
+    courseProgressStore.clearCourseProgress()
 }
 
 function logout() {
@@ -94,11 +110,11 @@ function logout() {
 }
 
 function editProfile() {
+    router.push('/profile/edit')
 }
 
 onMounted(() => {
-    loadProfile()
-    loadCourseProgress()
+    loadProfilePage()
 })
 </script>
 
@@ -116,8 +132,8 @@ onMounted(() => {
                     </span>
                 </div>
 
-                <div v-if="isLoading" class="rounded-[10px] border border-app-border bg-profile-card-gradient px-6 py-12 text-center text-app-muted">
-                    Загружаем профиль...
+                <div v-if="isLoading" class="flex min-h-[320px] items-center justify-center text-center">
+                    <AppLoader text="Загрузка профиля" mode="inline" />
                 </div>
 
                 <div v-else-if="error" class="rounded-[10px] border border-app-border bg-profile-card-gradient px-6 py-12 text-center text-danger">
@@ -132,31 +148,33 @@ onMounted(() => {
                         @edit="editProfile"
                     />
 
-                    <div class="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 xl:gap-10">
-                        <ProfileStatCard
-                            v-for="stat in stats"
-                            :key="stat.label"
-                            :icon="stat.icon"
-                            :label="stat.label"
-                            :value="stat.value"
-                            :icon-box-class="stat.iconBoxClass"
-                            :icon-class="stat.iconClass"
+                    <template v-if="isStudentProfile">
+                        <div class="grid grid-cols-2 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-4 xl:gap-10">
+                            <ProfileStatCard
+                                v-for="stat in stats"
+                                :key="stat.label"
+                                :icon="stat.icon"
+                                :label="stat.label"
+                                :value="stat.value"
+                                :icon-box-class="stat.iconBoxClass"
+                                :icon-class="stat.iconClass"
+                            />
+                        </div>
+
+                        <ProfileCoursesProgressPanel
+                            :items="courseProgressItems"
+                            :is-loading="isCourseProgressLoading"
+                            :error="courseProgressError"
+                            :has-partial-error="hasPartialCourseProgressError"
                         />
-                    </div>
 
-                    <ProfileCoursesProgressPanel
-                        :items="courseProgressItems"
-                        :is-loading="isCourseProgressLoading"
-                        :error="courseProgressError"
-                        :has-partial-error="hasPartialCourseProgressError"
-                    />
+                        <ProfileThemeResultsPanel :themes="themeResults" />
 
-                    <ProfileThemeResultsPanel :themes="themeResults" />
-
-                    <ProfileDetailsStats
-                        :left-rows="detailsLeftRows"
-                        :right-rows="detailsRightRows"
-                    />
+                        <ProfileDetailsStats
+                            :left-rows="detailsLeftRows"
+                            :right-rows="detailsRightRows"
+                        />
+                    </template>
                 </div>
             </div>
         </AppContainer>

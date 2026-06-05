@@ -2,9 +2,13 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
+import ChatAddModeratorModal from '@/components/chats/ChatAddModeratorModal.vue'
 import ChatPanel from '@/components/chats/ChatPanel.vue'
+import ChatRemoveModeratorModal from '@/components/chats/ChatRemoveModeratorModal.vue'
 import ChatSidebar from '@/components/chats/ChatSidebar.vue'
+import AppLoader from '@/components/ui/AppLoader.vue'
 import { useChatStore } from '@/stores/chatStore'
+import type { ChatUser } from '@/types/chatTypes'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,16 +16,35 @@ const chatStore = useChatStore()
 const {
     activeChat,
     activeChatId,
+    canUseCourseFilter,
+    courseFilter,
+    courseOptions,
     error,
     filter,
     filteredChats,
+    hasLoadedRooms,
     isMessagesLoading,
+    isSending,
     isLoading,
+    roomsError,
     searchQuery,
+    universityFilter,
+    universityOptions,
 } = storeToRefs(chatStore)
 
 const isMobileChatOpen = ref(false)
 const isSyncingRoomFromQuery = ref(false)
+const isAddModeratorModalOpen = ref(false)
+const isAddingModerator = ref(false)
+const addModeratorError = ref('')
+const moderatorToRemove = ref<ChatUser | null>(null)
+const isRemovingModerator = ref(false)
+const removeModeratorError = ref('')
+
+const chatLayoutGridClass = 'lg:grid-cols-[360px_minmax(0,1fr)] xl:grid-cols-[380px_minmax(0,1fr)] 2xl:grid-cols-[420px_minmax(0,1fr)]'
+const chatSidebarResponsiveClass = 'w-full max-w-[460px] md:max-w-[620px] lg:max-w-none'
+const shouldShowRoomsLoading = computed(() => isLoading.value || (!hasLoadedRooms.value && !roomsError.value))
+const chatPageTitle = computed(() => canUseCourseFilter.value ? 'Чаты со студентами' : 'Чаты с преподавателями')
 
 const routeRoomId = computed(() => {
     const value = route.query.room
@@ -84,8 +107,68 @@ async function handleBackToList() {
     await setRoomQuery(null)
 }
 
+function handleAddModerator() {
+    addModeratorError.value = ''
+    isAddModeratorModalOpen.value = true
+}
+
+function closeAddModeratorModal() {
+    if (isAddingModerator.value) return
+    isAddModeratorModalOpen.value = false
+    addModeratorError.value = ''
+}
+
+async function handleSelectModerator(user: ChatUser) {
+    if (isAddingModerator.value) return
+
+    isAddingModerator.value = true
+    addModeratorError.value = ''
+
+    try {
+        await chatStore.addModeratorToActiveRoom(user.id)
+        await chatStore.loadRooms({ silent: true, silentError: true })
+        isAddModeratorModalOpen.value = false
+    } catch (unknownError) {
+        addModeratorError.value = error.value ||
+            (unknownError instanceof Error ? unknownError.message : '') ||
+            'Не удалось добавить модератора'
+    } finally {
+        isAddingModerator.value = false
+    }
+}
+
+function handleRemoveModerator(user: ChatUser) {
+    if (!canUseCourseFilter.value) return
+    moderatorToRemove.value = user
+    removeModeratorError.value = ''
+}
+
+function closeRemoveModeratorModal() {
+    if (isRemovingModerator.value) return
+    moderatorToRemove.value = null
+    removeModeratorError.value = ''
+}
+
+async function confirmRemoveModerator() {
+    if (!moderatorToRemove.value || isRemovingModerator.value) return
+
+    isRemovingModerator.value = true
+    removeModeratorError.value = ''
+
+    try {
+        await chatStore.removeModeratorFromActiveRoom(moderatorToRemove.value.id)
+        moderatorToRemove.value = null
+    } catch (unknownError) {
+        removeModeratorError.value = error.value ||
+            (unknownError instanceof Error ? unknownError.message : '') ||
+            'Не удалось удалить модератора'
+    } finally {
+        isRemovingModerator.value = false
+    }
+}
+
 onMounted(async () => {
-    if (!chatStore.rooms.length) {
+    if (!chatStore.hasLoadedRooms) {
         await chatStore.loadRooms()
     }
 
@@ -107,44 +190,74 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="min-h-full bg-chat-page py-10 font-mono text-chat-text">
-        <div class="mx-auto w-full max-w-[1780px] px-4 sm:px-8">
-            <header class="mb-8">
+    <div :class="['min-h-full bg-chat-page font-mono text-chat-text', isMobileChatOpen ? 'py-1 sm:py-2 lg:py-3 xl:py-6' : 'py-6 sm:py-10']">
+        <div class="mx-auto w-full max-w-[1880px] px-3 sm:px-8">
+            <header :class="isMobileChatOpen ? 'hidden xl:block xl:mb-6' : 'mb-6 sm:mb-8'">
                 <h1 class="text-[28px] font-semibold leading-tight md:text-[32px]">
-                    Чаты преподавателей
+                    {{ chatPageTitle }}
                 </h1>
-                <p class="mt-3 text-[15px] text-chat-text">
-                    Активные обсуждения по курсам и задачам
-                </p>
             </header>
 
             <p v-if="error" class="mb-4 rounded-[8px] border border-chat-border bg-chat-surface p-4 text-chat-warning">
                 {{ error }}
             </p>
 
-            <p v-if="isLoading" class="rounded-[8px] border border-chat-border bg-chat-surface p-4 text-chat-muted">
-                Загрузка чатов...
-            </p>
+            <div v-if="shouldShowRoomsLoading" class="flex min-h-[220px] items-center justify-center text-center text-[15px] text-chat-text">
+                <AppLoader text="Загрузка чатов" mode="inline" text-class="text-chat-text" />
+            </div>
 
-            <div v-else class="grid gap-8 xl:grid-cols-[520px_minmax(0,1fr)]">
+            <div v-else :class="['grid items-start gap-5 sm:gap-6', chatLayoutGridClass]">
                 <ChatSidebar
-                    :class="isMobileChatOpen ? 'hidden xl:block' : 'block'"
+                    :class="isMobileChatOpen ? `hidden lg:block ${chatSidebarResponsiveClass}` : `block ${chatSidebarResponsiveClass}`"
                     :active-chat-id="activeChatId"
                     :chats="filteredChats"
+                    :course-filter="courseFilter"
+                    :course-options="courseOptions"
                     :filter="filter"
+                    :is-ready="hasLoadedRooms"
                     :search-query="searchQuery"
+                    :show-course-filter="canUseCourseFilter"
+                    :show-university-filter="canUseCourseFilter"
+                    :university-filter="universityFilter"
+                    :university-options="universityOptions"
                     @select="handleSelectChat"
+                    @set-course-filter="chatStore.setCourseFilter"
                     @set-filter="chatStore.setFilter"
                     @set-search="chatStore.setSearchQuery"
+                    @set-university-filter="chatStore.setUniversityFilter"
                 />
                 <ChatPanel
-                    :class="isMobileChatOpen ? 'block' : 'hidden xl:block'"
+                    :class="isMobileChatOpen ? 'flex' : 'hidden lg:flex'"
+                    :can-manage-moderators="canUseCourseFilter"
                     :chat="activeChat"
+                    :has-chats="chatStore.rooms.length > 0"
                     :is-messages-loading="isMessagesLoading"
+                    :is-sending="isSending"
+                    @add-moderator="handleAddModerator"
                     @back="handleBackToList"
+                    @remove-moderator="handleRemoveModerator"
+                    @retry="chatStore.retryFailedMessage"
                     @send="chatStore.sendMessage"
                 />
             </div>
+
+            <ChatAddModeratorModal
+                v-if="isAddModeratorModalOpen && activeChat"
+                :add-error="addModeratorError"
+                :is-adding="isAddingModerator"
+                :room-id="activeChat.id"
+                @close="closeAddModeratorModal"
+                @select="handleSelectModerator"
+            />
+
+            <ChatRemoveModeratorModal
+                v-if="moderatorToRemove"
+                :error="removeModeratorError"
+                :is-removing="isRemovingModerator"
+                :moderator="moderatorToRemove"
+                @close="closeRemoveModeratorModal"
+                @confirm="confirmRemoveModerator"
+            />
         </div>
     </div>
 </template>

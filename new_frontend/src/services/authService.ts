@@ -5,6 +5,7 @@ import type {
     RefreshTokenRequest,
     RegisterRequest,
     RegisterResponse,
+    SocialCodeLoginRequest,
     SocialLoginRequest,
     SocialLoginResponse,
     TokenPair,
@@ -33,6 +34,11 @@ export const authService = {
 
     async socialLogin(payload: SocialLoginRequest): Promise<SocialLoginResponse> {
         const response = await apiClient.post<SocialLoginResponse>('/api/social_auth_v2/token/', payload)
+        return response.data
+    },
+
+    async socialCodeLogin(payload: SocialCodeLoginRequest): Promise<SocialLoginResponse> {
+        const response = await apiClient.post<SocialLoginResponse>('/api/social_auth_v2/code/', payload)
         return response.data
     },
 }

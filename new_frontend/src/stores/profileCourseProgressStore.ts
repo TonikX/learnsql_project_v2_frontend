@@ -76,6 +76,7 @@ export const useProfileCourseProgressStore = defineStore('profileCourseProgress'
 
     function clearCourseProgress() {
         courseProgressItems.value = []
+        isCourseProgressLoading.value = false
         courseProgressError.value = null
         hasPartialCourseProgressError.value = false
     }

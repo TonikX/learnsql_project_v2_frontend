@@ -7,12 +7,42 @@ export interface PaginatedResponse<T> {
     results: T[]
 }
 
+export interface ChatRoomsResponse extends PaginatedResponse<ChatRoom> {
+    unread_rooms_count?: number
+}
+
+export type ChatUniversity = {
+    id: number | string
+    name: string
+} | string | number
+
 export interface ChatUser {
-    id: number
+    id: number | string
     username: string
-    first_name: string
-    last_name: string
-    role: string
+    first_name?: string | null
+    last_name?: string | null
+    firstName?: string | null
+    lastName?: string | null
+    full_name?: string | null
+    fullName?: string | null
+    name?: string | null
+    role?: string | null
+    group?: {
+        id?: number | string
+        name?: string | null
+        title?: string | null
+        university?: ChatUniversity | null
+    } | null
+    main_admin?: boolean | null
+}
+
+export interface ChatAdministrator {
+    id: number | string
+    user: ChatUser
+    main_admin: boolean
+    can_add_user?: boolean
+    can_set_chat?: boolean
+    can_delete_user?: boolean
 }
 
 export interface ChatTheme {
@@ -39,14 +69,23 @@ export interface ChatMessage {
     content: string
     timestamp: string
     isOwn: boolean
+    deliveryStatus?: 'failed'
+    clientTempId?: string
+    createdAt?: string
+    error?: string
 }
 
 export interface ChatRoom {
-    id: number
+    id: number | string
     name: string
-    task_detail: ChatTaskDetail | null
+    task_detail?: ChatTaskDetail | null
+    tasks_detail?: ChatTaskDetail[] | null
     course: ChatCourse | null
     teacher: ChatUser | null
+    student?: ChatUser | null
+    creator?: number | string | ChatUser | null
+    moderators?: ChatUser[] | null
+    administrators?: ChatAdministrator[] | null
     subscribers: ChatUser[]
     last_message: Omit<ChatMessage, 'isOwn'> | null
     last_message_at: string | null
@@ -57,10 +96,7 @@ export interface ChatRoom {
 }
 
 export interface CreateRoomPayload {
-    name: string
-    task?: number | string
-    subscribers?: Array<number | string> | string
-    is_room?: boolean
+    course: number | string
 }
 
 export interface ChatMessageQueryParams {
@@ -75,16 +111,8 @@ export interface ChatReadResponse {
 
 export interface WebSocketIncomingMessage {
     command: 'new_message' | 'messages' | 'error' | string
-    message?: {
-        author: string
-        content: string
-        timestamp: string
-    }
-    messages?: Array<{
-        author: string
-        content: string
-        timestamp: string
-    }>
+    message?: Omit<ChatMessage, 'isOwn'>
+    messages?: Array<Omit<ChatMessage, 'isOwn'>>
     error?: string
 }
 
@@ -93,32 +121,21 @@ export interface WebSocketOutgoingMessage {
     message?: string
 }
 
-export interface ChatTeacher {
-    id: number | string
-    username: string
-    firstName: string
-    lastName: string
-    role: string
-    position?: string
-}
-
 export interface ChatContext {
     courseId?: number | string
     courseTitle?: string
-    taskId?: number | string
-    taskTitle?: string
-    taskNumber?: number | string
-    topicTitle?: string
 }
 
 export interface ChatItem {
     id: number | string
     room: ChatRoom
-    teacher: ChatTeacher
     context: ChatContext
     title: string
     lastMessage: string
+    lastMessageAuthorName?: string | null
+    isLastMessageOwn: boolean
     lastMessageAt: string
     unreadCount: number
+    participants: ChatUser[]
     messages: ChatMessage[]
 }

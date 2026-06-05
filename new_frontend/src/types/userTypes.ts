@@ -27,6 +27,12 @@ export interface SocialLoginRequest {
     access_token: string
 }
 
+export interface SocialCodeLoginRequest {
+    provider: 'github'
+    code: string
+    redirect_uri: string
+}
+
 export interface SocialLoginResponse extends TokenPair {
     token?: string
     user?: User
@@ -34,12 +40,11 @@ export interface SocialLoginResponse extends TokenPair {
 
 export interface RegisterRequest {
     username: string
-    email: string
+    email?: string
     password: string
     first_name?: string
     last_name?: string
     tel?: string
-    role?: string
     group_number?: number | null
 }
 
@@ -55,14 +60,41 @@ export interface RegisterResponse {
 }
 
 export interface User {
-    id?: number
+    id?: number | string
     username: string
-    email?: string
+    email?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    role?: string | null
+    tel?: string | null
+    group_number?: string | number | null
+    group_number_title?: string | null
+}
+
+export interface CurrentUserProfile {
+    id: number | string
+    username: string
+    first_name?: string | null
+    last_name?: string | null
+    email?: string | null
+    tel?: string | null
+    role?: string | null
+    group_number?: number | string | null
+    group_number_title?: string | null
+}
+
+export interface UpdateCurrentUserProfilePayload {
+    username?: string
     first_name?: string
     last_name?: string
-    role?: string
+    email?: string
     tel?: string
-    group_number?: string | number | null
+    group_number?: number | string | null
+}
+
+export interface ChangePasswordPayload {
+    current_password: string
+    new_password: string
 }
 
 export interface StudentGroup {
@@ -77,6 +109,13 @@ export interface StudentGroupQuery {
     period?: string
     university?: string | number
 }
+
+export interface ChoiceValue {
+    id: number
+    name: string
+}
+
+export type UniversityChoice = ChoiceValue
 
 export interface PaginatedResponse<T> {
     count: number

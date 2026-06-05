@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { ThemesStatistics } from '@/types/profileStatisticsTypes'
+import type { ThemeStatisticsItem, ThemesStatistics } from '@/types/profileStatisticsTypes'
 import {
     formatAttemptsCount,
     formatAverageAttempts,
@@ -16,7 +16,27 @@ const props = defineProps<{
 const items = computed(() => props.themes?.items ?? [])
 const summary = computed(() => props.themes?.summary ?? null)
 const themesStarted = computed(() => summary.value?.themes_started ?? items.value.length)
-const shouldShowStrongWeak = computed(() => themesStarted.value >= 2)
+const strongestTheme = computed(() => summary.value?.strongest_theme ?? null)
+const weakestTheme = computed(() => summary.value?.weakest_theme ?? null)
+
+function getThemeKey(theme: ThemeStatisticsItem | null) {
+    if (!theme) return null
+    if (theme.theme_id !== null && theme.theme_id !== undefined && String(theme.theme_id) !== '') {
+        return `id:${String(theme.theme_id)}`
+    }
+
+    const title = theme.theme_title?.trim()
+    return title ? `title:${title}` : null
+}
+
+const shouldShowStrongWeak = computed(() => {
+    if (themesStarted.value <= 1 || !strongestTheme.value || !weakestTheme.value) return false
+
+    const strongestKey = getThemeKey(strongestTheme.value)
+    const weakestKey = getThemeKey(weakestTheme.value)
+
+    return strongestKey !== null && weakestKey !== null && strongestKey !== weakestKey
+})
 </script>
 
 <template>
