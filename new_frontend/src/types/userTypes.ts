@@ -62,12 +62,13 @@ export interface RegisterResponse {
 export interface User {
     id?: number | string
     username: string
-    email?: string
-    first_name?: string
-    last_name?: string
-    role?: string
-    tel?: string
+    email?: string | null
+    first_name?: string | null
+    last_name?: string | null
+    role?: string | null
+    tel?: string | null
     group_number?: string | number | null
+    group_number_title?: string | null
 }
 
 export interface CurrentUserProfile {

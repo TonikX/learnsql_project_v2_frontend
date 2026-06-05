@@ -184,10 +184,7 @@ async function ensureCurrentUserForChats() {
     if (getCurrentUserRole()) return
 
     try {
-        const user = await chatService.getCurrentUser()
-        if (user) {
-            userStore.setUser(user)
-        }
+        await userStore.ensureCurrentUser()
     } catch {
     }
 }

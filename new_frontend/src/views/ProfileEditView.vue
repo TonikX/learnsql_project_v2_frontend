@@ -17,7 +17,6 @@ import type {
     CurrentUserProfile,
     StudentGroup,
     UniversityChoice,
-    User,
 } from '@/types/userTypes'
 import { isOptionalPhoneValid, isPhoneBackendErrorMessage, phoneValidationErrorMessage } from '@/utils/phoneValidation'
 import { formatRole } from '@/utils/profileFormatters'
@@ -337,7 +336,7 @@ async function submitProfile() {
         setFormFromProfile(updatedProfile, true)
         initialSnapshot.value = snapshotFromProfile(updatedProfile)
         initialUniversity.value = form.university
-        userStore.setUser(updatedProfile as User)
+        userStore.setUser(updatedProfile)
         profileStatisticsStore.clearProfile()
         await router.push('/profile')
     } catch (error) {
