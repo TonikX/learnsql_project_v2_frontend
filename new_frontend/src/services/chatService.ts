@@ -10,7 +10,6 @@ import type {
     CreateRoomPayload,
     PaginatedResponse,
 } from '@/types/chatTypes'
-import type { User } from '@/types/userTypes'
 
 function buildQueryParams(params?: ChatMessageQueryParams) {
     return {
@@ -20,15 +19,6 @@ function buildQueryParams(params?: ChatMessageQueryParams) {
 }
 
 export const chatService = {
-    async getCurrentUser(): Promise<User | null> {
-        const response = await apiClient.get<{ student?: User }>('/api/student-profile/', {
-            params: {
-                sections: 'personal',
-            },
-        })
-        return response.data.student ?? null
-    },
-
     async getRooms(): Promise<ChatRoomsResponse> {
         const response = await apiClient.get<ChatRoomsResponse>('/chat/api/rooms/', {
             params: {
