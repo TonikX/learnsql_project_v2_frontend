@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppContainer from '../components/layout/AppContainer.vue'
-import { ref, onUnmounted, computed, onMounted } from 'vue'
+import { ref, onUnmounted, computed, watch, onMounted, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useCoursesStore } from '@/stores/courseStore'
@@ -9,23 +9,33 @@ import { ConnectionError, NotFoundError } from '@/errors/network'
 import BaseError from '@/components/errors/BaseError.vue'
 import AppLoader from '@/components/ui/AppLoader.vue'
 import TaskSideBar from '@/components/courses/TaskSideBar.vue'
+import { useCurrentTaskId } from '@/composables/currentTaskId.ts'
 
 
 const route = useRoute()
 const router = useRouter()
 const courseId = Number(route.params.course_id)
 
+const taskIdData = toRefs(useCurrentTaskId(route))
+const { currentTaskId } = taskIdData
+
 const courseStore = useCoursesStore()
 const { courseLoading } = storeToRefs(courseStore)
 const { loadCurrentCourse, clearCurrentCourse, toggleCourseLoading } = courseStore
 
 const taskStore = useTaskStore()
-const { currentTask, taskLoading } = storeToRefs(taskStore)
-const { getCourseTasks, getCachedTaskId, clearCurrentTask, clearTasksList } = taskStore
+const { taskLoading } = storeToRefs(taskStore)
+const { 
+    getCourseTasks, 
+    clearCurrentTask, 
+    clearTasksList, 
+    toggleTaskLoading, 
+    changeTask, 
+    saveSolution 
+} = taskStore
 
 const sideBarOpen = ref(false)
 const errorMsg = ref('')
-const currentTaskId = computed(() => currentTask.value?.details.id ?? getCachedTaskId(courseId))
 const isNavigationReady = computed(() => !taskLoading.value && currentTaskId.value !== 0)
 
 const toggleSidebar = () => { sideBarOpen.value = !sideBarOpen.value }
@@ -35,6 +45,7 @@ const handleLoadCourse = async (courseId: number) => {
     try {
         await loadCurrentCourse(courseId)
         await getCourseTasks(courseId)
+        await toggleTaskLoading(handleChangeTask, currentTaskId.value)
     } catch (err) {
         if (err instanceof NotFoundError) 
             router.replace({ name: 'not_found' })
@@ -47,8 +58,22 @@ const handleLoadCourse = async (courseId: number) => {
     }
 }
 
-onMounted(async () => await toggleCourseLoading(handleLoadCourse, courseId))
+const handleChangeTask = async (taskId: number) => {
+    const courseId = Number(route.params.course_id)
 
+    if (Number.isNaN(courseId) || Number.isNaN(taskId))
+        return
+
+    saveSolution()
+    await changeTask(courseId, taskId)
+}
+
+watch(
+    () => Number(route.params.task_id),
+    async (taskId: number) => await toggleTaskLoading(handleChangeTask, taskId)
+)
+
+onMounted(async () => await toggleCourseLoading(handleLoadCourse, courseId))
 onUnmounted(() => {
     clearCurrentTask()
     clearTasksList()
@@ -93,6 +118,6 @@ onUnmounted(() => {
     </AppContainer>
 
     <!-- Page body -->
-    <RouterView class="mb-10"/>
+    <RouterView/>
 </template>
 </template>

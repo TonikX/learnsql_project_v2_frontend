@@ -83,7 +83,7 @@ const routes: RouteRecordRaw[] = [
                     {
                         path: 'problem/:task_id',
                         name: 'problem',
-                        component: () => import('@/components/courses/Problem.vue')
+                        component: () => import('@/components/courses/problem/Problem.vue')
                     },
                 ],
                 meta: { hideFooter: true }

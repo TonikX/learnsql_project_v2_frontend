@@ -114,9 +114,15 @@ export default {
           begin: 'var(--editor-begin)',
           end: 'var(--editor-end)',
         },
+        schema: {
+          'bg-begin': 'var(--schema-bg-begin)',
+          'bg-end': 'var(--schema-bg-end)',
+          grid: 'var(--schema-grid)'
+        },
         text: {
           main: 'var(--text-main)',
           neg: 'var(--text-neg)',
+          secondary: 'var(--text-secondary)',
         },
         primary: {
           begin: 'var(--primary-begin)',

@@ -6,8 +6,29 @@
 
 @font-face {
     font-family: 'JetBrains Mono NL';
-    src: url('../fonts/jetbrains-mono-nl-regular.ttf') format('truetype');
+    src: url('../fonts/JetBrainsMonoNL-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'JetBrains Mono NL';
+    src: url('../fonts/JetBrainsMonoNL-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'JetBrains Mono NL';
+    src: url('../fonts/JetBrainsMonoNL-Regular.ttf') format('truetype');
     font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'JetBrains Mono NL';
+    src: url('../fonts/JetBrainsMonoNL-Bold.ttf') format('truetype');
+    font-weight: 700;
     font-style: normal;
 }
 
@@ -17,6 +38,7 @@
     --bg-header: #27272A;
     --text-main: #000000;
     --text-neg: #FFFFFF;
+    --text-secondary: #666666;
     --danger: #D64D4D;
     --success: #08A800;
 
@@ -46,6 +68,14 @@
     --medium: #DDC745;
     --easy: #0CA726;
     --neutral: #777777;
+
+    /* схема */
+    --schema-bg-begin: #F0F0F0;
+    --schema-bg-end: #E5E4E2;
+    --schema-grid: #CBCBCB;
+    --schema-header: #B9D9EB;
+    --schema-stroke: #666666;
+
 
     --color-page: #FFFFFF;
     --color-header: #27272A;
@@ -157,6 +187,7 @@
     --bg-header: #F2F3F4;
     --text-main: #FFFFFF;
     --text-neg: #000000;
+    --text-secondary: #888888;
     --danger: #D64D4D;
     --success: #69FF61;
 
@@ -187,6 +218,13 @@
     --easy: #6FF876;
     --neutral: #FFFFFF;
 
+    /* схема */
+    --schema-bg-begin: #16171B;
+    --schema-bg-end: #28292E;
+    --schema-grid: #28292E;
+    --schema-header: #1E2952;
+    --schema-stroke: #FFFFFF;
+
     --color-page: #27272A;
     --color-header: #F2F3F4;
     --color-header-text: #000000;
@@ -216,8 +254,8 @@
     --color-sql-pink: #D9468B;
     --color-status-success-bg: #EAF6ED;
     --color-status-success-text: #0CA726;
-    --color-status-progress-bg: #EEF3FF;
-    --color-status-progress-text: #318CE7;
+    --color-status-progress-bg: #2e5090;
+    --color-status-progress-text: #F0F8FF;
     --color-theme-menu: #242428;
     --color-theme-menu-border: #5D5E64;
     --color-auth-surface: #16171B;

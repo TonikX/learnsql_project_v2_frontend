@@ -53,9 +53,9 @@ const { isOpen } = toRefs(props)
                 >
                     <div class="flex">
                         <AppIcon name="check-mark" :color="task.status !== '0' ? 'fill-task-easy' : 'fill-transparent'"/>
-                        <p class="pl-1">Задача #{{ i + 1 }}</p>
+                        <p class="pl-1">{{ task.title }}</p>
                     </div>
-                    <p><TaskDifficulty :difficulty="1"></TaskDifficulty></p>
+                    <p><TaskDifficulty :difficulty="task.difficulty"></TaskDifficulty></p>
                 </RouterLink>
             </div>
         </nav>

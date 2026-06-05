@@ -1,6 +1,8 @@
 export interface TaskExecutionState {
     routeStepId: number | null
     taskId: number
+    title: string
+    difficulty: number
     status: string
     courseId: number
     solution: string
@@ -8,6 +10,8 @@ export interface TaskExecutionState {
 
 interface TaskInSet {
     task: number
+    title: string
+    difficulty: number
 }
 
 export interface UserTaskResponse {
@@ -60,6 +64,8 @@ export function toExecState(response: UserTaskResponse): TaskExecutionState {
     return { 
         routeStepId: response.id,
         taskId: response.task_in_set.task,
+        title: response.task_in_set.title,
+        difficulty: response.task_in_set.difficulty,
         status: response.status,  
         courseId: response.user_course,
         solution: response.solution

@@ -3,13 +3,18 @@ import { ref, watch } from "vue"
 import { type TaskContext, type TaskExecutionState, type AttemptResult, type AsyncStatus } from "@/types/taskTypes"
 import taskService from "@/services/taskService"
 import { doAfterAsync, sleep } from "@/utils/asyncSleep"
+import type { Comment, DeleteComment, Discussion } from "@/types/discussionTypes"
+import { loaderFactory } from "@/utils/loadersFactory"
 
 
 export const useTaskStore = defineStore("tasks", () => {
-    const currentTask = ref<TaskContext | null>(null)
-    const taskLoading = ref(false)
     const tasksList = ref<TaskExecutionState[]>([])
+    const currentTask = ref<TaskContext | null>(null)
     const currentResult = ref<AttemptResult | null>(null)
+    const currentDiscussion = ref<Discussion | null>(null)
+
+    const taskLoading = ref(false)
+    const commentLoading = ref(false)
     const resultLoading = ref(false)
 
     const getCachedTaskId = (courseId: number) => {
@@ -44,8 +49,10 @@ export const useTaskStore = defineStore("tasks", () => {
         if (currentTask.value && currentTask.value.details.id === taskId)
             return
 
-        const newTask = await taskService.getTaskById(taskId)
+        const newTask = await taskService.getTaskById(courseId, taskId)
         const taskState = getCachedTaskState(taskId)
+
+        console.log("Cached task state = ", taskState)
 
         currentTask.value = { 
             details: newTask,
@@ -112,6 +119,30 @@ export const useTaskStore = defineStore("tasks", () => {
         console.log("Couldn't receive submission result")
     }
 
+    const addComment = async (courseId: number, taskId: number, content: string) => {
+        if (!currentDiscussion.value)
+            return
+
+        const comment: Comment = await taskService.createComment(courseId, taskId, content)
+        currentDiscussion.value.messages.push(comment)
+        currentDiscussion.value.messages_count++
+    }
+
+    const removeComment = async (courseId: number, taskId: number, commentId: number) => {
+        if (!currentDiscussion.value)
+            return
+
+        const removeStatus: DeleteComment = await taskService.deleteComment(courseId, taskId, commentId)
+        if (removeStatus.deleted) {
+            currentDiscussion.value.messages = currentDiscussion.value.messages.filter(comment => comment.id !== commentId)
+            currentDiscussion.value.messages_count--
+        }
+    }
+
+    const loadDiscussion = async (courseId: number, taskId: number,) => {
+        currentDiscussion.value = await taskService.getComments(courseId, taskId)
+    }
+
     watch(() => currentTask.value?.status, (newStatus: string | undefined) => {
         if (newStatus === undefined) return
 
@@ -133,40 +164,46 @@ export const useTaskStore = defineStore("tasks", () => {
         clearCurrentResult() 
     })
 
-    const toggleTaskLoading = async (func: (...params: any) => Promise<void>, ...params: any) => {
-        taskLoading.value = true
-        await func(...params)
-        await sleep(1000)
-        taskLoading.value = false
+    const toggleTaskLoading = async (func: (...params: any) => Promise<any>, ...params: any) => {
+        await loaderFactory(func, taskLoading, ...params)()
     }
 
     const toggleResultLoading = async (func: (...params: any) => Promise<any>, ...params: any) => {
-        resultLoading.value = true
-        try { await func(...params) } 
-        catch (err) { throw err }
-        finally { resultLoading.value = false } 
+        await loaderFactory(func, resultLoading, ...params)()
     }
 
-    const clearCurrentResult = () => { currentResult.value = null }
-    const clearCurrentTask = () => { currentTask.value = null }
-    const clearTasksList = () => { tasksList.value = [] }
+    const toggleCommentLoading = async (func: (...params: any) => Promise<any>, ...params: any) => {
+        await loaderFactory(func, commentLoading, ...params)()
+    }
+
+    const clearCurrentResult = () => currentResult.value = null
+    const clearCurrentTask = () => currentTask.value = null
+    const clearCurrentDiscussion = () => currentDiscussion.value = null
+    const clearTasksList = () => tasksList.value = []
 
     return {
-        currentTask,
         tasksList,
-        taskLoading,
+        currentTask,
         currentResult,
+        currentDiscussion,
+        taskLoading,
         resultLoading,
+        commentLoading,
         changeTask,
         getCourseTasks,
         getCachedTaskId,
         clearCurrentTask,
+        clearCurrentDiscussion,
         clearTasksList,
         saveSolution,
         getNextTaskId,
         getPrevTaskId,
         doTaskAttempt,
+        addComment,
+        removeComment,
+        loadDiscussion,
         toggleTaskLoading,
-        toggleResultLoading
+        toggleResultLoading,
+        toggleCommentLoading
     }
-}) 
+})
