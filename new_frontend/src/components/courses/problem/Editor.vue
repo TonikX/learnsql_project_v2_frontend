@@ -12,7 +12,6 @@ import type { Theme } from '@/types/theme'
 
 const taskStore = useTaskStore()
 const themeStore = useThemeStore()
-
 const { currentTask } = storeToRefs(taskStore)
 const { currentTheme } = storeToRefs(themeStore)
 
@@ -54,7 +53,7 @@ watch(currentTheme, async (theme: Theme) => await loadPrismTheme(theme), { immed
     <div class="border-b border-course-grid-stroke p-2">solution.sql</div>
     <div class="grow flex items-stretch">
         <div class="flex-none border-r border-course-grid-stroke p-2">
-            <div v-for="line in lineCount" :key="line"> {{ line }} </div>
+            <div v-for="line in lineCount" :key="line" class="font-extralight"> {{ line }} </div>
         </div>
         <prism-editor
             class="grow p-2"

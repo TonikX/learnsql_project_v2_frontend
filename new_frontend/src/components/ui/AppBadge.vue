@@ -16,8 +16,7 @@ const classes = () => {
         props.variant === 'info' ? 'bg-status-progress-bg text-status-progress-text' :
         props.variant === 'success' ? 'bg-status-success-bg text-status-success-text' :
         props.variant === 'warning' ? 'bg-panel text-app-text' :
-        props.variant === 'danger' ? 'bg-card-muted text-danger' :
-        'bg-panel text-app-muted'
+        props.variant === 'danger' ? 'bg-card-muted text-danger' : 'bg-panel text-app-muted'
     return `${base} ${color} inline-flex items-center rounded-full font-semibold`
 }
 </script>

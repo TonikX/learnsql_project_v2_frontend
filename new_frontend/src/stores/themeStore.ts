@@ -48,20 +48,19 @@ export const useThemeStore = defineStore('theme', () => {
 
     function handleSystemThemeChange(event: MediaQueryListEvent) {
         systemTheme.value = event.matches ? 'dark' : 'light'
-
         if (mode.value === 'system') {
             applyTheme()
         }
     }
 
     function initThemeMode() {
-        if (isInitialized.value || typeof window === 'undefined') return
+        if (isInitialized.value || typeof window === 'undefined') 
+            return
 
         mode.value = getStoredMode()
 
         mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
         systemTheme.value = mediaQuery.matches ? 'dark' : 'light'
-
         mediaQuery.addEventListener('change', handleSystemThemeChange)
 
         applyTheme()
