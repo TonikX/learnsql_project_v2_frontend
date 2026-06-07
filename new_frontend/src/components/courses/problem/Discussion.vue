@@ -11,7 +11,6 @@ import ContextMenu from '@/components/ui/ContextMenu.vue'
 import AppBadge from '@/components/ui/AppBadge.vue'
 
 
-
 const props = defineProps<{
     discussion: Discussion
 }>()
@@ -64,7 +63,6 @@ const openContextMenu = (event: MouseEvent, commentId: number) => {
 
 const getMenuOptions = (comment: Comment) => {
     const options = ['reply', ]
-    console.log("USER = ", user.value)
 
     if (!user.value)
         return options
@@ -78,7 +76,6 @@ const getMenuOptions = (comment: Comment) => {
 const handleMenuChoice = async (selected: string, comment: Comment) => {
     switch (selected) {
     case 'delete':
-        console.log("Delete comment: ", comment)
         await removeComment(courseId, props.discussion.task, comment.id)
         break
     case 'reply':
@@ -106,7 +103,7 @@ const handleAddComment = async (content: string) => {
             v-model="commentText"
             rows="1"
             placeholder="Оставьте комментарий..."
-            class="w-full block no-scrollbar resize-none outline-none bg-transparent font-extralight"
+            class="w-full block no-scrollbar resize-none outline-none bg-transparent font-light"
             @input="adjustHeight"
         ></textarea>
     </div>
@@ -122,6 +119,7 @@ const handleAddComment = async (content: string) => {
         </AppButton>
     </div>
 </div>
+
 <ul class="my-6">
     <li v-for="comment in props.discussion.messages" :key="comment.id" class="mb-4 flex gap-4">
         <ProfilePic
@@ -134,6 +132,7 @@ const handleAddComment = async (content: string) => {
                 <AppBadge variant="info">admin</AppBadge>
                 <span>&nbsp;</span>
             </template>
+
             <span class="text-text-secondary">{{ comment.created_at }}&nbsp;</span>
             <span class="cursor-pointer" @click.stop="openContextMenu($event, comment.id)">•••</span>
             <ContextMenu
@@ -149,5 +148,4 @@ const handleAddComment = async (content: string) => {
         </div>
     </li>
 </ul>
-
 </template>

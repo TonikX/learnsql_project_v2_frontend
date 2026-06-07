@@ -41,6 +41,8 @@
     --text-secondary: #666666;
     --danger: #D64D4D;
     --success: #08A800;
+    --link-default: #5057AD;
+    --link-hover: #33397E;
 
     /* кнопки */
     --success-begin: #50C878;
@@ -190,6 +192,8 @@
     --text-secondary: #888888;
     --danger: #D64D4D;
     --success: #69FF61;
+    --link-default: #929AEF;
+    --link-hover: #6C78F0;
 
     /* кнопки */
     --success-begin: #50C878;
@@ -383,5 +387,9 @@
         color: var(--color-chat-placeholder);
         font-weight: 200;
 
+    }
+
+    .html-links a {
+        @apply text-link-default hover:text-link-hover transition-colors;
     }
 }

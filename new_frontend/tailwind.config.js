@@ -98,6 +98,10 @@ export default {
           'grid': 'var(--course-grid)',
           'grid-stroke': 'var(--course-stroke)',
         },
+        link: {
+          default: 'var(--link-default)',
+          hover: 'var(--link-hover)',
+        },
         task: {
           begin: 'var(--task-begin)',
           end: 'var(--task-end)',
@@ -117,7 +121,8 @@ export default {
         schema: {
           'bg-begin': 'var(--schema-bg-begin)',
           'bg-end': 'var(--schema-bg-end)',
-          grid: 'var(--schema-grid)'
+          grid: 'var(--schema-grid)',
+          header: 'var(--schema-header)'
         },
         text: {
           main: 'var(--text-main)',

@@ -1,8 +1,8 @@
 import { defineStore } from "pinia"
 import { ref, watch } from "vue"
-import { type TaskContext, type TaskExecutionState, type AttemptResult, type AsyncStatus } from "@/types/taskTypes"
+import { type TaskContext, type TaskExecutionState, type AttemptResult, type AsyncStatus, type AttemptHistoryItem, type AttemptHistory } from "@/types/taskTypes"
 import taskService from "@/services/taskService"
-import { doAfterAsync, sleep } from "@/utils/asyncSleep"
+import { doAfterAsync } from "@/utils/asyncSleep"
 import type { Comment, DeleteComment, Discussion } from "@/types/discussionTypes"
 import { loaderFactory } from "@/utils/loadersFactory"
 
@@ -12,6 +12,7 @@ export const useTaskStore = defineStore("tasks", () => {
     const currentTask = ref<TaskContext | null>(null)
     const currentResult = ref<AttemptResult | null>(null)
     const currentDiscussion = ref<Discussion | null>(null)
+    const attemptHistory = ref<AttemptHistoryItem[]>([])
 
     const taskLoading = ref(false)
     const commentLoading = ref(false)
@@ -49,10 +50,9 @@ export const useTaskStore = defineStore("tasks", () => {
         if (currentTask.value && currentTask.value.details.id === taskId)
             return
 
+        clearAttemptHistory()
         const newTask = await taskService.getTaskById(courseId, taskId)
         const taskState = getCachedTaskState(taskId)
-
-        console.log("Cached task state = ", taskState)
 
         currentTask.value = { 
             details: newTask,
@@ -62,6 +62,7 @@ export const useTaskStore = defineStore("tasks", () => {
         }
         
         saveTaskId(courseId, taskId)
+        await loadAttemptsHistory(courseId, taskId)
     }
 
     const getCourseTasks = async (courseId: number) => {
@@ -72,8 +73,6 @@ export const useTaskStore = defineStore("tasks", () => {
 
         const tasks: TaskExecutionState[] = await taskService.getTasksByCourse(courseId)
         tasksList.value = tasks
-
-        console.log(`COURSE ${courseId} TASKS:`, tasks)
     }
 
     const getNextTaskId = (taskId: number) => {
@@ -99,24 +98,48 @@ export const useTaskStore = defineStore("tasks", () => {
             return null
 
         clearCurrentResult()
+        const taskIdAtSubmission = currentTask.value.details.id 
+        const attemptsCountPrev = attemptHistory.value.at(-1)?.attempt_number ?? 0
+
+        attemptHistory.value.push({
+            id: null,
+            task: taskIdAtSubmission,
+            task_title: currentTask.value.details.title,
+            attempt_number: attemptsCountPrev + 1,
+            solution: currentTask.value.solution,
+            date: 'now',
+            status: '2', // pending...
+            is_success: false
+        })
+        
         let delay: number // ms
         let status: AsyncStatus = await taskService.sendTaskSolution(currentTask.value)
         const taskId = status.task_id
 
         const MAX_REQUESTS = 5
         for (let attempt = 1; attempt <= MAX_REQUESTS; attempt++) {
-            console.log("ATTEMPT #", attempt)
             delay = attempt * 1000
             status = await doAfterAsync(delay, () => taskService.checkSolutionResult(taskId))
-
-            if (status.ready && status.result) {
-                console.log("RESULT = ", status.result)
-                currentResult.value = status.result
-                return
-            }
+            if (status.ready && status.result) 
+                break
         }
 
-        console.log("Couldn't receive submission result")
+        if (!status.ready || !status.result) {
+            console.log("Couldn't receive submission result")
+            return
+        }
+
+        if (currentTask.value.details.id !== taskIdAtSubmission) {
+            console.log("task changed during submission, results won't be shown")
+            return
+        }
+
+        currentResult.value = status.result
+    }
+
+    const loadAttemptsHistory = async (courseId: number, taskId: number) => {
+        const loaded: AttemptHistory = await taskService.getAttemptHistory(courseId, taskId)
+        attemptHistory.value = loaded.results
     }
 
     const addComment = async (courseId: number, taskId: number, content: string) => {
@@ -180,12 +203,14 @@ export const useTaskStore = defineStore("tasks", () => {
     const clearCurrentTask = () => currentTask.value = null
     const clearCurrentDiscussion = () => currentDiscussion.value = null
     const clearTasksList = () => tasksList.value = []
+    const clearAttemptHistory = () => attemptHistory.value = []
 
     return {
         tasksList,
         currentTask,
         currentResult,
         currentDiscussion,
+        attemptHistory,
         taskLoading,
         resultLoading,
         commentLoading,
@@ -194,11 +219,13 @@ export const useTaskStore = defineStore("tasks", () => {
         getCachedTaskId,
         clearCurrentTask,
         clearCurrentDiscussion,
+        clearAttemptHistory,
         clearTasksList,
         saveSolution,
         getNextTaskId,
         getPrevTaskId,
         doTaskAttempt,
+        loadAttemptsHistory,
         addComment,
         removeComment,
         loadDiscussion,

@@ -33,3 +33,30 @@ export interface StatsResponse {
     count: number,
     results: StudentInCourseStats[]
 }
+
+export interface SectionTopic {
+    id: number
+    topic_name: string
+    section: number
+    content?: TopicContent
+}
+
+export interface SectionMaterials {
+    id: number
+    number: number
+    section_name: string
+    topics_of_this_section: SectionTopic[]
+}
+
+export interface SectionMaterialsUI extends SectionMaterials {
+    open: boolean
+}
+
+export interface TopicContent {
+    id: number
+    number: number
+    topic_name: string
+    content: string
+    section: number
+    themes_for_topic: number[]
+}

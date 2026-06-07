@@ -8,7 +8,8 @@ import {
     type TaskContext, 
     type TaskExecutionState, 
     type UserTaskResponse,
-    type AsyncStatus
+    type AsyncStatus,
+    type AttemptHistory
 } from '@/types/taskTypes'
 import type { Comment, CreateComment, DeleteComment, Discussion } from '@/types/discussionTypes'
 
@@ -50,6 +51,11 @@ class TaskService {
 
     async checkSolutionResult(queueTaskId: string): Promise<AsyncStatus> {
         const response = await this.api.get<AsyncStatus>(`/api/student-course/task-submissions/${queueTaskId}`)
+        return response.data
+    }
+
+    async getAttemptHistory(courseId: number, taskId: number): Promise<AttemptHistory> {
+        const response = await this.api.get<AttemptHistory>(`/api/courses/${courseId}/tasks/${taskId}/attempts/`)
         return response.data
     }
 

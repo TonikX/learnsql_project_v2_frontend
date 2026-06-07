@@ -1,6 +1,7 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import { isTheme, type ResolvedTheme, type ThemeMode } from '@/types/theme'
+import { isTheme, type ResolvedTheme, type Theme, type ThemeMode } from '@/types/theme'
+import { loadPrismTheme } from '@/utils/prismTheme'
 
 const storageKey = 'learnsqlThemeMode'
 
@@ -66,6 +67,8 @@ export const useThemeStore = defineStore('theme', () => {
         applyTheme()
         isInitialized.value = true
     }
+
+    watch(currentTheme, async (theme: Theme) => await loadPrismTheme(theme), { immediate: true })
 
     return {
         mode,
