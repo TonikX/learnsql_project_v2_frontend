@@ -19,15 +19,15 @@ import  useCourseDifficulty from '@/composables/courseDifficulty'
 import AppContainer from '../layout/AppContainer.vue'
 import IconTitle from '../ui/IconTitle.vue'
 import AppSectionTitle from '../ui/AppSectionTitle.vue'
-import type { StudentInCourseStats } from '@/types/courseTypes'
+import type { SectionMaterials, SectionMaterialsUI, StudentInCourseStats } from '@/types/courseTypes'
 import { ConnectionError, NotFoundError, ServerError } from '@/errors/network'
 import getStyle from '@/composables/styleGetter'
 import AppPagination from '../ui/AppPagination.vue'
 
 
 const courseStore = useCoursesStore()
-const { loadCourseStats } = courseStore
-const { currentCourse } = storeToRefs(courseStore)
+const { loadCourseStats, loadMaterials, loadMaterialsContent, getCachedTopic } = courseStore
+const { currentCourse, materials, materialsAlreadyLoaded } = storeToRefs(courseStore)
 
 const themeStore = useThemeStore()
 const { resolvedTheme } = storeToRefs(themeStore)
@@ -41,14 +41,16 @@ const statError = ref('')
 const chartMetaColor = ref(getStyle('--text-main'))
 const chartKey = ref(0)
 
+const materialsSections = ref<SectionMaterialsUI[]>([])
+const topicInnerHTML = ref<string | null>(null)
+
 const difficulty = useCourseDifficulty(currentCourse)
 const title = computed(() => currentCourse.value ? currentCourse.value.title : '')
 const description = computed(() => currentCourse.value ? currentCourse.value.description : '')
 
 const handleStatLoad = async (page: number) => {
-    if (!currentCourse.value) return
-
-    if (statLoading.value) return
+    if (!currentCourse.value || statLoading.value) 
+        return
 
     try {
         statLoading.value = true
@@ -74,9 +76,55 @@ const handleStatLoad = async (page: number) => {
     }
 }
 
+const handleMaterialsLoad = async () => {
+    if (!currentCourse.value || materialsAlreadyLoaded.value) 
+        return
+
+    try {
+        await loadMaterials(currentCourse.value.id)
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+const handleTopicLoad = async (materialsId: number) => {
+    const cached = getCachedTopic(materialsId)
+    if (cached && cached.content) {
+        topicInnerHTML.value = cached.content.content
+        return
+    }
+
+    try {
+        const loaded = await loadMaterialsContent(materialsId)
+        if (loaded) 
+            topicInnerHTML.value = loaded.content
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+const toggleSection = async (sectionIndex: number) => {
+    const state = materialsSections.value[sectionIndex]?.open
+    if (state === undefined)
+        return
+
+    materialsSections.value[sectionIndex]!.open = !state
+}  
+
+const loadStatsAndMaterials = async (page: number) => await Promise.all([handleStatLoad(page), handleMaterialsLoad()])
+
+watch(materials, (sections: SectionMaterials[]) => {
+    materialsSections.value = sections.map(section => {
+        return { 
+            ...section,
+            open: false,
+        }
+    })
+}, { immediate: true })
+
 // event listeners to reload statistics
-onMounted(async() => await handleStatLoad(statPage.value))
-watch(currentCourse, async() => await handleStatLoad(statPage.value))
+onMounted(async() => await loadStatsAndMaterials(statPage.value))
+watch(currentCourse, async() => await loadStatsAndMaterials(statPage.value))
 watch(statPage, async(page: number) => { await handleStatLoad(page) })
 
 // register chart
@@ -134,24 +182,24 @@ const chartOptions = computed(() => {
 })
 
 // Consts for UI
-const blockStyle = "w-full mt-4 rounded-lg p-10 bg-gradient-to-r from-segment-begin to-segment-end"
+const blockStyle = "w-full mt-4 rounded-lg bg-gradient-to-r from-segment-begin to-segment-end"
 const skeletonBarStyle = "h-1/2 bg-gray-500/40 animate-pulse"
 const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
 </script>
 
 <template>
-<AppContainer class="flex flex-col gap-10">
+<AppContainer class="flex flex-col gap-10 mb-8">
     <div>
         <div class="flex items-center justify-between">
             <IconTitle :title="title" icon="course-tiles"></IconTitle>
             <p>Сложность: <span class="text-yellow-500">{{ difficulty[0] }}</span>{{ difficulty[1] }}</p>
         </div>
         
-        <div v-html="description" :class="blockStyle"></div>
+        <div v-html="description" :class="[blockStyle, 'p-10']"></div>
     </div>
     
     <AppSectionTitle title="Статистика учебной группы" icon="stats">
-        <div :class="[blockStyle, 'h-[500px]']">
+        <div :class="[blockStyle, 'p-10 h-[500px]']">
             <Bar v-if="!statLoading && !statError" :key="chartKey" :data="chartData" :options="chartOptions" />
             <!-- Loading skeleton -->
             <div v-if="statLoading" class="size-full flex flex-col py-5">
@@ -177,12 +225,42 @@ const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
             @page-update="handleStatLoad"
         >
         </AppPagination>
-
     </AppSectionTitle>
 
-    <AppSectionTitle title="Методические материалы" icon="materials">
-        <div :class="blockStyle"></div>
+    <AppSectionTitle v-if="materialsAlreadyLoaded" title="Методические материалы" icon="materials">
+        <div :class="[blockStyle, 'flex']">
+            <div class="w-1/3 p-6 overflow-y-scroll max-h-[100dvh]">
+                <!-- sections list -->
+                <ul> 
+                    <li v-for="(section, i) in materialsSections" :key="i" class="pb-2">
+                        <div 
+                            class="flex justify-between border-dashed border-t-2 border-text-main pt-2 cursor-pointer"
+                            @click="async () => await toggleSection(i)"
+                        >
+                            <span class="font-bold">{{ i + 1 }}. {{ section.section_name }}</span>
+                            <span class="text-lg">{{ section.open ? '-' : '+' }}</span>
+                        </div>
+                        <!-- topics list -->
+                        <ul v-if="section.open">
+                            <li v-for="topic in section.topics_of_this_section" :key="topic.id" class="pl-8">
+                                > <span 
+                                    class="cursor-pointer hover:underline"
+                                    @click="async () => handleTopicLoad(topic.id)"
+                                >
+                                    {{ topic.topic_name }}
+                                </span> 
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <p
+                v-if="topicInnerHTML" 
+                class="w-2/3 p-6 overflow-y-scroll break-all max-h-[100dvh] html-links"
+                v-html="topicInnerHTML"
+            >
+            </p>
+        </div>
     </AppSectionTitle>
-
 </AppContainer>
 </template>

@@ -21,7 +21,7 @@ const { currentTaskId } = taskIdData
 
 const courseStore = useCoursesStore()
 const { courseLoading } = storeToRefs(courseStore)
-const { loadCurrentCourse, clearCurrentCourse, toggleCourseLoading } = courseStore
+const { loadCurrentCourse, clearCurrentCourse, clearMaterials, toggleCourseLoading } = courseStore
 
 const taskStore = useTaskStore()
 const { taskLoading } = storeToRefs(taskStore)
@@ -77,6 +77,7 @@ onMounted(async () => await toggleCourseLoading(handleLoadCourse, courseId))
 onUnmounted(() => {
     clearCurrentTask()
     clearTasksList()
+    clearMaterials()
     clearCurrentCourse()
 })
 </script>

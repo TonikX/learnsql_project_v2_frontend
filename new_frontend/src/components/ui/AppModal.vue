@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<{
     closeOnBackdrop: true,
 })
 
-const emit = defineEmits<{ (e: 'close'): void }>()
+const emit = defineEmits(['close', ])
 </script>
 
 <template>
@@ -20,22 +20,18 @@ const emit = defineEmits<{ (e: 'close'): void }>()
             @click="closeOnBackdrop ? emit('close') : null"
         ></div>
 
-        <div class="relative w-full max-w-lg">
+        <div class="relative w-fit min-w-1/5 max-w-1/2">
             <AppCard padding="lg">
-            <div class="flex items-start justify-between gap-4">
-                <div>
-                <h3 v-if="title" class="text-lg font-extrabold text-app-text">{{ title }}</h3>
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                    <h3 v-if="title" class="text-lg font-extrabold text-app-text">{{ title }}</h3>
+                    </div>
+                    <button class="text-3xl text-app-muted hover:text-app-text" @click="emit('close')">✕</button>
                 </div>
-                <button class="text-app-muted hover:text-app-text" @click="emit('close')">✕</button>
-            </div>
 
-            <div class="mt-4">
-                <slot />
-            </div>
-
-            <div class="mt-6">
-                <slot name="footer" />
-            </div>
+                <div class="mt-4">
+                    <slot />
+                </div>
             </AppCard>
         </div>
         </div>

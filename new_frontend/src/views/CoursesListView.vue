@@ -22,12 +22,9 @@ const { loadAllCourses, enrollToCourse, loadEnrolledCourses, isEnrolled } = stor
 const showCourses = ref<Course[]>([])
 
 const syncCourseListData = async () => {
-    if (courses.value.length == 0) {
-        await loadAllCourses()
-        await loadEnrolledCourses()
-    }
+    if (courses.value.length == 0)
+        await Promise.all([loadAllCourses(), loadEnrolledCourses()])
     
-    console.log("ALL COURSES: ", courses.value)
     showCourses.value = props.enrolledOnly ? courses.value.filter(c => isEnrolled(c.id)) : Array.from(courses.value)
 }
 

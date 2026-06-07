@@ -60,6 +60,21 @@ export interface AttemptResult {
     student_result?: Array<any> | string
 }
 
+export interface AttemptHistoryItem {
+    id: number | null
+    task: number
+    task_title: string
+    attempt_number: number
+    solution: string
+    date: string
+    status: string
+    is_success: boolean
+}
+
+export interface AttemptHistory {
+    results: AttemptHistoryItem[]
+}
+
 export function toExecState(response: UserTaskResponse): TaskExecutionState {
     return { 
         routeStepId: response.id,

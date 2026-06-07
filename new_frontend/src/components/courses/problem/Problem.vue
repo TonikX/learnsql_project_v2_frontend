@@ -17,7 +17,7 @@ import Discussion from './Discussion.vue'
 
 const taskStore = useTaskStore()
 const { currentTask, taskLoading, currentResult, resultLoading, currentDiscussion } = storeToRefs(taskStore)
-const { doTaskAttempt, loadDiscussion, toggleResultLoading } = taskStore
+const { doTaskAttempt, loadDiscussion, loadAttemptsHistory, toggleResultLoading } = taskStore
 
 const route = useRoute()
 const courseId = Number(route.params.course_id)
@@ -77,7 +77,6 @@ const handleSolutionAttempt = async () => {
 const handleLoadDiscussion = async (taskId: number) => {
     try {
         await loadDiscussion(courseId, taskId)
-        console.log("Discussion loaded!")
     } catch (err) {
         console.log(err)
     }
@@ -102,7 +101,10 @@ watch(currentTaskId, async (taskId: number) => {
                         <AppButton @click="scrollToDiscussion">
                             <AppIcon name="communication">Обсуждение ({{ currentDiscussion?.messages_count ?? 0 }})</AppIcon>
                         </AppButton>
-                        <AppButton variant="secondary">История</AppButton>
+                        <RouterLink :to="{ name: 'history', params: { task_id: $route.params.task_id } }">
+                            <AppButton variant="secondary">История</AppButton>
+                            <RouterView/>
+                        </RouterLink>
                     </div>
                     
                     <div class="flex justify-end gap-4">

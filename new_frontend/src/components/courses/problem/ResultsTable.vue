@@ -27,7 +27,7 @@ const limitedResults = computed(() => {
 
 <template>
 <div 
-    class="grid w-full rounded-lg overflow-hidden text-sm border-2 border-course-grid-stroke bg-gradient-to-b from-editor-begin to-editor-end"
+    class="grid w-full rounded-lg overflow-hidden text-sm border-2 border-course-grid-stroke bg-course-grid font-extralight"
     :style="{ gridTemplateColumns: `max-content repeat(${columns}, minmax(0, 1fr))` }"
 >
     <template v-for="(row, i) in limitedResults" :key="i">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { highlight, languages } from 'prismjs'
 import { PrismEditor } from 'vue-prism-editor'
@@ -7,13 +7,8 @@ import 'vue-prism-editor/dist/prismeditor.min.css'
 import 'prismjs/components/prism-sql'
 
 import { useTaskStore } from '@/stores/taskStore'
-import { useThemeStore } from '@/stores/themeStore'
-import type { Theme } from '@/types/theme'
-
 const taskStore = useTaskStore()
-const themeStore = useThemeStore()
 const { currentTask } = storeToRefs(taskStore)
-const { currentTheme } = storeToRefs(themeStore)
 
 const lineCount = computed(() => {
     return currentTask.value?.solution?.split('\n').length || 1
@@ -22,30 +17,6 @@ const lineCount = computed(() => {
 const highlighter = (code: string) => {
     return highlight(code, languages.sql!, 'sql')
 }
-
-const prismThemesImport = {
-    light: () => import('prismjs/themes/prism.css?url'),
-    dark: () => import('prismjs/themes/prism-tomorrow.css?url'),
-    system: () => import('prismjs/themes/prism.css?url')
-}
-
-const loadPrismTheme = async (theme: Theme) => {
-    const oldLink = document.getElementById('prism-theme')
-    if (oldLink) {
-        oldLink.remove()
-    }
-
-    const themeModule = await prismThemesImport[theme]()
-    const link = document.createElement('link')
-
-    link.id = 'prism-theme'
-    link.rel = 'stylesheet'
-    link.href = themeModule.default
-
-    document.head.appendChild(link)
-}
-
-watch(currentTheme, async (theme: Theme) => await loadPrismTheme(theme), { immediate: true })
 </script>
 
 <template>

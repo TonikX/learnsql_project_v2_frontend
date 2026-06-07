@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import type { Course, StudentCourse } from '@/types/courseTypes'
+import { computed, ref } from 'vue'
+import type { Course, SectionMaterials, SectionTopic, StudentCourse, TopicContent } from '@/types/courseTypes'
 import courseService from '@/services/courseService'
-import { sleep } from "@/utils/asyncSleep"
+import { loaderFactory } from '@/utils/loadersFactory'
 
 
 export const useCoursesStore = defineStore('courses', () => {
     const courses = ref<Course[]>([])
     const enrolledIds: Set<number> = new Set()
+    const materials = ref<SectionMaterials[]>([])
     const currentCourse = ref<Course | null>(null)
     const courseLoading = ref(false)
 
@@ -57,31 +58,61 @@ export const useCoursesStore = defineStore('courses', () => {
 
     const isEnrolled = (courseId: number) => enrolledIds.has(courseId)
 
-    const clearCurrentCourse = () => { currentCourse.value = null }
-    const clearCourseList = () => { courses.value = [] }
-    const clearEnrollmentSet = () => { enrolledIds.clear() }
+    const loadMaterials = async (courseId: number) => {
+        materials.value = await courseService.getCourseMaterials(courseId)
+    }
+
+    const getCachedTopic = (materialsId: number) => {
+        for (const section of materials.value) {
+            for (const t of section.topics_of_this_section) {
+                if (t.id === materialsId)
+                    return t
+            }
+        }
+
+        return null
+    }
+
+    const loadMaterialsContent = async (materialsId: number) => {
+        const topic: SectionTopic | null = getCachedTopic(materialsId)
+        if (!topic)
+            return null
+
+        const content: TopicContent = await courseService.getTopicMaterials(materialsId)
+        topic.content = content
+        return content
+    }
+
+    const materialsAlreadyLoaded = computed(() =>  materials.value.length > 0)
+
+    const clearCurrentCourse = () => currentCourse.value = null 
+    const clearCourseList = () => courses.value = [] 
+    const clearEnrollmentSet = () => enrolledIds.clear() 
+    const clearMaterials = () => materials.value = []
 
     const toggleCourseLoading = async (func: (...params: any) => Promise<any>, ...params: any) => {
-        courseLoading.value = true
-        const res = await func(...params)
-        await sleep(1000)
-        courseLoading.value = false
-        return res
+        await loaderFactory(func, courseLoading, ...params)()
     }
 
     return { 
         courses, 
+        materials,
         currentCourse, 
         courseLoading,
+        materialsAlreadyLoaded,
         loadCurrentCourse,
         loadCourseStats,
         loadAllCourses,
         loadEnrolledCourses,
+        loadMaterials,
+        loadMaterialsContent,
+        getCachedTopic,
         enrollToCourse,
         isEnrolled,
         clearCurrentCourse,
         clearCourseList,
         clearEnrollmentSet,
+        clearMaterials,
         toggleCourseLoading
     }
 })
