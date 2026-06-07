@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import AppLoader from '@/components/ui/AppLoader.vue'
 import {
     consumeSocialRedirect,
     getGitHubRedirectUri,
@@ -55,7 +56,7 @@ onMounted(async () => {
         <section class="w-full max-w-[520px] rounded-[10px] border border-auth-border bg-auth-surface-gradient p-8 text-center">
             <h1 class="text-[24px]">Вход через внешний сервис</h1>
             <p v-if="!error" class="mt-4 text-[16px] text-app-text">
-                Завершаем авторизацию...
+                <AppLoader text="Завершаем авторизацию" mode="inline" />
             </p>
             <div v-else>
                 <p class="mt-4 rounded-[10px] border border-auth-border bg-auth-input px-4 py-3 text-[15px] text-danger">

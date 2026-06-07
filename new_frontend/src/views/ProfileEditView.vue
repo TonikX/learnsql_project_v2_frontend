@@ -7,7 +7,6 @@ import ProfileEditForm from '@/components/profile/ProfileEditForm.vue'
 import ProfilePasswordModal from '@/components/profile/ProfilePasswordModal.vue'
 import ProfileSecurityCard from '@/components/profile/ProfileSecurityCard.vue'
 import { extractApiErrorMessage } from '@/errors/network'
-import { profileStatisticsService } from '@/services/profileStatisticsService'
 import { studentGroupService } from '@/services/studentGroupService'
 import { userService } from '@/services/userService'
 import { useProfileStatisticsStore } from '@/stores/profileStatisticsStore'
@@ -231,31 +230,9 @@ async function loadGroups(universityId: string) {
     }
 }
 
-async function resolveCurrentUniversity(profile: CurrentUserProfile) {
-    if (!profile.group_number) return ''
-
-    try {
-        const profileStats = await profileStatisticsService.getCurrentStudentProfile(['personal'])
-        const universityName = profileStats.student.group?.university
-        const matchedUniversity = universities.value.find((university) => university.name === universityName)
-
-        if (matchedUniversity) {
-            return String(matchedUniversity.id)
-        }
-    } catch {
-    }
-
-    try {
-        const loadedGroups = normalizeGroups(await studentGroupService.getStudentGroups())
-        const currentGroup = loadedGroups.find((group) => String(group.id) === String(profile.group_number))
-
-        if (currentGroup?.university !== null && currentGroup?.university !== undefined) {
-            return String(currentGroup.university)
-        }
-    } catch {
-    }
-
-    return ''
+function getProfileUniversityId(profile: CurrentUserProfile) {
+    const universityId = profile.group?.university?.id
+    return universityId === null || universityId === undefined ? '' : String(universityId)
 }
 
 async function loadPage() {
@@ -273,7 +250,7 @@ async function loadPage() {
 
         await loadUniversities()
 
-        const universityId = await resolveCurrentUniversity(profile)
+        const universityId = getProfileUniversityId(profile)
         form.university = universityId
         initialUniversity.value = universityId
 
