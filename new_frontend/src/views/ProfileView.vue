@@ -7,6 +7,7 @@ import AppLoader from '@/components/ui/AppLoader.vue'
 import ProfileCoursesProgressPanel from '@/components/profile/ProfileCoursesProgressPanel.vue'
 import ProfileDetailsStats from '@/components/profile/ProfileDetailsStats.vue'
 import ProfileHeaderCard from '@/components/profile/ProfileHeaderCard.vue'
+import ProfileLeaderboardCard from '@/components/profile/ProfileLeaderboardCard.vue'
 import ProfileStatCard from '@/components/profile/ProfileStatCard.vue'
 import ProfileThemeResultsPanel from '@/components/profile/ProfileThemeResultsPanel.vue'
 import { useAuthStore } from '@/stores/authStore'
@@ -174,6 +175,8 @@ onMounted(() => {
                             :left-rows="detailsLeftRows"
                             :right-rows="detailsRightRows"
                         />
+
+                        <ProfileLeaderboardCard :courses="courseProgressItems" />
                     </template>
                 </div>
             </div>

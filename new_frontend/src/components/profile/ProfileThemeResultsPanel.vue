@@ -72,7 +72,7 @@ const shouldShowStrongWeak = computed(() => {
                             {{ item.theme_title }}
                         </h3>
                         <span class="shrink-0 text-app-text">
-                            Успешность {{ formatPercent(item.success_rate) }}
+                            Успех {{ formatPercent(item.success_rate) }}
                         </span>
                     </div>
 
