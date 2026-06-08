@@ -120,8 +120,8 @@ const handleAddComment = async (content: string) => {
     </div>
 </div>
 
-<ul class="my-6">
-    <li v-for="comment in props.discussion.messages" :key="comment.id" class="mb-4 flex gap-4">
+<ul>
+    <li v-for="comment in props.discussion.messages" :key="comment.id" class="mt-4 flex gap-4">
         <ProfilePic
             :firstname="comment.author.first_name"
             :lastname="comment.author.last_name"

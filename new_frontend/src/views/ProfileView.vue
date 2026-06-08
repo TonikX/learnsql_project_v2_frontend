@@ -12,16 +12,23 @@ import ProfileThemeResultsPanel from '@/components/profile/ProfileThemeResultsPa
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileCourseProgressStore } from '@/stores/profileCourseProgressStore'
 import { useProfileStatisticsStore } from '@/stores/profileStatisticsStore'
+import { useTaskStore } from '@/stores/taskStore'
+import { useCoursesStore } from '@/stores/courseStore'
 import {
     formatNumber,
     formatPercent,
     formatStreakDays,
 } from '@/utils/profileFormatters'
 
+
+const taskStore = useTaskStore()
+const courseStore = useCoursesStore()
 const authStore = useAuthStore()
 const router = useRouter()
 const profileStore = useProfileStatisticsStore()
 const courseProgressStore = useProfileCourseProgressStore()
+const { clearTaskId } = taskStore
+const { courses } = storeToRefs(courseStore)
 const { profile, isLoading, error } = storeToRefs(profileStore)
 const {
     courseProgressItems,
@@ -106,6 +113,7 @@ async function loadProfilePage() {
 
 function logout() {
     authStore.logout()
+    courses.value.forEach(course => clearTaskId(course.id))
     window.location.replace('/login')
 }
 

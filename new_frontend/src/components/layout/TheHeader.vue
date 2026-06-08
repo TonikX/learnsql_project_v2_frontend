@@ -20,12 +20,12 @@ const themeMenuRef = ref<HTMLElement | null>(null)
 let chatBadgeIntervalId: ReturnType<typeof window.setInterval> | null = null
 
 const headerClass = computed(() => {
-    return 'border-[var(--color-header)] bg-[var(--color-header)] text-[var(--color-header-text)]'
+    return 'border-header bg-header text-header-text'
 })
 
 const linkClass = 'hover:bg-[var(--color-header-link-hover)] hover:text-[var(--color-header-link-hover-text)]'
 const iconActionClass =
-    'rounded-[4px] hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-header-text)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-header)]'
+    'rounded-[4px] hover:opacity-75 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-header-text focus-visible:ring-offset-2 focus-visible:ring-offset-header'
 
 const currentThemeIcon = computed(() => {
     if (mode.value === 'system') return 'system'
@@ -124,17 +124,6 @@ onBeforeUnmount(() => {
                     <span class="sm:hidden">[Мои курсы]</span>
                     <span class="hidden sm:inline">[ Мои курсы ]</span>
                 </RouterLink>
-
-                <RouterLink v-if="isAuth" to="/chats" :class="['shrink-0 transition-colors', linkClass]">
-                    <span class="inline-flex items-center gap-1 sm:hidden">
-                        [Чаты<span v-if="unreadRoomsCount > 0" class="rounded-full bg-primary-action px-1.5 py-0.5 text-[9px] leading-none text-white">{{ unreadRoomsCount }}</span>]
-                    </span>
-                    <span class="hidden items-center gap-2 sm:inline-flex">
-                        [ Чаты
-                        <span v-if="unreadRoomsCount > 0" class="rounded-full bg-primary-action px-2 py-0.5 text-[11px] leading-none text-white">{{ unreadRoomsCount }}</span>
-                        ]
-                    </span>
-                </RouterLink>
             </nav>
 
             <nav class="flex shrink-0 flex-nowrap items-center gap-1 text-[11px] font-medium leading-none min-[360px]:text-[12px] sm:gap-2 sm:text-[14px] md:text-[15px] min-[1280px]:text-[20px]">
@@ -147,8 +136,8 @@ onBeforeUnmount(() => {
                         :aria-expanded="isThemeMenuOpen"
                         @click.stop="isThemeMenuOpen = !isThemeMenuOpen"
                     >
-                        <AppIcon :name="currentThemeIcon" :size="20" class="sm:hidden"/>
-                        <AppIcon :name="currentThemeIcon" :size="30" class="hidden sm:block"/>
+                        <AppIcon :name="currentThemeIcon" :size="20" class="sm:hidden" title="Тема приложения"/>
+                        <AppIcon :name="currentThemeIcon" :size="30" class="hidden sm:block" title="Тема приложения"/>
                     </button>
 
                     <div
@@ -170,7 +159,17 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
 
-                <RouterLink to="/" :class="['hidden px-1 transition-colors min-[1280px]:inline', linkClass]">[ Помощь ]</RouterLink>
+                <RouterLink v-if="isAuth" to="/chats" :class="['shrink-0 transition-colors', linkClass]">
+                    <span class="inline-flex items-center gap-1 sm:hidden">
+                        [Чаты<span v-if="unreadRoomsCount > 0" class="rounded-full bg-primary-action px-1.5 py-0.5 text-[9px] leading-none text-white">{{ unreadRoomsCount }}</span>]
+                    </span>
+                    <span class="hidden items-center gap-2 sm:inline-flex">
+                        [ Чаты
+                        <span v-if="unreadRoomsCount > 0" class="rounded-full bg-primary-action px-2 py-0.5 text-[11px] leading-none text-white">{{ unreadRoomsCount }}</span>
+                        ]
+                    </span>
+                </RouterLink>
+
                 <RouterLink to="/" :class="['hidden px-1 transition-colors min-[1280px]:inline', linkClass]">[ О сайте ]</RouterLink>
 
                 <template v-if="isAuth">
@@ -182,8 +181,8 @@ onBeforeUnmount(() => {
                         ]"
                         aria-label="Профиль"
                     >
-                        <AppIcon name="profile" :size="24" class="sm:hidden"/>
-                        <AppIcon name="profile" :size="32" class="hidden sm:block"/>
+                        <AppIcon name="profile" :size="24" class="sm:hidden" title="Профиль"/>
+                        <AppIcon name="profile" :size="32" class="hidden sm:block" title="Профиль"/>
                     </RouterLink>
                 </template>
 

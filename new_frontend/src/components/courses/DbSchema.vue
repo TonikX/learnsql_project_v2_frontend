@@ -152,7 +152,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-<AppContainer class="mb-8">
+<AppContainer>
     <AppLoader v-if="taskLoading" text="Загрузка задания"/>
     <ProblemLayout v-if="!taskLoading && currentTask">
         <template #content>

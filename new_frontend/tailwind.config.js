@@ -109,6 +109,10 @@ export default {
           medium: 'var(--medium)',
           easy: 'var(--easy)',
           neutral: 'var(--neutral)',
+          'hard-neg': 'var(--hard-neg)',
+          'medium-neg': 'var(--medium-neg)',
+          'easy-neg': 'var(--easy-neg)',
+          'neutral-neg': 'var(--neutral-neg)',
         },
         sidebar: {
           bg: 'var(--sidebar-bg)',
@@ -122,7 +126,7 @@ export default {
           'bg-begin': 'var(--schema-bg-begin)',
           'bg-end': 'var(--schema-bg-end)',
           grid: 'var(--schema-grid)',
-          header: 'var(--schema-header)'
+          header: 'var(--schema-header)',
         },
         text: {
           main: 'var(--text-main)',
@@ -171,5 +175,7 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }

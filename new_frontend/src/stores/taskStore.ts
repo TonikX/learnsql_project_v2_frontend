@@ -13,17 +13,20 @@ export const useTaskStore = defineStore("tasks", () => {
     const currentResult = ref<AttemptResult | null>(null)
     const currentDiscussion = ref<Discussion | null>(null)
     const attemptHistory = ref<AttemptHistoryItem[]>([])
+    const planningUpdateHistory = ref(false)
 
     const taskLoading = ref(false)
     const commentLoading = ref(false)
     const resultLoading = ref(false)
 
+    const generateKey = (courseId: number) => `course_${courseId}`
+
     const getCachedTaskId = (courseId: number) => {
-        return Number(localStorage.getItem(courseId.toString()) ?? tasksList.value[0]?.taskId ?? null)
+        return Number(localStorage.getItem(generateKey(courseId)) ?? tasksList.value[0]?.taskId ?? null)
     }
 
     const saveTaskId = (courseId: number, taskId: number) => {
-        localStorage.setItem(courseId.toString(), taskId.toString())
+        localStorage.setItem(generateKey(courseId), taskId.toString())
     }
 
     const getCachedTaskState = (taskId: number) => {
@@ -33,6 +36,10 @@ export const useTaskStore = defineStore("tasks", () => {
         }
 
         return null
+    }
+
+    const clearTaskId = (courseId: number) => {
+        localStorage.removeItem(generateKey(courseId))
     }
 
     const saveSolution = () => {
@@ -49,8 +56,7 @@ export const useTaskStore = defineStore("tasks", () => {
     const changeTask = async (courseId: number, taskId: number) => {
         if (currentTask.value && currentTask.value.details.id === taskId)
             return
-
-        clearAttemptHistory()
+        
         const newTask = await taskService.getTaskById(courseId, taskId)
         const taskState = getCachedTaskState(taskId)
 
@@ -134,11 +140,13 @@ export const useTaskStore = defineStore("tasks", () => {
             return
         }
 
+        planningUpdateHistory.value = true
         currentResult.value = status.result
     }
 
     const loadAttemptsHistory = async (courseId: number, taskId: number) => {
         const loaded: AttemptHistory = await taskService.getAttemptHistory(courseId, taskId)
+        clearAttemptHistory()
         attemptHistory.value = loaded.results
     }
 
@@ -203,7 +211,10 @@ export const useTaskStore = defineStore("tasks", () => {
     const clearCurrentTask = () => currentTask.value = null
     const clearCurrentDiscussion = () => currentDiscussion.value = null
     const clearTasksList = () => tasksList.value = []
-    const clearAttemptHistory = () => attemptHistory.value = []
+    const clearAttemptHistory = () => { 
+        planningUpdateHistory.value = false
+        attemptHistory.value = [] 
+    }
 
     return {
         tasksList,
@@ -214,9 +225,11 @@ export const useTaskStore = defineStore("tasks", () => {
         taskLoading,
         resultLoading,
         commentLoading,
+        planningUpdateHistory,
         changeTask,
         getCourseTasks,
         getCachedTaskId,
+        clearTaskId,
         clearCurrentTask,
         clearCurrentDiscussion,
         clearAttemptHistory,
