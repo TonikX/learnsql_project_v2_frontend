@@ -20,7 +20,7 @@ function getCourseRoute(item: CourseProgressCard) {
         return null
     }
 
-    return `/courses/${String(item.courseId)}/`
+    return `/courses/${String(item.courseId)}/details`
 }
 
 const itemsWithRoute = computed(() => props.items.map((item) => ({

@@ -15,7 +15,7 @@ const { course } = toRefs(props)
 const difficulty = useCourseDifficulty(course)
 const courseLink = computed(() => {
     return course.value?.id 
-        ? `/courses/${course.value.id}/` 
+        ? `/courses/${course.value.id}/details` 
         : '/courses/all'; // fallback
 })
 
