@@ -23,6 +23,7 @@ export interface PaginatedStudentCourses {
 }
 
 export interface StudentInCourseStats {
+    username: string
     first_name: string
     last_name: string
     all_tasks: number

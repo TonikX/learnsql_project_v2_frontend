@@ -1,6 +1,5 @@
 import { BadRequestError, ConnectionError, NotFoundError, ServerError, extractApiErrorMessage } from '@/errors/network'
 import axios, { AxiosError, type AxiosInstance, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios'
-import router from '@/router'
 
 const apiUrl: string = import.meta.env.VITE_BACKEND_API_URL ?? 'http://localhost:8000'
 const accessStorageKey = 'access_token'

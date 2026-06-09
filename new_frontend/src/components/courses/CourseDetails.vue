@@ -23,11 +23,15 @@ import type { SectionMaterials, SectionMaterialsUI, StudentInCourseStats } from 
 import { ConnectionError, NotFoundError, ServerError } from '@/errors/network'
 import getStyle from '@/composables/styleGetter'
 import AppPagination from '../ui/AppPagination.vue'
+import { useUserStore } from '@/stores/userStore.ts'
 
 
 const courseStore = useCoursesStore()
 const { loadCourseStats, loadMaterials, loadMaterialsContent, getCachedTopic } = courseStore
 const { currentCourse, materials, materialsAlreadyLoaded } = storeToRefs(courseStore)
+
+const userStore = useUserStore()
+const { user } = userStore
 
 const themeStore = useThemeStore()
 const { resolvedTheme } = storeToRefs(themeStore)
@@ -150,7 +154,9 @@ const chartData = computed(() => {
         datasets: [
             {
                 data: stats.value.map(student => student.completed_tasks),
-                backgroundColor: '#318CE7',
+                backgroundColor: stats.value.map(student => {
+                    return user?.username === student.username ? '#ED9121' : '#318CE7' 
+                }),
                 categoryPercentage: 1.0,
                 barPercentage: 0.5,
             }
@@ -170,7 +176,7 @@ const chartOptions = computed(() => {
         },
         scales: {
             x: {
-                ticks: { color: c },
+                ticks: { precision: 0, color: c },
                 border: { color: c }, 
                 beginAtZero: true,
                 grid: { display: false }
@@ -186,6 +192,7 @@ const chartOptions = computed(() => {
 
 // Consts for UI
 const blockStyle = "w-full mt-4 rounded-lg bg-gradient-to-r from-segment-begin to-segment-end"
+const materialsBaseStyle = "p-2 md:p-6 overflow-y-scroll max-h-[100dvh]"
 const skeletonBarStyle = "h-1/2 bg-gray-500/40 animate-pulse"
 const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
 </script>
@@ -195,14 +202,16 @@ const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
     <div>
         <div class="flex items-center justify-between">
             <IconTitle :title="title" icon="course-tiles"></IconTitle>
-            <p>Сложность: <span class="text-yellow-500">{{ difficulty[0] }}</span>{{ difficulty[1] }}</p>
+            <p class="hidden md:block">
+                Сложность: <span class="text-yellow-500">{{ difficulty[0] }}</span>{{ difficulty[1] }}
+            </p>
         </div>
         
-        <div v-html="description" :class="[blockStyle, 'p-10']"></div>
+        <div v-html="description" :class="[blockStyle, 'p-4 md:p-10']"></div>
     </div>
     
     <AppSectionTitle title="Статистика учебной группы" icon="stats">
-        <div :class="[blockStyle, 'p-10 h-[500px]']">
+        <div :class="[blockStyle, 'p-4 md:p-10 h-[500px]']">
             <Bar v-if="!statLoading && !statError" :key="chartKey" :data="chartData" :options="chartOptions" />
             <!-- Loading skeleton -->
             <div v-if="statLoading" class="size-full flex flex-col py-5">
@@ -223,6 +232,7 @@ const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
 
         <AppPagination
             v-if="stats.length > 0"
+            :range="9"
             :current-page="statPage"
             :page-count="totalPages"
             @page-update="handleStatLoad"
@@ -232,7 +242,7 @@ const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
 
     <AppSectionTitle v-if="materialsAlreadyLoaded" title="Методические материалы" icon="materials">
         <div :class="[blockStyle, 'flex']">
-            <div class="w-1/4 p-6 overflow-y-scroll max-h-[100dvh]">
+            <div :class="[materialsBaseStyle, 'w-1/4']">
                 <!-- sections list -->
                 <ul> 
                     <li v-for="(section, i) in materialsSections" :key="i" class="pb-2">
@@ -247,7 +257,7 @@ const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
                         <ul v-if="section.open">
                             <li 
                                 v-for="topic in section.topics_of_this_section" :key="topic.id" 
-                                class="pl-8 cursor-pointer hover:bg-course-card-begin"
+                                class="pl-2 md: pl-8 cursor-pointer hover:bg-course-card-begin"
                                 @click="async () => handleTopicLoad(topic.id)"
                             >
                                 > <span :class="topic.id === currentMaterialsId ? 'underline' : ''">
@@ -261,8 +271,9 @@ const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
             <div
                 v-if="topicInnerHTML" 
                 :class="[
-                    'w-3/4 p-6 overflow-y-scroll html-links max-w-none break-all max-h-[100dvh]',
-                    resolvedTheme === 'dark' ? 'prose prose-invert' : 'prose'
+                    materialsBaseStyle,
+                    'w-3/4 html-links md:max-w-none break-all',
+                    resolvedTheme === 'dark' ? 'md:prose md:prose-invert' : 'md:prose'
                 ]"
                 v-html="topicInnerHTML"
             ></div>

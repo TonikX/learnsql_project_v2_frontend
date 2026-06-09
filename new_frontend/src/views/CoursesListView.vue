@@ -38,14 +38,14 @@ watch(() => route.path, async () => await syncCourseListData(), { immediate: tru
 </script>
 
 <template>
-    <AppContainer as="section" class="py-12">
-        <div class="p-8 rounded-xl border-2 border-course-grid-stroke bg-course-grid">
+    <AppContainer as="section" class="py-6 md:py-12">
+        <div class="p-4 md:p-8 rounded-xl border-2 border-course-grid-stroke bg-course-grid">
             <p>> SELECT * FROM learnsql_courses;</p>
 
-            <div class="-mx-8 my-8 border-t-2 border-course-grid-stroke"></div>
+            <div class="-mx-4 my-4 md:-mx-8 md:my-8 border-t-2 border-course-grid-stroke"></div>
             <p>&emsp;-- Найдено {{ showCourses.length }} курса(-ов) ({{ Math.floor(Math.random() * 100) + 50 }} мс)</p>
 
-            <div class="mt-8 grid gap-8 lg:grid-cols-2">
+            <div class="mt-4 md:mt-8 grid gap-4 md:gap-8 lg:grid-cols-2">
             <CourseCard
                 v-for="c in showCourses"
                 :course="c"

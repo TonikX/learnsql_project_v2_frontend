@@ -32,7 +32,16 @@ const clearSolution = () => {
         <span>solution.sql</span>
         <AppIcon 
             name="bin" 
+            color="fill-text-secondary cursor-pointer"
+            :size="16"
+            class="md:hidden"
+            title="Очистить"
+            @click="clearSolution"
+        ></AppIcon>
+        <AppIcon 
+            name="bin" 
             color="fill-text-secondary cursor-pointer" 
+            class="hidden md:block"
             title="Очистить"
             @click="clearSolution"
         ></AppIcon>

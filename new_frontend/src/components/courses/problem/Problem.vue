@@ -110,22 +110,29 @@ watch(currentTaskId, async (taskId: number) => {
                 <!-- code editor -->
                 <Editor />
 
-                <div class="flex justify-between">
-                    <div class="flex justify-start gap-4">
+               <div class="flex flex-col gap-4 md:flex-row md:justify-between">
+                    <div class="flex flex-col gap-2 sm:flex-row sm:gap-4">
                         <AppButton @click="scrollToDiscussion">
-                            <AppIcon name="communication">Обсуждение ({{ currentDiscussion?.messages_count ?? 0 }})</AppIcon>
+                            <AppIcon name="communication">
+                                Обсуждение ({{ currentDiscussion?.messages_count ?? 0 }})
+                            </AppIcon>
                         </AppButton>
-                        <RouterLink :to="{ name: 'history', params: { task_id: $route.params.task_id } }">
-                            <AppButton variant="secondary">История</AppButton>
-                            <RouterView/>
-                        </RouterLink>
-                    </div>
-                    
-                    <div class="flex justify-end gap-4">
-                        <AppButton variant="secondary" @click="async () => await handleAskQuestion()">Задать вопрос</AppButton>
                         <AppButton 
-                            variant="success" 
-                            @click="handleSolutionAttempt" 
+                            variant="secondary"
+                            :to="{ name: 'history', params: { task_id: $route.params.task_id } }"
+                        >
+                            История
+                        </AppButton>
+                    </div>
+
+                    <div class="flex flex-col gap-2 sm:flex-row sm:gap-4">
+                        <AppButton variant="secondary" @click="handleAskQuestion">
+                            Задать вопрос
+                        </AppButton>
+
+                        <AppButton
+                            variant="success"
+                            @click="handleSolutionAttempt"
                             :loading="resultLoading"
                             :disabled="currentTask!.solution === ''"
                         >

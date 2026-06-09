@@ -109,7 +109,10 @@ onUnmounted(() => {
             </RouterLink>
         </section>
 
-        <p class="cursor-pointer" @click="toggleSidebar"><< Список задач</p>
+        <p class="cursor-pointer flex items-center gap-2" @click="toggleSidebar">
+            <span class="text-lg md:text-normal"><<</span>
+            <span class="hidden md:block">Список задач</span>
+        </p>
         <TaskSideBar @close-side-bar="toggleSidebar" :is-open="sideBarOpen"/>
     </AppContainer>
 

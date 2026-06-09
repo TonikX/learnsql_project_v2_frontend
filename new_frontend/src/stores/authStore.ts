@@ -1,8 +1,10 @@
 import { computed, ref } from 'vue'
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { BadRequestError, ConnectionError, ServerError, extractApiErrorMessage, getApiErrorStatus } from '@/errors/network'
 import { authService } from '@/services/authService'
 import { useUserStore } from '@/stores/userStore'
+import { useTaskStore } from '@/stores/taskStore'
+import { useCoursesStore } from '@/stores/courseStore'
 import type { AccessTokenResponse, LoginRequest, RegisterRequest, RegisterResponse, SocialAuthProvider, TokenPair } from '@/types/userTypes'
 import { isPhoneBackendErrorMessage, phoneValidationErrorMessage } from '@/utils/phoneValidation'
 
@@ -294,6 +296,10 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     function logout() {
+        const { clearTaskId } = useTaskStore()
+        const { courses } = storeToRefs(useCoursesStore())
+        courses.value.forEach(course => clearTaskId(course.id))
+        
         clearTokens()
         useUserStore().clearUser()
     }
