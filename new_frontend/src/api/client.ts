@@ -36,10 +36,12 @@ function isPublicEndpoint(url?: string): boolean {
 
 const apiClient: AxiosInstance = axios.create({
     baseURL: apiUrl,
+    timeout: 15000,
 })
 
 const refreshClient: AxiosInstance = axios.create({
     baseURL: apiUrl,
+    timeout: 15000,
 })
 
 let refreshPromise: Promise<string> | null = null
