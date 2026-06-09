@@ -32,6 +32,16 @@ const routes: RouteRecordRaw[] = [
                 meta: { hideFooter: true }
             },
             {
+                path: 'faq',
+                name: 'faq',
+                component: () => import('@/views/FaqView.vue')
+            },
+            {
+                path: 'feedback',
+                name: 'feedback',
+                component: () => import('@/views/FeedbackView.vue')
+            },
+            {
                 path: 'courses',
                 name: 'courses',
                 children: [

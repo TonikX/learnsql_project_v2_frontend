@@ -9,16 +9,14 @@ const footerClass = computed(() => {
 
 <template>
     <footer :class="['font-mono transition-colors duration-200', footerClass]">
-        <AppContainer class="py-7 sm:py-9">
-            <div class="flex flex-col items-start gap-3 text-[14px] font-medium leading-relaxed sm:text-[15px] lg:flex-row lg:flex-wrap lg:items-center lg:justify-between lg:gap-5 lg:text-[17px]">
-                <p>© 2020-2026 LearnSQL</p>
-                <p>Онлайн-платформа изучения SQL</p>
+        <AppContainer class="py-5 sm:py-7 lg:py-9">
+            <div class="grid grid-cols-2 items-center gap-x-4 gap-y-2 text-[13px] font-medium leading-relaxed sm:text-[15px] md:flex md:flex-wrap md:items-center md:justify-between md:gap-x-5 md:gap-y-3 lg:flex-nowrap lg:text-[17px]">
+                <p class="col-span-2 md:col-auto">© 2020-2026 LearnSQL</p>
+                <p class="col-span-2 md:col-auto">Онлайн-платформа изучения SQL</p>
 
-                <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-5 lg:contents">
-                    <RouterLink to="/" class="hover:underline">Условия пользования</RouterLink>
-                    <RouterLink to="/" class="hover:underline">Справочник</RouterLink>
-                    <p>antongovorov@gmail.com</p>
-                </div>
+                <RouterLink to="/feedback" class="transition hover:underline">Обратная связь</RouterLink>
+                <RouterLink to="/faq" class="text-right transition hover:underline min-[480px]:text-left">Справочник</RouterLink>
+                <p class="col-span-2 break-words md:col-auto">antongovorov@gmail.com</p>
             </div>
         </AppContainer>
     </footer>

@@ -170,8 +170,8 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
 
-                <RouterLink to="/" :class="['hidden px-1 transition-colors min-[1280px]:inline', linkClass]">[ Помощь ]</RouterLink>
-                <RouterLink to="/" :class="['hidden px-1 transition-colors min-[1280px]:inline', linkClass]">[ О сайте ]</RouterLink>
+                <RouterLink to="/faq" :class="['hidden px-1 transition-colors min-[1280px]:inline', linkClass]">[ Помощь ]</RouterLink>
+                <RouterLink to="/feedback" :class="['hidden px-1 transition-colors min-[1280px]:inline', linkClass]">[ Обратная связь ]</RouterLink>
 
                 <template v-if="isAuth">
                     <RouterLink
