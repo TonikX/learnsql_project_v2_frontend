@@ -50,7 +50,7 @@ const { isOpen } = toRefs(props)
     >
     </div>
     <aside 
-        class="z-20 fixed top-14 bottom-0 right-0 w-[40dvw] bg-sidebar-bg flex flex-col transform transition-transform duration-300 ease-in-out"
+        class="z-20 fixed top-14 bottom-0 right-0 w-[80dvw] md:w-[40dvw] bg-sidebar-bg flex flex-col transform transition-transform duration-300 ease-in-out"
         :class="isOpen ? 'translate-x-0' : 'translate-x-full'"
     >
         <div class="flex justify-between p-6 border-b border-text-main">
@@ -64,9 +64,9 @@ const { isOpen } = toRefs(props)
                 <RouterLink 
                     :to="{ name: 'problem', params: { task_id: task.taskId } }"
                     @click="$emit('closeSideBar')"
-                    class="flex justify-between"
+                    class="flex items-center justify-between"
                 >
-                    <div class="flex">
+                    <div class="flex items-center">
                         <AppIcon name="check-mark" :color="getCheckMarkColor(task)"/>
                         <p class="pl-1">{{ task.title }}</p>
                     </div>

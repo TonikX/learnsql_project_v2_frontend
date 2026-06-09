@@ -378,14 +378,17 @@
         font-family: 'JetBrains Mono NL', monospace;
         margin: 0;
         @apply bg-bg text-text-main antialiased;
+        @apply text-xs;
+        @apply md:text-base;
     }
 
     h1 {
-        @apply text-lg font-bold;
+        @apply font-bold;
+        @apply md:text-lg;
     }
 
     h2 {
-        @apply text-lg;
+        @apply md:text-lg;
     }
 }
 

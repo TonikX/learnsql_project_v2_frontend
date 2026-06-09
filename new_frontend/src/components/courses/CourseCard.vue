@@ -24,7 +24,7 @@ const available = computed(() => course.value.status !== 'soon')
 
 <template>
     <div class="flex flex-col h-full rounded-2xl p-6 bg-gradient-to-r from-course-card-begin to-course-card-end">
-        <div class="flex justify-between text-lg text-text-main">
+        <div class="flex justify-between md:text-lg text-text-main">
             <p>{{ course.title }}</p> <p>***</p>
         </div>
         

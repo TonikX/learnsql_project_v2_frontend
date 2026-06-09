@@ -77,7 +77,7 @@ watch(planningUpdateHistory, async (startUpdate: boolean) => {
 
 <template>
 <AppContainer>
-<div class="w-full rounded-md overflow-hidden border-2 border-course-card-begin mb-10">
+<div class="w-full rounded-md overflow-x-auto border-2 border-course-card-begin mb-10">
     <table class="w-full">
         <thead class="bg-course-card-begin">
             <tr class="text-left">

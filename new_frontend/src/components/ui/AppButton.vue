@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
     type?: 'button' | 'submit' | 'reset'
     disabled?: boolean
     loading?: boolean
-    to?: string
+    to?: any
     href?: string
 }>(), {
     variant: 'primary',
@@ -24,9 +24,9 @@ const props = withDefaults(defineProps<{
 const base = 'inline-flex items-center justify-center gap-2 rounded-xl transition cursor-pointer active:scale-[0.99] disabled:pointer-events-none'
 
 const sizes = computed(() => {
-    if (props.size === 'sm') return 'h-9 px-4 text-sm'
-    if (props.size === 'lg') return 'h-12 px-6 text-base'
-    return 'h-11 px-5 text-sm'
+    if (props.size === 'sm') return 'h-7 px-4 text-xs md:h-9 md:px-4 md:text-sm'
+    if (props.size === 'lg') return 'h-11 px-5 text-sm md:h-12 md:px-6 md:text-base'
+    return 'h-9 px-4 text-xs md:h-11 md:px-5 md:text-sm'
 })
 
 const variants = computed(() => {

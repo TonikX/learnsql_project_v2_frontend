@@ -33,7 +33,7 @@ const { nextTaskId, prevTaskId } = taskIdData
     </div>
     
     <br>
-    <p class="text-sm">{{ description }}</p>
+    <p class="text-xs md:text-sm">{{ description }}</p>
 
     <br>
     <p>Сложность: <TaskDifficulty :difficulty="difficulty"></TaskDifficulty></p>

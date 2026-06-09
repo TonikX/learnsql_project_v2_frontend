@@ -4,18 +4,21 @@ import { computed, toRefs } from 'vue';
 const props = withDefaults(defineProps<{
     pageCount: number
     currentPage: number
+    range?: number
 }>(), {
     currentPage: 1,
+    range: 5
 })
 
 const emit = defineEmits(['pageUpdate',])
 
 const { pageCount } = props
 const { currentPage } = toRefs(props)
+const half = props.range >> 1
 
 const range = computed(() => { 
-    let start = Math.max(currentPage.value - 2, 1)
-    let end = start + 4
+    let start = Math.max(currentPage.value - half, 1)
+    let end = start + props.range - 1
 
     if (end > pageCount) {
         start = Math.max(start + pageCount - end, 1)
@@ -33,7 +36,7 @@ const enabledStyle = "cursor-pointer hover:underline"
 </script>
 
 <template>
-<div class="w-full mt-4 flex justify-center gap-2">
+<div class="w-full mt-4 flex justify-center gap-4">
     <div 
         :class="(currentPage > 1) ? enabledStyle : disabledStyle" 
         @click="$emit('pageUpdate', 1)"><<

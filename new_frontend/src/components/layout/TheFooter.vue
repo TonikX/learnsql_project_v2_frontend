@@ -15,8 +15,7 @@ const footerClass = computed(() => {
                 <p>Онлайн-платформа изучения SQL</p>
 
                 <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-5 lg:contents">
-                    <RouterLink to="/" class="hover:underline">Условия пользования</RouterLink>
-                    <RouterLink to="/" class="hover:underline">Справочник</RouterLink>
+                    <RouterLink to="/" class="hover:underline">Обратная связь</RouterLink>
                     <p>antongovorov@gmail.com</p>
                 </div>
             </div>

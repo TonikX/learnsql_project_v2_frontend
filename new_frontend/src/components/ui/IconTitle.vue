@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<{
     align: 'left',
 })
 
-let titleStyle = "flex gap-4 text-2xl font-bold"
+let titleStyle = "flex gap-4 md:text-2xl font-bold"
 const secTitleStyle = "mt-3 text-base font-semibold text-slate-600"
 
 if (props.align == "center") {
@@ -21,7 +21,8 @@ if (props.align == "center") {
 <template>
 <div>
     <div :class="titleStyle">
-        <AppIcon v-if="icon" :name="icon"></AppIcon> 
+        <AppIcon v-if="icon" :name="icon" :size="16" class="md:hidden"></AppIcon> 
+        <AppIcon v-if="icon" :name="icon" class="hidden md:block"></AppIcon> 
         {{ title }}
     </div>
 

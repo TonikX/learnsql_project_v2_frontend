@@ -25,7 +25,6 @@ class TaskService {
     async getTasksByCourse(courseId: number): Promise<TaskExecutionState[]> {
         const response = await this.api.get(`/api/individualroutetasks/${courseId}/`)
         if ("results" in response.data) {
-            console.log("COURSE TASKS: ", response.data.results)
             const taskList: UserTaskResponse[] = response.data.results as UserTaskResponse[]
             return taskList.map(element => toExecState(element))
         }
