@@ -43,6 +43,7 @@ const chartKey = ref(0)
 
 const materialsSections = ref<SectionMaterialsUI[]>([])
 const topicInnerHTML = ref<string | null>(null)
+const currentMaterialsId = ref<number | null>(null)
 
 const difficulty = useCourseDifficulty(currentCourse)
 const title = computed(() => currentCourse.value ? currentCourse.value.title : '')
@@ -89,6 +90,8 @@ const handleMaterialsLoad = async () => {
 
 const handleTopicLoad = async (materialsId: number) => {
     const cached = getCachedTopic(materialsId)
+    currentMaterialsId.value = materialsId
+
     if (cached && cached.content) {
         topicInnerHTML.value = cached.content.content
         return
@@ -188,7 +191,7 @@ const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
 </script>
 
 <template>
-<AppContainer class="flex flex-col gap-10 mb-8">
+<AppContainer class="flex flex-col gap-10">
     <div>
         <div class="flex items-center justify-between">
             <IconTitle :title="title" icon="course-tiles"></IconTitle>
@@ -229,7 +232,7 @@ const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
 
     <AppSectionTitle v-if="materialsAlreadyLoaded" title="Методические материалы" icon="materials">
         <div :class="[blockStyle, 'flex']">
-            <div class="w-1/3 p-6 overflow-y-scroll max-h-[100dvh]">
+            <div class="w-1/4 p-6 overflow-y-scroll max-h-[100dvh]">
                 <!-- sections list -->
                 <ul> 
                     <li v-for="(section, i) in materialsSections" :key="i" class="pb-2">
@@ -242,11 +245,12 @@ const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
                         </div>
                         <!-- topics list -->
                         <ul v-if="section.open">
-                            <li v-for="topic in section.topics_of_this_section" :key="topic.id" class="pl-8">
-                                > <span 
-                                    class="cursor-pointer hover:underline"
-                                    @click="async () => handleTopicLoad(topic.id)"
-                                >
+                            <li 
+                                v-for="topic in section.topics_of_this_section" :key="topic.id" 
+                                class="pl-8 cursor-pointer hover:bg-course-card-begin"
+                                @click="async () => handleTopicLoad(topic.id)"
+                            >
+                                > <span :class="topic.id === currentMaterialsId ? 'underline' : ''">
                                     {{ topic.topic_name }}
                                 </span> 
                             </li>
@@ -254,13 +258,38 @@ const skeletonWidths = [95, 90, 82, 72, 72, 65, 60, 40, 35, 25]
                     </li>
                 </ul>
             </div>
-            <p
+            <div
                 v-if="topicInnerHTML" 
-                class="w-2/3 p-6 overflow-y-scroll break-all max-h-[100dvh] html-links"
+                :class="[
+                    'w-3/4 p-6 overflow-y-scroll html-links max-w-none break-all max-h-[100dvh]',
+                    resolvedTheme === 'dark' ? 'prose prose-invert' : 'prose'
+                ]"
                 v-html="topicInnerHTML"
-            >
-            </p>
+            ></div>
+            <p v-else class="m-auto italic">[Выберите раздел с материалами]</p>
         </div>
     </AppSectionTitle>
 </AppContainer>
 </template>
+
+<style scoped>
+:deep(pre), 
+:deep(code) {
+    color: #ffffff !important;
+    text-shadow: none !important;
+}
+
+:deep(.prose table) {
+    width: auto;
+}
+
+:deep(.prose tr),
+:deep(.prose td) {
+    border: 1px solid rgba(0, 0, 0, 1);
+}
+
+:deep([data-theme="dark"] .prose tr),
+:deep([data-theme="dark"] .prose td) {
+    border: 1px solid rgba(255, 255, 255, 1);
+}
+</style>

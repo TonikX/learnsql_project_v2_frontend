@@ -37,6 +37,7 @@ const {
 const sideBarOpen = ref(false)
 const errorMsg = ref('')
 const isNavigationReady = computed(() => !taskLoading.value && currentTaskId.value !== 0)
+const baseNavLinkStyle = 'hover:bg-course-card-begin'
 
 const toggleSidebar = () => { sideBarOpen.value = !sideBarOpen.value }
 
@@ -97,20 +98,14 @@ onUnmounted(() => {
 <template v-if="!courseLoading && !errorMsg">
     <AppContainer class="py-8 flex items-center justify-between">
         <section class="flex justify-start gap-4">
-            <RouterLink 
-                :to="{ name: 'details' }"
-                :class="isNavigationReady? '' : 'text-gray-500'"
-                >[ Курс ]
+            <RouterLink :to="{ name: 'details' }" v-slot="{ isActive }"> 
+                <span :class="[baseNavLinkStyle, isActive ? 'text-text-main' : 'text-text-secondary']">[ Курс ]</span> 
             </RouterLink>
-            <RouterLink 
-                :to="isNavigationReady ? { name: 'schema', params: { task_id: currentTaskId } } : ''"
-                :class="isNavigationReady? '' : 'text-gray-500'"
-                >[ Схема ]
+            <RouterLink :to="isNavigationReady ? { name: 'schema', params: { task_id: currentTaskId } } : ''" v-slot="{ isActive }">
+                <span :class="[baseNavLinkStyle, isActive ? 'text-text-main' : 'text-text-secondary']">[ Схема ]</span>
             </RouterLink>
-            <RouterLink 
-                :to="isNavigationReady ? { name: 'problem', params: { task_id: currentTaskId } } : ''"
-                :class="isNavigationReady? '' : 'text-gray-500'"
-                >[ Решение ]
+            <RouterLink :to="isNavigationReady ? { name: 'problem', params: { task_id: currentTaskId } } : ''" v-slot="{ isActive }">
+                <span :class="[baseNavLinkStyle, isActive ? 'text-text-main' : 'text-text-secondary']">[ Решение ]</span>
             </RouterLink>
         </section>
 
@@ -119,6 +114,6 @@ onUnmounted(() => {
     </AppContainer>
 
     <!-- Page body -->
-    <RouterView/>
+    <RouterView class="mb-10"/>
 </template>
 </template>

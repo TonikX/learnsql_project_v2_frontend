@@ -22,9 +22,10 @@ const { loadAllCourses, enrollToCourse, loadEnrolledCourses, isEnrolled } = stor
 const showCourses = ref<Course[]>([])
 
 const syncCourseListData = async () => {
-    if (courses.value.length == 0)
+    if (courses.value.length == 0) {
         await Promise.all([loadAllCourses(), loadEnrolledCourses()])
-    
+    }
+        
     showCourses.value = props.enrolledOnly ? courses.value.filter(c => isEnrolled(c.id)) : Array.from(courses.value)
 }
 
@@ -42,7 +43,7 @@ watch(() => route.path, async () => await syncCourseListData(), { immediate: tru
             <p>> SELECT * FROM learnsql_courses;</p>
 
             <div class="-mx-8 my-8 border-t-2 border-course-grid-stroke"></div>
-            <p>&emsp;-- Найдено {{ showCourses.length }} курса(-ов) (100 мс)</p>
+            <p>&emsp;-- Найдено {{ showCourses.length }} курса(-ов) ({{ Math.floor(Math.random() * 100) + 50 }} мс)</p>
 
             <div class="mt-8 grid gap-8 lg:grid-cols-2">
             <CourseCard

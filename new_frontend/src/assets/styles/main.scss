@@ -27,6 +27,13 @@
 
 @font-face {
     font-family: 'JetBrains Mono NL';
+    src: url('../fonts/JetBrainsMonoNL-Italic.ttf') format('truetype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'JetBrains Mono NL';
     src: url('../fonts/JetBrainsMonoNL-Bold.ttf') format('truetype');
     font-weight: 700;
     font-style: normal;
@@ -70,12 +77,16 @@
     --medium: #DDC745;
     --easy: #0CA726;
     --neutral: #777777;
+    --hard-neg: #EF5154;
+    --medium-neg: #F0DC68;
+    --easy-neg: #6FF876;
+    --neutral-neg: #FFFFFF;
 
     /* схема */
     --schema-bg-begin: #F0F0F0;
     --schema-bg-end: #E5E4E2;
     --schema-grid: #CBCBCB;
-    --schema-header: #B9D9EB;
+    --schema-header: #A8C1EB;
     --schema-stroke: #666666;
 
 
@@ -221,6 +232,10 @@
     --medium: #F0DC68;
     --easy: #6FF876;
     --neutral: #FFFFFF;
+    --hard-neg: #D02E30;
+    --medium-neg: #DDC745;
+    --easy-neg: #0CA726;
+    --neutral-neg: #777777;
 
     /* схема */
     --schema-bg-begin: #16171B;

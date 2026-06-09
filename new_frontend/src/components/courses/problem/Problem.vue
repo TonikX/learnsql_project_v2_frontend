@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, watch, ref, toRefs } from 'vue'
 import { storeToRefs } from 'pinia'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useTaskStore } from '@/stores/taskStore'
 import AppContainer from '@/components/layout/AppContainer.vue'
 import AppLoader from '@/components/ui/AppLoader.vue'
@@ -13,13 +13,18 @@ import ProblemDescription from '../ProblemDescription.vue'
 import ProblemLayout from '@/components/layout/ProblemLayout.vue'
 import { useCurrentTaskId } from '@/composables/currentTaskId.ts'
 import Discussion from './Discussion.vue'
+import { useChatStore } from '@/stores/chatStore.ts'
 
 
 const taskStore = useTaskStore()
 const { currentTask, taskLoading, currentResult, resultLoading, currentDiscussion } = storeToRefs(taskStore)
-const { doTaskAttempt, loadDiscussion, loadAttemptsHistory, toggleResultLoading } = taskStore
+const { doTaskAttempt, loadDiscussion, toggleResultLoading } = taskStore
+
+const chatStore = useChatStore()
+const { createRoom } = chatStore
 
 const route = useRoute()
+const router = useRouter()
 const courseId = Number(route.params.course_id)
 
 const taskIdData = toRefs(useCurrentTaskId(route))
@@ -82,6 +87,15 @@ const handleLoadDiscussion = async (taskId: number) => {
     }
 }
 
+const handleAskQuestion = async () => {
+    try {
+        const chatRoom = await createRoom(courseId)
+        router.push({ name: "chats", query: { room: chatRoom.id }})
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 watch(currentTaskId, async (taskId: number) => {
     await handleLoadDiscussion(taskId)
 }, { immediate: true })
@@ -108,7 +122,7 @@ watch(currentTaskId, async (taskId: number) => {
                     </div>
                     
                     <div class="flex justify-end gap-4">
-                        <AppButton variant="secondary" @click="() => currentTask!.solution = ''">Очистить</AppButton>
+                        <AppButton variant="secondary" @click="async () => await handleAskQuestion()">Задать вопрос</AppButton>
                         <AppButton 
                             variant="success" 
                             @click="handleSolutionAttempt" 

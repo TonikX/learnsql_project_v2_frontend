@@ -10,7 +10,7 @@ import {
     formatChatTime,
     getChatUserDisplayName,
 } from '@/utils/chatFormatters'
-import type { ChatFilter, ChatItem, ChatMessage, ChatRoom, ChatUniversity, ChatUser } from '@/types/chatTypes'
+import type { ChatFilter, ChatItem, ChatMessage, ChatRoom, ChatUniversity, ChatUser, CreateRoomPayload } from '@/types/chatTypes'
 
 const accessStorageKey = 'access_token'
 type ChatEndpointMode = 'student' | 'teacher' | 'unknown'
@@ -616,6 +616,15 @@ export const useChatStore = defineStore('chat', () => {
         return rooms.value.find((room) => roomKey(room.id) === roomKey(roomId)) ?? null
     }
 
+    async function createRoom(courseId: number) {
+        const payload: CreateRoomPayload = { course: courseId }
+        const newRoom: ChatRoom = await chatService.createRoom(payload)
+
+        // update room list
+        await loadRooms({ silent: true })
+        return newRoom
+    }   
+
     function roomHasUnreadMessages(roomId: number | string) {
         return (getRoomById(roomId)?.unread_count ?? 0) > 0
     }
@@ -1031,6 +1040,7 @@ export const useChatStore = defineStore('chat', () => {
         filteredChats,
         loadRooms,
         selectRoom,
+        createRoom,
         loadMessages,
         markRoomAsRead,
         sendMessage,

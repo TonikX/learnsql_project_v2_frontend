@@ -6,14 +6,14 @@ import { highlight, languages } from 'prismjs'
 import AppContainer from '@/components/layout/AppContainer.vue'
 import { useTaskStore } from '@/stores/taskStore'
 import { useCurrentTaskId } from '@/composables/currentTaskId'
-import type { AttemptHistoryItem, AttemptResult } from '@/types/taskTypes'
+import type { AttemptHistoryItem } from '@/types/taskTypes'
 import AppModal from '@/components/ui/AppModal.vue'
 import AppButton from '@/components/ui/AppButton.vue'
 import 'prismjs/components/prism-sql'
 
 
 const taskStore = useTaskStore()
-const { currentResult, attemptHistory } = storeToRefs(taskStore)
+const { planningUpdateHistory, attemptHistory } = storeToRefs(taskStore)
 const { loadAttemptsHistory } = taskStore
 
 const route = useRoute()
@@ -69,19 +69,17 @@ const handleLoadAttemptsHistory = async (taskId: number) => {
     }
 }
 
-watch(currentResult, async (result: AttemptResult | null) => {
-    if (result) 
+watch(planningUpdateHistory, async (startUpdate: boolean) => {
+    if (startUpdate) 
         await handleLoadAttemptsHistory(currentTaskId.value)
-})
+}, { immediate: true })
 </script>
 
 <template>
 <AppContainer>
-    <table class="w-full border mb-8">
-        <caption class="text-left pb-4">
-            > SELECT * FROM attempt_history WHERE task_id={{ currentTaskId }};
-        </caption>
-        <thead class="bg-schema-header">
+<div class="w-full rounded-md overflow-hidden border-2 border-course-card-begin mb-10">
+    <table class="w-full">
+        <thead class="bg-course-card-begin">
             <tr class="text-left">
                 <th class="p-2">id</th>
                 <th>Номер попытки</th>
@@ -91,26 +89,30 @@ watch(currentResult, async (result: AttemptResult | null) => {
                 <th>Баллы</th>
             </tr>
         </thead>
-        <tr 
-            v-for="attempt in attemptList" 
-            :key="attempt.attempt_number"
-            class="border-y font-light"
-        > 
-            <td class="p-2">#{{ attempt.id }}</td>
-            <td>{{ attempt.attempt_number }}</td>
-            <td>
-                <span 
-                    class="cursor-pointer hover:underline"
-                    @click="() => openSolutionModal(attempt)"
-                >
-                    >>>
-                </span>
-            </td>
-            <td>{{ attempt.date }}</td>
-            <td :class="attempt.statusMeta.class">{{ attempt.statusMeta.text }}</td>
-            <td>{{ points(attempt.is_success) }}</td>
-        </tr>
+        <tbody>
+            <tr 
+                v-for="attempt in attemptList" 
+                :key="attempt.attempt_number"
+                class="border-t border-course-card-begin font-light"
+            > 
+                <td class="p-2">#{{ attempt.id }}</td>
+                <td>{{ attempt.attempt_number }}</td>
+                <td>
+                    <span 
+                        class="cursor-pointer hover:underline"
+                        aria-label="Открыть полный текст"
+                        @click="() => openSolutionModal(attempt)"
+                    >
+                        >>>
+                    </span>
+                </td>
+                <td>{{ attempt.date }}</td>
+                <td :class="attempt.statusMeta.class">{{ attempt.statusMeta.text }}</td>
+                <td>{{ points(attempt.is_success) }}</td>
+            </tr>
+        </tbody>
     </table>
+</div>
 </AppContainer>
 <AppModal 
     :open="solutionOpen"

@@ -83,10 +83,6 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('@/views/CourseView.vue'),
                 children: [
                     {
-                        path: '',
-                        component: () => import('@/components/courses/CourseDetails.vue'),
-                    },
-                    {
                         path: 'details',
                         name: 'details',
                         component: () => import('@/components/courses/CourseDetails.vue'),
