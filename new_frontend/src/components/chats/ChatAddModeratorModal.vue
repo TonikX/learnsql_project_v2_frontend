@@ -118,7 +118,7 @@ onBeforeUnmount(() => {
                         v-model="searchQuery"
                         type="search"
                         class="mt-2 h-11 w-full rounded-[7px] border border-chat-border bg-chat-surface px-3 text-[14px] text-chat-text outline-none placeholder:text-chat-placeholder focus:border-chat-border focus:ring-0"
-                        placeholder="Имя, фамилия или username"
+                        placeholder="Имя, фамилия или логин"
                     />
                 </div>
 

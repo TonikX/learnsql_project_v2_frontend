@@ -294,8 +294,8 @@ function getStepIndicatorClass(step: LearningStep) {
 
                     <div class="mt-8 flex flex-wrap justify-center gap-5 text-[12px] sm:gap-[62px] sm:text-[14px] xl:mt-[45px]">
                         <span class="inline-flex items-center gap-1"><AppIcon name="check-circle" :size="20" class="text-primary-action" /> Бесплатный доступ</span>
-                        <span class="inline-flex items-center gap-1"><AppIcon name="check-circle" :size="20" class="text-primary-action" /> Поддержка 24/7</span>
-                        <span class="inline-flex items-center gap-1"><AppIcon name="check-circle" :size="20" class="text-primary-action" /> 500+ задач</span>
+                        <span class="inline-flex items-center gap-1"><AppIcon name="check-circle" :size="20" class="text-primary-action" /> Связь с преподавателями</span>
+                        <span class="inline-flex items-center gap-1"><AppIcon name="check-circle" :size="20" class="text-primary-action" /> 100+ задач</span>
                     </div>
                 </div>
             </section>
