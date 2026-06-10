@@ -150,24 +150,49 @@ export const useTaskStore = defineStore("tasks", () => {
         attemptHistory.value = loaded.results
     }
 
-    const addComment = async (courseId: number, taskId: number, content: string) => {
+    const addComment = async (courseId: number, taskId: number, content: string, parentId?: number) => {
         if (!currentDiscussion.value)
             return
 
-        const comment: Comment = await taskService.createComment(courseId, taskId, content)
-        currentDiscussion.value.messages.push(comment)
+        const comment: Comment = await taskService.createComment(courseId, taskId, content, parentId)
         currentDiscussion.value.messages_count++
+
+        if (parentId) {
+            const parentComment = currentDiscussion.value.messages.find(m => m.id === parentId)
+            if (parentComment) {
+                if (!parentComment.replies_count)
+                    parentComment.replies_count = 0
+
+                if (!parentComment.replies) 
+                    parentComment.replies = []
+
+                parentComment.replies_count++
+                parentComment.replies.push(comment)
+            }
+            return
+        }
+        currentDiscussion.value.messages.push(comment)
     }
 
-    const removeComment = async (courseId: number, taskId: number, commentId: number) => {
+    const removeComment = async (courseId: number, taskId: number, commentId: number, parentId?: number) => {
         if (!currentDiscussion.value)
             return
 
         const removeStatus: DeleteComment = await taskService.deleteComment(courseId, taskId, commentId)
-        if (removeStatus.deleted) {
-            currentDiscussion.value.messages = currentDiscussion.value.messages.filter(comment => comment.id !== commentId)
-            currentDiscussion.value.messages_count--
+        if (!removeStatus.deleted)
+            return
+
+        if (parentId) {
+            const parent = currentDiscussion.value.messages.find(m => m.id === parentId)
+            if (parent) {
+                parent.replies = parent.replies?.filter(r => r.id !== commentId)
+                parent.replies_count = parent.replies_count ? parent.replies_count - 1 : 0
+            }
+            return
         }
+        
+        currentDiscussion.value.messages = currentDiscussion.value.messages.filter(comment => comment.id !== commentId)
+        currentDiscussion.value.messages_count--
     }
 
     const loadDiscussion = async (courseId: number, taskId: number,) => {

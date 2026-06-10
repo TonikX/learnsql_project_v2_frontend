@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useTaskStore } from '@/stores/taskStore'
 import { useUserStore } from '@/stores/userStore'
 import type { Comment, Discussion } from '@/types/discussionTypes'
-import AppButton from '@/components/ui/AppButton.vue'
 import ProfilePic from '@/components/ui/ProfilePic.vue'
 import ContextMenu from '@/components/ui/ContextMenu.vue'
-import AppBadge from '@/components/ui/AppBadge.vue'
+import CommentElem from './CommentElem.vue'
+import CommentInput from './CommentInput.vue'
 
 
 const props = defineProps<{
@@ -25,32 +25,17 @@ const { addComment, removeComment, toggleCommentLoading } = taskStore
 const userStore = useUserStore()
 const { user } = storeToRefs(userStore)
 
-const commentText = ref('')
 const menuCommentId = ref(-1)
 const menuX = ref(0)
 const menuY = ref(0)
-const textareaRef = ref<HTMLTextAreaElement | null>(null)
+const mainInputRef = ref<InstanceType<typeof CommentInput> | null>(null)
+const replyToCommentId = ref<number | null>(null)
 
-const adjustHeight = () => {
-    const elem = textareaRef.value
-    if (!elem) 
-        return
-
-    elem.style.height = 'auto'
-    elem.style.height = `${Math.min(elem.scrollHeight, 250)}px`
-}
+const replyInputRefs = ref<Record<number, InstanceType<typeof CommentInput> | null>>({})
+const openedComments = ref<Record<number, boolean>>({})
 
 const scrollToInput = () => {
-    const elem = textareaRef.value
-    if (!elem) 
-        return
-
-    elem.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center'
-    })
-
-    elem.focus({ preventScroll: true })
+    mainInputRef.value?.focus()
 }
 defineExpose({scrollToInput})
 
@@ -62,10 +47,13 @@ const openContextMenu = (event: MouseEvent, commentId: number) => {
 }
 
 const getMenuOptions = (comment: Comment) => {
-    const options = ['reply', ]
+    const options: string[] = []
 
     if (!user.value)
-        return options
+        return []
+
+    if (!comment.parent_id)
+        options.push('reply')
 
     if (comment.author.id === user.value.id || user.value.role === 'teacher')
         options.push('delete')
@@ -76,18 +64,39 @@ const getMenuOptions = (comment: Comment) => {
 const handleMenuChoice = async (selected: string, comment: Comment) => {
     switch (selected) {
     case 'delete':
-        await removeComment(courseId, props.discussion.task, comment.id)
+        await removeComment(courseId, props.discussion.task, comment.id, comment.parent_id)
         break
     case 'reply':
-        console.log("Reply") 
+        openedComments.value[comment.id] = true
+        replyToCommentId.value = comment.id
+        setTimeout(() => {
+            replyInputRefs.value[comment.id]?.focus()
+        }, 50)
+        break 
     }
 }
 
-const handleAddComment = async (content: string) => {
+const toggleReplies = (commentId: number) => {
+    openedComments.value[commentId] = !openedComments.value[commentId]
+}
+
+const comments = computed(() => {
+    if (!props.discussion?.messages) return []
+    
+    return props.discussion.messages.map((message) => {
+        return {
+            ...message,
+            open: openedComments.value[message.id] ?? false  
+        }
+    })
+})
+
+const handleAddComment = async (content: string, parentId?: number) => {
     try {
-        await toggleCommentLoading(addComment, courseId, props.discussion.task, content) 
-        commentText.value = ''
-        textareaRef.value!.style.height = 'auto'
+        await toggleCommentLoading(addComment, courseId, props.discussion.task, content, parentId) 
+        if (parentId) {
+            replyToCommentId.value = null
+        }
     } catch (err) {
         console.error(err)
     }
@@ -97,44 +106,22 @@ const handleAddComment = async (content: string) => {
 <template>
 <div class="size-full border-t-2 border-b-0 border-course-grid-stroke mt-8 pt-6">
     <p class="mb-6">> SELECT * FROM comments WHERE task_id={{ props.discussion.task }};</p>
-    <div class="w-full rounded-lg p-4 bg-course-grid">
-        <textarea 
-            ref="textareaRef"
-            v-model="commentText"
-            rows="1"
-            placeholder="Оставьте комментарий..."
-            class="w-full block no-scrollbar resize-none outline-none bg-transparent font-light"
-            @input="adjustHeight"
-        ></textarea>
-    </div>
-    <div class="w-full mt-4 flex gap-4">
-        <AppButton variant="secondary" size="sm" @click="() => commentText = ''">Отмена</AppButton>
-        <AppButton
-            variant="success"
-            size="sm"
-            @click="async () => await handleAddComment(commentText)"
-            :loading="commentLoading"
-            :disabled="commentText === ''"
-        >Комментировать
-        </AppButton>
-    </div>
+    <CommentInput 
+        ref="mainInputRef"
+        label="Комментировать"
+        :isLoading="commentLoading"
+        @submit="handleAddComment"
+    />
 </div>
 
 <ul>
-    <li v-for="comment in props.discussion.messages" :key="comment.id" class="mt-4 flex gap-4">
+    <li v-for="comment in comments" :key="comment.id" class="mt-4 flex gap-4">
         <ProfilePic
             :firstname="comment.author.first_name"
             :lastname="comment.author.last_name"
         />
         <div class="relative">
-            <span>{{ comment.author.first_name }}_{{ comment.author.last_name }}&nbsp;</span>
-            <template v-if="comment.author.role === 'teacher'">
-                <AppBadge variant="info">admin</AppBadge>
-                <span>&nbsp;</span>
-            </template>
-
-            <span class="text-text-secondary">{{ comment.created_at }}&nbsp;</span>
-            <span class="cursor-pointer" @click.stop="openContextMenu($event, comment.id)">•••</span>
+            <CommentElem :comment="comment" @open-menu="openContextMenu"/>
             <ContextMenu
                 v-if="menuCommentId === comment.id"
                 :comment="comment"
@@ -144,7 +131,44 @@ const handleAddComment = async (content: string) => {
                 @close-menu="closeContextMenu"
                 @handle-choice="handleMenuChoice"
             />
-            <p class="font-extralight">-- {{ comment.content }} --</p>
+            <p 
+                @click="() => toggleReplies(comment.id)"
+                class="cursor-pointer hover:underline"
+            >
+                Ответы ({{ comment.replies_count }}) {{ comment.open ? '▲' : '▼'}}
+            </p>
+            <ul v-if="comment.open">
+                <div v-if="replyToCommentId === comment.id" class="mt-2">
+                    <CommentInput 
+                        :ref="(el) => { if (el) replyInputRefs[comment.id] = el as any }"
+                        label="Ответить"
+                        :parent-comm-id="comment.id"
+                        :is-loading="commentLoading"
+                        @submit="async (val, pid) => await handleAddComment(val, pid)"
+                        @cancel="() => replyToCommentId = null"
+                    />
+                </div>
+                <li v-for="reply in comment.replies" :key="reply.id" class="mt-4">
+                    <div class="flex gap-4">
+                        <ProfilePic
+                            :firstname="comment.author.first_name"
+                            :lastname="comment.author.last_name"
+                        />
+                        <div class="relative">
+                            <CommentElem :comment="reply" @open-menu="openContextMenu"/>
+                            <ContextMenu
+                                v-if="menuCommentId === reply.id"
+                                :comment="reply"
+                                :options="getMenuOptions(reply)"
+                                :x="menuX"
+                                :y="menuY"
+                                @close-menu="closeContextMenu"
+                                @handle-choice="handleMenuChoice"
+                            />
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </li>
 </ul>
