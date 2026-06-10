@@ -6,10 +6,10 @@ export type LandingSpriteIconName =
     | 'target'
 
 export const landingStats = [
-    { value: '500+', label: 'SQL-задач' },
+    { value: '100+', label: 'SQL-задач' },
     { value: '1000+', label: 'студентов' },
-    { value: '10+', label: 'курсов' },
-    { value: '98%', label: 'довольных студентов' },
+    { value: '2', label: 'готовых курса' },
+    { value: '3+', label: 'курса в разработке' },
 ]
 
 export const landingFeatures: Array<{

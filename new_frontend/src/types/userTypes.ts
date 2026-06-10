@@ -71,6 +71,15 @@ export interface User {
     group_number_title?: string | null
 }
 
+export interface CurrentUserProfileGroup {
+    id: number | string
+    title?: string | null
+    university?: {
+        id: number | string
+        name?: string | null
+    } | null
+}
+
 export interface CurrentUserProfile {
     id: number | string
     username: string
@@ -81,6 +90,7 @@ export interface CurrentUserProfile {
     role?: string | null
     group_number?: number | string | null
     group_number_title?: string | null
+    group?: CurrentUserProfileGroup | null
 }
 
 export interface UpdateCurrentUserProfilePayload {
