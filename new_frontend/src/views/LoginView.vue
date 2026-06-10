@@ -103,6 +103,9 @@ async function submit() {
         return
     }
 
+    // clear localStorage tasks (100%)
+    authStore.logout()
+
     try {
         await authStore.login({
             username: login.value.trim(),
