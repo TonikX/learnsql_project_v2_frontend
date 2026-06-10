@@ -63,8 +63,10 @@ class TaskService {
         return response.data
     }
 
-    async createComment(courseId: number, taskId: number, content: string): Promise<Comment>  {
+    async createComment(courseId: number, taskId: number, content: string, parentId?: number): Promise<Comment>  {
         const payload: CreateComment = { content: content }
+        if (parentId) payload.parent_id = parentId
+
         const response = await this.api.post<Comment>(`/api/courses/${courseId}/tasks/${taskId}/discussion/`, payload)
         return response.data
     }

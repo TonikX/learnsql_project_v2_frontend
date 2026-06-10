@@ -8,13 +8,17 @@ interface Author {
 
 export interface Comment {
     id: number
+    parent_id?: number
     author: Author
     content: string
     created_at: string
+    replies_count?: number
+    replies?: Comment[]
 }
 
 export interface CreateComment {
     content: string
+    parent_id?: number
 }
 
 export interface DeleteComment {

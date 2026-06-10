@@ -30,6 +30,7 @@ onUnmounted(() => {
 
 <template>
 <ul
+    v-if="options.length > 0"
     class="absolute z-40 rounded-md py-2 border border-text-secondary bg-bg text-sm" 
     :style="{ top: y + 'px', left: x + 'px' }"
 >
@@ -40,5 +41,7 @@ onUnmounted(() => {
     >
         {{ actionMap[option] }}
     </li>
+
+
 </ul>
 </template>
