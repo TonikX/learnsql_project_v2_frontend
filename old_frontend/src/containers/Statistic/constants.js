@@ -1,2 +1,0 @@
-export const GET_STATISTIC = 'GET_STATISTIC';
-export const SET_STATISTIC = 'SET_STATISTIC';
