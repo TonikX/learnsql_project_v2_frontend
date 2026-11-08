@@ -121,12 +121,14 @@ const toggleSection = async (sectionIndex: number) => {
 const loadStatsAndMaterials = async (page: number) => await Promise.all([handleStatLoad(page), handleMaterialsLoad()])
 
 watch(materials, (sections: SectionMaterials[]) => {
-    materialsSections.value = sections.map(section => {
+    materialsSections.value = sections
+    .map(section => {
         return { 
             ...section,
             open: false,
         }
     })
+    .sort((sec1, sec2) => sec1.number - sec2.number)
 }, { immediate: true })
 
 // event listeners to reload statistics

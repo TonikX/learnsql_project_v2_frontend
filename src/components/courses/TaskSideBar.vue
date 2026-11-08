@@ -68,7 +68,7 @@ const { isOpen } = toRefs(props)
                 >
                     <div class="flex items-center">
                         <AppIcon name="check-mark" :color="getCheckMarkColor(task)"/>
-                        <p class="pl-1">{{ task.title }}</p>
+                        <p class="pl-1">Задание {{ i + 1 }}</p>
                     </div>
                     <p><TaskDifficulty :difficulty="task.difficulty" :negative="task.taskId === currentTaskId">
                     </TaskDifficulty></p>

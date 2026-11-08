@@ -1,6 +1,7 @@
 export interface TaskExecutionState {
     routeStepId: number | null
     taskId: number
+    seqNum: number
     title: string
     difficulty: number
     status: string
@@ -75,10 +76,11 @@ export interface AttemptHistory {
     results: AttemptHistoryItem[]
 }
 
-export function toExecState(response: UserTaskResponse): TaskExecutionState {
+export function toExecState(response: UserTaskResponse, seq: number): TaskExecutionState {
     return { 
         routeStepId: response.id,
         taskId: response.task_in_set.task,
+        seqNum: seq,
         title: response.task_in_set.title,
         difficulty: response.task_in_set.difficulty,
         status: response.status,  

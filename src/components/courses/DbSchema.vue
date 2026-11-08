@@ -7,7 +7,7 @@ import AppContainer from '../layout/AppContainer.vue'
 import AppLoader from '../ui/AppLoader.vue'
 import ProblemLayout from '../layout/ProblemLayout.vue'
 import ProblemDescription from './ProblemDescription.vue'
-import { useCurrentTaskId } from '@/composables/currentTaskId'
+import { useCurrentTaskId, useCurrentTaskSeqNum } from '@/composables/currentTaskId'
 import { useSchemaStore } from '@/stores/schemaStrore'
 
 
@@ -16,6 +16,7 @@ const courseId = Number(route.params.course_id)
 
 const taskIdData = toRefs(useCurrentTaskId(route))
 const { currentTaskId } = taskIdData
+const currTaskSeq = useCurrentTaskSeqNum(route)
 
 const taskStore = useTaskStore()
 const { currentTask, taskLoading } = storeToRefs(taskStore)
@@ -163,7 +164,7 @@ onUnmounted(() => {
         </template>
         <template #description>
             <ProblemDescription
-                :title="`${currentTask.details.title} #${currentTask.details.id}`"
+                :title="`Задание #${currTaskSeq + 1}`"
                 :description="currentTask.details.task_text"
                 :difficulty="currentTask.details.difficulty"
                 path="schema"

@@ -11,7 +11,7 @@ import Editor from './Editor.vue'
 import ResultsTable from './ResultsTable.vue'
 import ProblemDescription from '../ProblemDescription.vue'
 import ProblemLayout from '@/components/layout/ProblemLayout.vue'
-import { useCurrentTaskId } from '@/composables/currentTaskId.ts'
+import { useCurrentTaskId, useCurrentTaskSeqNum } from '@/composables/currentTaskId.ts'
 import Discussion from './Discussion.vue'
 import { useChatStore } from '@/stores/chatStore.ts'
 
@@ -29,6 +29,7 @@ const courseId = Number(route.params.course_id)
 
 const taskIdData = toRefs(useCurrentTaskId(route))
 const { currentTaskId } = taskIdData
+const currTaskSeq = useCurrentTaskSeqNum(route)
 
 const timestamp = ref('')
 const discussionComponent = ref<InstanceType<typeof Discussion> | null>(null)
@@ -156,7 +157,7 @@ watch(currentTaskId, async (taskId: number) => {
 
             <template #description>
                 <ProblemDescription
-                    :title="`${currentTask.details.title} #${currentTask.details.id}`"
+                    :title="`Задание #${currTaskSeq + 1}`"
                     :description="currentTask.details.task_text"
                     :difficulty="currentTask.details.difficulty"
                     path="problem"
